@@ -2,12 +2,13 @@
 # Import functions
 from cohortextractor import patients
 
+
 def get_X_appointments(name, index_date, n, report=False):
     
     def appointment_variable_template(name, on_or_after):
 
-        booked_date_variable_name = f"{name}_booked_date"
-        start_date_variable_name = f"{name}_start_date"
+        booked_date_variable_name = f"booked_date_{name}"
+        start_date_variable_name = f"start_date_{name}"
 
         if report:
             print("======================================================")
@@ -43,7 +44,7 @@ def get_X_appointments(name, index_date, n, report=False):
 
         variables.update(appointment_variable_template(
             name=f"{name}_{i}",
-            on_or_after=f"{name}_{i-1}_booked_date + 1 day",
+            on_or_after=f"booked_date_{name}_{i-1} + 1 day",
         ))
 
         if report:
@@ -53,4 +54,3 @@ def get_X_appointments(name, index_date, n, report=False):
                 print(f" - {key}")
 
     return variables
-
