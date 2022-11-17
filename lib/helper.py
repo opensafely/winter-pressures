@@ -2,7 +2,6 @@
 # Import functions
 from cohortextractor import patients
 
-
 def get_X_appointments(name, index_date, n, report=False):
     
     def appointment_variable_template(name, on_or_after):
