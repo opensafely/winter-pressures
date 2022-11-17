@@ -1,5 +1,6 @@
 from cohortextractor import StudyDefinition, patients, codelist, codelist_from_csv  # NOQA
 
+from helper import get_X_appointments
 
 study = StudyDefinition(
     index_date = "2010-01-01", 
@@ -14,4 +15,13 @@ study = StudyDefinition(
         "registered",
         registered=patients.registered_as_of("index_date",),
     ),
+
+    **get_X_appointments(
+        name="appointment",
+        index_date="index_date",
+        n=10,
+        report=False
+    )
+    
 )
+
