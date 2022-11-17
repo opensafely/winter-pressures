@@ -11,3 +11,31 @@ actions:
       highly_sensitive:
         cohort: output/input*.csv
 
+  reformat_appointment_data:
+    run: python:latest python analysis/reformat_appointment_data.py
+    needs: [generate_study_population]
+    outputs:
+      highly_sensitive:
+        reformatted: output/input_long*.csv
+
+  # generate_report:
+  #   run: cohort-report:v3.0.0 output/input.csv
+  #   needs: [generate_study_population]
+  #   config:
+  #     variable_types:
+  #         age: int
+  #         sex: categorical
+  #         ethnicity: categorical
+  #         bmi: float
+  #         diabetes: binary
+  #         chronic_liver_disease: binary
+  #         imd: categorical
+  #         region: categorical
+  #         stp: categorical
+  #         rural_urban: categorical
+  #         prior_covid_date: date
+  #     output_path: output/cohort_reports_outputs
+  #   outputs:
+  #     moderately_sensitive:
+  #       reports: output/cohort_reports_outputs/descriptives_input.html
+
