@@ -20,10 +20,11 @@ def reformat_appointment_data():
             df_long = pd.wide_to_long(df,
                 stubnames=stump_list,
                 i=id_variables,
-                j='num',
+                j='appointment_number',
                 sep="_" ).reset_index()
+            df_long['batch'] = date
             ### Write contents to file
-            df_long.to_csv(OUTPUT_DIR / f'input_long_{date}.csv')
+            df_long.to_csv(OUTPUT_DIR / f'input_long_{date}.csv', index=False)
 
 if __name__ == "__main__":
     reformat_appointment_data()
