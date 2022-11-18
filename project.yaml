@@ -17,3 +17,10 @@ actions:
     outputs:
       highly_sensitive:
         reformatted: output/input_long*.csv
+
+  calculate_lead_times:
+    run: python:latest python analysis/calculate_lead_times.py
+    needs: [reformat_appointment_data]
+    outputs:
+      highly_sensitive:
+        reformatted: output/input_processed*.csv
