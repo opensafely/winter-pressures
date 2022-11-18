@@ -1,13 +1,27 @@
 from cohortextractor import StudyDefinition, patients, codelist, codelist_from_csv  # NOQA
 
+from lib.appointments_helper_functions import get_X_appointments
 
 study = StudyDefinition(
+    index_date = "2010-01-01", 
+
     default_expectations={
-        "date": {"earliest": "1900-01-01", "latest": "today"},
+        "date": {"earliest": "index_date", "latest": "today"},
         "rate": "uniform",
         "incidence": 0.5,
     },
-    population=patients.registered_with_one_practice_between(
-        "2019-02-01", "2020-02-01"
+
+    population=patients.satisfying(
+        "registered",
+        registered=patients.registered_as_of("index_date",),
     ),
+
+    **get_X_appointments(
+        name="appointment",
+        index_date="index_date",
+        n=10,
+        report=False
+    )
+    
 )
+
