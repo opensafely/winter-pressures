@@ -30,4 +30,20 @@ actions:
     needs: [calculate_lead_times]
     outputs:
       highly_sensitive:
-        summarised: output/summary*.csv
+        summarised: output/measure_lead_time_practice.csv
+
+  generate_deciles_charts:
+    run: >
+      deciles-charts:v0.0.33
+        --input-files output/measure_lead_time_practice.csv 
+        --output-dir output
+    config:
+      show_outer_percentiles: true
+      tables:
+        output: true
+      charts:
+        output: true
+    needs: [summarise_lead_times]
+    outputs:
+      moderately_sensitive:
+        deciles_charts: output/deciles_*_*.*
