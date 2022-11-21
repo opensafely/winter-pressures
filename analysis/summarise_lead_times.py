@@ -6,7 +6,7 @@ sys.path.append("lib")
 from utilities import OUTPUT_DIR, match_input_files_by_tag
 
 
-def summarise_lead_times(batch_column="batch",summary_variables=["practice"]):
+def summarise_lead_times(batch_column="batch",summary_variables=["practice"],tag="lead_time"):
 
     df_hash = {}
     for v in summary_variables:
@@ -38,10 +38,12 @@ def summarise_lead_times(batch_column="batch",summary_variables=["practice"]):
                 df_hash[v].append(df_summary)
 
     for v in summary_variables:
-        # Write the data out to file
-        new_file_name = f"summary_{v}.csv"
-        df_combined = pd.concat(df_hash[v])
-        df_combined.to_csv(OUTPUT_DIR / new_file_name, index=False)
+        measure_file_name = f"measure_{tag}_{v}.csv"
+        df_measure = ( pd.concat(df_hash[v])[['batch','nunique_patient_id','mean_lead_time']]
+                        .rename( columns={'batch':'date','nunique_patient_id':'population','mean_lead_time':'value'} ) )
+        df_measure = df_measure[['population', 'value', 'date']]
+
+        df_measure.to_csv(OUTPUT_DIR / measure_file_name, index=False)
 
 if __name__ == "__main__":
-    summarise_lead_times(batch_column="batch",summary_variables=["practice","region"])
+    summarise_lead_times(batch_column="batch",summary_variables=["practice"],tag="lead_time")
