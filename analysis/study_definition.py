@@ -26,8 +26,8 @@ study = StudyDefinition(
         "index_date",
         returning="pseudo_id",
         return_expectations={
-            "int": {"distribution": "normal", "mean": 25, "stddev": 5},
-            "incidence": 0.5,
+            "int": {"distribution": "normal", "mean": 50, "stddev": 30},
+            "incidence": 1,
         },
     ),
 
