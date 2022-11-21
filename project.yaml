@@ -32,7 +32,7 @@ actions:
       highly_sensitive:
         summarised: output/measure_lead_time_practice.csv
 
-  generate_deciles_charts:
+  generate_decile_charts:
     run: >
       deciles-charts:v0.0.33
         --input-files output/measure_lead_time_practice.csv 
