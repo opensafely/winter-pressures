@@ -7,6 +7,11 @@ from utilities import OUTPUT_DIR, match_input_files_by_tag
 
 
 def summarise_lead_times(batch_column="batch",summary_variables=["practice"]):
+
+    df_hash = {}
+    for v in summary_variables:
+        df_hash[v] = list()
+
     for file in OUTPUT_DIR.iterdir():
 
         # Identify wide format input files
@@ -30,10 +35,13 @@ def summarise_lead_times(batch_column="batch",summary_variables=["practice"]):
                 df_summary.columns = ["_".join(a) for a in df_summary.columns.to_flat_index()]
                 df_summary.columns = df_summary.columns.str.replace(r"^_","", regex=True)
 
-                # Write the data out to file
-                new_file_name = f"summary_{v}_{this_batch}.csv"
-                df_summary.to_csv(OUTPUT_DIR / new_file_name, index=False)
+                df_hash[v].append(df_summary)
 
+    for v in summary_variables:
+        # Write the data out to file
+        new_file_name = f"summary_{v}.csv"
+        df_combined = pd.concat(df_hash[v])
+        df_combined.to_csv(OUTPUT_DIR / new_file_name, index=False)
 
 if __name__ == "__main__":
     summarise_lead_times(batch_column="batch",summary_variables=["practice","region"])
