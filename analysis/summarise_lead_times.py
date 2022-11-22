@@ -23,7 +23,7 @@ def summarise_lead_times(batch_column="batch",summary_variables=["practice"],tag
             # For each summary variable:
             for v in summary_variables:
                 # Define how the data should be summarised
-                aggregate_function = {'patient_id':['size', 'nunique'], 'lead_time':['mean']}
+                aggregate_function = {'patient_id':['size', 'nunique'], 'lead_time':['median']}
 
                 # Do the summarising (and add the batch information too)
                 df_summary = ( df.groupby([batch_column,v]).agg(aggregate_function) ).reset_index()
@@ -39,8 +39,8 @@ def summarise_lead_times(batch_column="batch",summary_variables=["practice"],tag
 
     for v in summary_variables:
         measure_file_name = f"measure_{tag}_{v}.csv"
-        df_measure = ( pd.concat(df_hash[v])[['batch','nunique_patient_id','mean_lead_time']]
-                        .rename( columns={'batch':'date','nunique_patient_id':'population','mean_lead_time':'value'} ) )
+        df_measure = ( pd.concat(df_hash[v])[['batch','nunique_patient_id','median_lead_time']]
+                        .rename( columns={'batch':'date','nunique_patient_id':'population','median_lead_time':'value'} ) )
         df_measure = df_measure[['population', 'value', 'date']]
 
         df_measure.to_csv(OUTPUT_DIR / measure_file_name, index=False)
