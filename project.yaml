@@ -16,14 +16,21 @@ actions:
     needs: [generate_study_population]
     outputs:
       highly_sensitive:
-        reformatted: output/input_long*.csv
+        reformatted: output/input_long_*.csv
+
+  add_temporal_variables:
+    run: python:latest python analysis/add_temporal_variables.py
+    needs: [reformat_appointment_data]
+    outputs:
+      highly_sensitive:
+        reformatted: output/input_full_*.csv
 
   calculate_lead_times:
     run: python:latest python analysis/calculate_lead_times.py
     needs: [reformat_appointment_data]
     outputs:
       highly_sensitive:
-        calculated: output/input_processed*.csv
+        calculated: output/input_processed_*.csv
 
   summarise_lead_times:
     run: python:latest python analysis/summarise_lead_times.py
