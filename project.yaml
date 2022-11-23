@@ -1,7 +1,7 @@
 version: '3.0'
 
 expectations:
-  population_size: 1000
+  population_size: 5000
 
 actions:
 
@@ -17,3 +17,33 @@ actions:
     outputs:
       highly_sensitive:
         reformatted: output/input_long*.csv
+
+  calculate_lead_times:
+    run: python:latest python analysis/calculate_lead_times.py
+    needs: [reformat_appointment_data]
+    outputs:
+      highly_sensitive:
+        calculated: output/input_processed*.csv
+
+  summarise_lead_times:
+    run: python:latest python analysis/summarise_lead_times.py
+    needs: [calculate_lead_times]
+    outputs:
+      highly_sensitive:
+        summarised: output/measure_lead_time_practice.csv
+
+  generate_decile_charts:
+    run: >
+      deciles-charts:v0.0.33
+        --input-files output/measure_lead_time_practice.csv 
+        --output-dir output
+    config:
+      show_outer_percentiles: true
+      tables:
+        output: true
+      charts:
+        output: true
+    needs: [summarise_lead_times]
+    outputs:
+      moderately_sensitive:
+        deciles_charts: output/deciles_*_*.*
