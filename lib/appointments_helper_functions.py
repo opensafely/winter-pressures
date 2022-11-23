@@ -21,14 +21,16 @@ def get_X_appointments(name, index_date, n, report=False):
                     find_first_match_in_period=True,
                     returning="date",
                     # date_type = "Booked",
-                    date_format="YYYY-MM-DD"
+                    date_format="YYYY-MM-DD",
+                    return_expectations={"incidence": 1}
                 ),
             start_date_variable_name: patients.with_gp_consultations(
                     on_or_after=on_or_after,
                     find_first_match_in_period=True,
                     returning="date",
                     # date_type = "Start",
-                    date_format="YYYY-MM-DD"
+                    date_format="YYYY-MM-DD",
+                    return_expectations={"incidence": 1}
                 )
             }
     
