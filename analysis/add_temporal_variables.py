@@ -26,6 +26,14 @@ for w in wave_keys:
 
 wave_map = pd.concat(wave_dataframe_list).reset_index(drop=True)
 
+def fill_wave_gaps(df):
+    # Classify dates before the pandemic as 'pre-pandemic'
+    df.loc[pd.to_datetime(df['booked_date_appointment']) < pd.to_datetime(config['wave1']['start_date']), ['booked_date_wave']] = "pre-pandemic"
+    df.loc[pd.to_datetime(df['start_date_appointment']) < pd.to_datetime(config['wave1']['start_date']), ['start_date_wave']] = "pre-pandemic"
+    # Everything else is 'other' - we are not yet post-pandemic
+    df.fillna({'booked_date_wave': 'other','start_date_wave': 'other'},inplace=True)
+    return df
+
 def add_temporal_variables():
     for file in OUTPUT_DIR.iterdir():
 
@@ -33,15 +41,18 @@ def add_temporal_variables():
         if match_long_input_files(file.name):
             # Read contents of file
             df = pd.read_csv(OUTPUT_DIR / file.name)
+            df['booked_date_appointment'] = pd.to_datetime(df['booked_date_appointment'])
+            df['start_date_appointment'] = pd.to_datetime(df['start_date_appointment'])
+
             # Classify dates by pandemic wave
             df['booked_date_wave'] = df['booked_date_appointment'].map(wave_map.set_index('date')['wave'].to_dict())
             df['start_date_wave'] = df['start_date_appointment'].map(wave_map.set_index('date')['wave'].to_dict())
-            df.fillna({'booked_date_wave': 'other','start_date_wave': 'other'},inplace=True)
+            df = fill_wave_gaps( df )
+
             # Classify dates by season
-            df['booked_date_appointment'] = df['booked_date_appointment'].fillna('2020-01-01')
-            df['start_date_appointment'] = df['start_date_appointment'].fillna('2020-01-01')            
             df['booked_date_season'] = pd.to_datetime(df['booked_date_appointment']).dt.month.map(season_map)
             df['start_date_season'] = pd.to_datetime(df['start_date_appointment']).dt.month.map(season_map)
+
             # Write contents to file
             new_file_name = file.name.replace('long','full')
             df.to_csv(OUTPUT_DIR / new_file_name, index=False )
