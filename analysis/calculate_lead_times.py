@@ -3,21 +3,21 @@ import sys
 
 sys.path.append("lib")
 
-from utilities import OUTPUT_DIR, match_long_input_files
+from utilities import OUTPUT_DIR, match_input_files_by_tag
 
 
 def calculate_lead_times():
     for file in OUTPUT_DIR.iterdir():
 
         ### Identify wide format input files
-        if match_long_input_files(file.name):
+        if match_input_files_by_tag(file.name,"clean"):
             ### Read contents of file
             df = pd.read_csv(OUTPUT_DIR / file.name)
             ### Convert string dates actual dates and calculate lead time
             df[['booked_date_appointment','start_date_appointment']] = df[['booked_date_appointment','start_date_appointment']].apply(pd.to_datetime)
             df['lead_time'] = (df['booked_date_appointment'] - df['start_date_appointment']).dt.days
             ### Write contents to file
-            new_file_name = file.name.replace("long", "processed")
+            new_file_name = file.name.replace("clean", "processed")
             df.to_csv(OUTPUT_DIR / new_file_name, index=False)
 
 if __name__ == "__main__":
