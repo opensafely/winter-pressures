@@ -3,7 +3,7 @@ import sys
 
 sys.path.append("lib")
 
-from utilities import OUTPUT_DIR, match_long_input_files, get_date_input_file
+from utilities import OUTPUT_DIR, match_long_input_files
 
 
 def calculate_lead_times():
