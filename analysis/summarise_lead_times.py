@@ -1,5 +1,6 @@
 import pandas as pd
 import sys
+from collections import defaultdict
 
 sys.path.append("lib")
 
@@ -8,9 +9,7 @@ from utilities import OUTPUT_DIR, match_input_files_by_tag
 
 def summarise_lead_times(batch_column="batch",summary_variables=["practice"],tag="lead_time"):
 
-    df_hash = {}
-    for v in summary_variables:
-        df_hash[v] = list()
+    df_dict = defaultdict(list)
 
     for file in OUTPUT_DIR.iterdir():
 
@@ -35,11 +34,11 @@ def summarise_lead_times(batch_column="batch",summary_variables=["practice"],tag
                 df_summary.columns = ["_".join(a) for a in df_summary.columns.to_flat_index()]
                 df_summary.columns = df_summary.columns.str.replace(r"^_","", regex=True)
 
-                df_hash[v].append(df_summary)
+                df_dict[v].append(df_summary)
 
     for v in summary_variables:
         measure_file_name = f"measure_{tag}_{v}.csv"
-        df_measure = ( pd.concat(df_hash[v])[['batch','nunique_patient_id','median_lead_time']]
+        df_measure = ( pd.concat(df_dict[v])[['batch','nunique_patient_id','median_lead_time']]
                         .rename( columns={'batch':'date','nunique_patient_id':'population','median_lead_time':'value'} ) )
         df_measure = df_measure[['population', 'value', 'date']]
 
