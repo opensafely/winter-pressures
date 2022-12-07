@@ -1,10 +1,7 @@
 import pandas as pd
-import sys
 
-sys.path.append("lib")
-
-from utilities import OUTPUT_DIR, match_wide_input_files, get_date_input_file
-from study_variables import stump_list, id_variables
+from lib.utilities import OUTPUT_DIR, match_wide_input_files, get_date_input_file
+from lib.study_variables import stump_list, id_variables
 
 
 def reformat_appointment_data():

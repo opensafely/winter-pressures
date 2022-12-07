@@ -1,10 +1,7 @@
 import pandas as pd
-import sys
 from collections import defaultdict
 
-sys.path.append("lib")
-
-from utilities import OUTPUT_DIR, match_input_files_by_tag
+from lib.utilities import OUTPUT_DIR, match_input_files_by_tag
 
 
 def summarise_lead_times(batch_column="batch",summary_variables=["practice"],tag="lead_time"):

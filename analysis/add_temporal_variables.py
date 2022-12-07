@@ -1,12 +1,9 @@
 import pandas as pd
-import sys
 import re
 import json
 
-sys.path.append("lib")
-
-from utilities import OUTPUT_DIR, match_long_input_files
-from study_variables import season_map
+from lib.utilities import OUTPUT_DIR, match_long_input_files
+from lib.study_variables import season_map
 
 
 # Reading in configuration variables
