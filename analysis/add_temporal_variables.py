@@ -37,9 +37,7 @@ def add_temporal_variables():
         # Identify wide format input files
         if match_long_input_files(file.name):
             # Read contents of file
-            df = pd.read_csv(OUTPUT_DIR / file.name)
-            df['booked_date_appointment'] = pd.to_datetime(df['booked_date_appointment'])
-            df['start_date_appointment'] = pd.to_datetime(df['start_date_appointment'])
+            df = pd.read_csv(OUTPUT_DIR / file.name, parse_dates=["booked_date_appointment", "start_date_appointment"])
 
             # Classify dates by pandemic wave
             df['booked_date_wave'] = df['booked_date_appointment'].map(wave_map.set_index('date')['wave'].to_dict())
