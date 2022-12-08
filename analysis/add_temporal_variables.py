@@ -3,7 +3,7 @@ import re
 import json
 
 from lib.utilities import OUTPUT_DIR, match_long_input_files
-from lib.study_variables import season_map
+from lib.study_variables import month_season
 
 
 # Reading in configuration variables
@@ -47,8 +47,8 @@ def add_temporal_variables():
             df = fill_wave_gaps( df )
 
             # Classify dates by season
-            df['booked_date_season'] = pd.to_datetime(df['booked_date_appointment']).dt.month.map(season_map)
-            df['start_date_season'] = pd.to_datetime(df['start_date_appointment']).dt.month.map(season_map)
+            df['booked_date_season'] = pd.to_datetime(df['booked_date_appointment']).dt.month.map(month_season)
+            df['start_date_season'] = pd.to_datetime(df['start_date_appointment']).dt.month.map(month_season)
 
             # Write contents to file
             new_file_name = file.name.replace('long','full')
