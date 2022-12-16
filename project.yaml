@@ -5,6 +5,20 @@ expectations:
 
 actions:
 
+  # Data Builder
+  # ------------
+  generate_dataset:
+    run: >
+      databuilder:v0
+        generate-dataset
+        analysis/dataset_definition.py
+        --output output/dataset_wide.csv
+    outputs:
+      highly_sensitive:
+        dataset: output/dataset_wide.csv
+
+  # Cohort Extractor
+  # ----------------
   generate_study_population:
     run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-01-01 to 2020-12-01 by month" 
     outputs:
