@@ -27,6 +27,16 @@ actions:
       highly_sensitive:
         dataset: output/dataset_long.csv
 
+  generate_measure:
+    run: >
+      python:latest
+        python
+        -m analysis.generate_measure
+    needs: [reshape_dataset]
+    outputs:
+      moderately_sensitive:
+        measure: output/measure_median_lead_time_in_days_by_nunique_patient_id.csv
+
   # Cohort Extractor
   # ----------------
   generate_study_population:
