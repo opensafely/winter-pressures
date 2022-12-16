@@ -37,6 +37,19 @@ actions:
       moderately_sensitive:
         measure: output/measure_median_lead_time_in_days_by_nunique_patient_id.csv
 
+  generate_deciles_charts:
+    run: >
+      deciles-charts:v0.0.33
+        --input-files output/measure_*.csv 
+        --output-dir output
+    config:
+      show_outer_percentiles: true
+    needs: [generate_measure]
+    outputs:
+      moderately_sensitive:
+        deciles_charts: output/deciles_chart_*.png
+        deciles_tables: output/deciles_table_*.csv
+
   # Cohort Extractor
   # ----------------
   generate_study_population:
