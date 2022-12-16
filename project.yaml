@@ -17,6 +17,16 @@ actions:
       highly_sensitive:
         dataset: output/dataset_wide.csv
 
+  reshape_dataset:
+    run: >
+      python:latest
+        python
+        -m analysis.reshape_dataset
+    needs: [generate_dataset]
+    outputs:
+      highly_sensitive:
+        dataset: output/dataset_long.csv
+
   # Cohort Extractor
   # ----------------
   generate_study_population:
