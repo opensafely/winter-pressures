@@ -5,45 +5,45 @@ expectations:
 
 actions:
 
-  generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-01-01 to 2020-12-01 by month" 
+  generate_dataset:
+    run: >
+      databuilder:v0
+        generate-dataset
+        analysis/dataset_definition.py
+        --output output/dataset_wide.csv
     outputs:
       highly_sensitive:
-        cohort: output/input*.csv
+        dataset: output/dataset_wide.csv
 
-  reformat_appointment_data:
-    run: python:latest python analysis/reformat_appointment_data.py
-    needs: [generate_study_population]
+  reshape_dataset:
+    run: >
+      python:latest
+        python
+        -m analysis.reshape_dataset
+    needs: [generate_dataset]
     outputs:
       highly_sensitive:
-        reformatted: output/input_long*.csv
+        dataset: output/dataset_long.csv
 
-  calculate_lead_times:
-    run: python:latest python analysis/calculate_lead_times.py
-    needs: [reformat_appointment_data]
+  generate_measure:
+    run: >
+      python:latest
+        python
+        -m analysis.generate_measure
+    needs: [reshape_dataset]
     outputs:
-      highly_sensitive:
-        calculated: output/input_processed*.csv
+      moderately_sensitive:
+        measure: output/measure_median_lead_time_in_days_by_nunique_patient_id.csv
 
-  summarise_lead_times:
-    run: python:latest python analysis/summarise_lead_times.py
-    needs: [calculate_lead_times]
-    outputs:
-      highly_sensitive:
-        summarised: output/measure_lead_time_practice.csv
-
-  generate_decile_charts:
+  generate_deciles_charts:
     run: >
       deciles-charts:v0.0.33
-        --input-files output/measure_lead_time_practice.csv 
+        --input-files output/measure_*.csv 
         --output-dir output
     config:
       show_outer_percentiles: true
-      tables:
-        output: true
-      charts:
-        output: true
-    needs: [summarise_lead_times]
+    needs: [generate_measure]
     outputs:
       moderately_sensitive:
-        deciles_charts: output/deciles_*_*.*
+        deciles_charts: output/deciles_chart_*.png
+        deciles_tables: output/deciles_table_*.csv
