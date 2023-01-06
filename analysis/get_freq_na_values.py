@@ -1,6 +1,6 @@
 import pandas
 
-from lib.utilities import OUTPUT_DIR
+from analysis.utils import OUTPUT_DIR
 
 
 def read_cols(f_path, prefix):
