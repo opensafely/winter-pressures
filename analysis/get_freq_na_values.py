@@ -7,7 +7,9 @@ def read_cols(f_path, prefix):
     """
     Reads columns with the given prefix from the data frame at the given file path.
     """
-    return pandas.read_csv(f_path, usecols=lambda x: x.startswith(prefix))
+    dataframe = pandas.read_feather(f_path)
+    dataframe = dataframe.loc[:, (x for x in dataframe.columns if x.startswith(prefix))]
+    return dataframe
 
 
 def get_freq_na_values(dataframe, normalize=False):
@@ -29,7 +31,7 @@ def write(dataframe, f_path):
 
 
 def main():
-    booked_dates = read_cols(OUTPUT_DIR / "dataset_wide.csv", "booked_date_")
+    booked_dates = read_cols(OUTPUT_DIR / "dataset_wide.arrow", "booked_date_")
     freq_na_values = get_freq_na_values(booked_dates)
     write(freq_na_values, OUTPUT_DIR / "freq_na_values.csv")
 
