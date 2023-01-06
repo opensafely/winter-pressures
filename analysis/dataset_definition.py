@@ -1,8 +1,7 @@
 import datetime
 
 from databuilder import ehrql
-from databuilder.tables.beta.tpp import practice_registrations
-from placeholder_tables import appointments
+from databuilder.tables.beta.tpp import appointments, practice_registrations
 
 index_date = datetime.date(2020, 1, 1)
 
