@@ -1,6 +1,6 @@
 import pandas
 
-from lib.utilities import OUTPUT_DIR
+from analysis.utils import OUTPUT_DIR
 
 f_in = OUTPUT_DIR / "dataset_wide.csv"
 f_out = OUTPUT_DIR / "dataset_long.csv"

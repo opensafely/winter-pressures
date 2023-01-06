@@ -1,7 +1,7 @@
 import pandas
 from pandas.tseries.offsets import MonthBegin
 
-from lib.utilities import OUTPUT_DIR
+from analysis.utils import OUTPUT_DIR
 
 f_in = OUTPUT_DIR / "dataset_long.csv"
 f_out = OUTPUT_DIR / "measure_median_lead_time_in_days_by_nunique_patient_id.csv"
