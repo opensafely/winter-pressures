@@ -10,10 +10,10 @@ actions:
       databuilder:v0
         generate-dataset
         analysis/dataset_definition.py
-        --output output/dataset_wide.csv
+        --output output/dataset_wide.arrow
     outputs:
       highly_sensitive:
-        dataset: output/dataset_wide.csv
+        dataset: output/dataset_wide.arrow
 
   get_freq_na_values:
     run: >
@@ -33,7 +33,7 @@ actions:
     needs: [generate_dataset]
     outputs:
       highly_sensitive:
-        dataset: output/dataset_long.csv
+        dataset: output/dataset_long.arrow
 
   generate_measure:
     run: >
