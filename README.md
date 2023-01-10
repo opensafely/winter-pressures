@@ -1,6 +1,6 @@
-# appointments-variability
+# Winter Pressures
 
-[View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Fappointments-variability)
+[View on OpenSAFELY](https://jobs.opensafely.org/datalab/gp-appointments-during-covid/winter-pressures/)
 
 Details of the purpose and any published outputs from this project can be found at the link above.
 
