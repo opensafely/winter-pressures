@@ -1,3 +1,4 @@
+import itertools
 import re
 
 import more_itertools
@@ -23,9 +24,26 @@ def reshape_pyarrow(f_in, f_out):
 
     table_long_groups = []
     for stack_cols_group in more_itertools.grouper(stack_cols, 2):
-        stack_cols_group = list(stack_cols_group)
-        arrays = list(table_wide.select(index_cols + stack_cols_group))
-        names = index_cols + [split_suffix(x)[0] for x in stack_cols_group]
+        names, suffixes = zip(*(split_suffix(x) for x in stack_cols_group))
+        assert len(set(suffixes)) == 1
+        suffix = suffixes[0]
+
+        index_table = table_wide.select(index_cols)
+        stack_table_group = table_wide.select(stack_cols_group).rename_columns(names)
+        appointment_num = pyarrow.array([suffix] * len(table_wide))
+
+        arrays = list(
+            itertools.chain(
+                index_table.itercolumns(),
+                stack_table_group.itercolumns(),
+                [appointment_num],
+            )
+        )
+        names = (
+            index_table.column_names
+            + stack_table_group.column_names
+            + ["appointment_num"]
+        )
         table_long_group = pyarrow.Table.from_arrays(arrays, names)
         table_long_groups.append(table_long_group)
 
