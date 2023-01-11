@@ -6,8 +6,12 @@ import pyarrow
 from analysis.utils import OUTPUT_DIR
 
 
-def strip_suffix(s):
-    return re.match(r"(\w+)_\d+", s).group(1)
+def split_suffix(s):
+    pattern = r"(?P<col_name>\w+)_(?P<col_suffix>\d+)"
+    match = re.match(pattern, s)
+    col_name = match.group("col_name")
+    col_suffix = int(match.group("col_suffix"))
+    return col_name, col_suffix
 
 
 def reshape_pyarrow(f_in, f_out):
@@ -21,7 +25,7 @@ def reshape_pyarrow(f_in, f_out):
     for stack_cols_group in more_itertools.grouper(stack_cols, 2):
         stack_cols_group = list(stack_cols_group)
         arrays = list(table_wide.select(index_cols + stack_cols_group))
-        names = index_cols + [strip_suffix(x) for x in stack_cols_group]
+        names = index_cols + [split_suffix(x)[0] for x in stack_cols_group]
         table_long_group = pyarrow.Table.from_arrays(arrays, names)
         table_long_groups.append(table_long_group)
 
