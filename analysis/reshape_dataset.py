@@ -16,8 +16,8 @@ def split_suffix(s):
 
 
 def reshape_pyarrow(f_in, f_out):
-    with pyarrow.memory_map(str(f_in), "rb") as memory_mapped_file:
-        table_wide = pyarrow.ipc.open_file(memory_mapped_file).read_all()
+    with pyarrow.memory_map(str(f_in), "rb") as source:
+        table_wide = pyarrow.ipc.open_file(source).read_all()
 
     index_cols = table_wide.column_names[:3]
     stack_cols = table_wide.column_names[3:]
