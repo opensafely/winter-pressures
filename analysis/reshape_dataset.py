@@ -15,39 +15,33 @@ def split_suffix(s):
     return col_name, col_suffix
 
 
-def reshape_pyarrow(f_in, f_out):
+def stacker(table_wide, index_names, group_size, suffix_name):
+    index_table = table_wide.select(index_names)
+    stack_table = table_wide.drop(index_names)
+
+    columns_grouper = more_itertools.grouper(stack_table.columns, group_size)
+    column_names_grouper = more_itertools.grouper(stack_table.column_names, group_size)
+    for columns, column_names in zip(columns_grouper, column_names_grouper):
+        column_names, suffixes = zip(*(split_suffix(x) for x in column_names))
+        assert len(set(suffixes)) == 1, "Suffixes don't match. Is group_size correct?"
+        suffix = suffixes[0]
+        suffix_column = pyarrow.array([suffix] * len(table_wide))
+        yield pyarrow.Table.from_arrays(
+            arrays=list(
+                itertools.chain(index_table.columns, columns, [suffix_column]),
+            ),
+            names=list(
+                itertools.chain(index_table.column_names, column_names, [suffix_name])
+            ),
+        )
+
+
+def reshape_pyarrow(f_in, f_out, index_names, group_size, suffix_name):
     with pyarrow.memory_map(str(f_in), "rb") as source:
         table_wide = pyarrow.ipc.open_file(source).read_all()
 
-    index_cols = table_wide.column_names[:3]
-    stack_cols = table_wide.column_names[3:]
-
-    table_long_groups = []
-    for stack_cols_group in more_itertools.grouper(stack_cols, 2):
-        names, suffixes = zip(*(split_suffix(x) for x in stack_cols_group))
-        assert len(set(suffixes)) == 1
-        suffix = suffixes[0]
-
-        index_table = table_wide.select(index_cols)
-        stack_table_group = table_wide.select(stack_cols_group).rename_columns(names)
-        appointment_num = pyarrow.array([suffix] * len(table_wide))
-
-        arrays = list(
-            itertools.chain(
-                index_table.itercolumns(),
-                stack_table_group.itercolumns(),
-                [appointment_num],
-            )
-        )
-        names = (
-            index_table.column_names
-            + stack_table_group.column_names
-            + ["appointment_num"]
-        )
-        table_long_group = pyarrow.Table.from_arrays(arrays, names)
-        table_long_groups.append(table_long_group)
-
-    table_long = pyarrow.concat_tables(table_long_groups)
+    stack = stacker(table_wide, index_names, group_size, suffix_name)
+    table_long = pyarrow.concat_tables(list(stack))
 
     with pyarrow.OSFile(str(f_out), "wb") as sink:
         with pyarrow.ipc.new_file(sink, table_long.schema) as writer:
@@ -58,7 +52,10 @@ def reshape_pyarrow(f_in, f_out):
 def main():
     f_in = OUTPUT_DIR / "dataset_wide.arrow"
     f_out = OUTPUT_DIR / "dataset_long.arrow"
-    reshape_pyarrow(f_in, f_out)
+    index_names = ["patient_id", "practice", "region"]
+    group_size = 2
+    suffix_name = "appointment_num"
+    reshape_pyarrow(f_in, f_out, index_names, group_size, suffix_name)
 
 
 if __name__ == "__main__":
