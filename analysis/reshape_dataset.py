@@ -1,3 +1,4 @@
+import itertools
 import re
 
 import more_itertools
@@ -6,8 +7,12 @@ import pyarrow
 from analysis.utils import OUTPUT_DIR
 
 
-def strip_suffix(s):
-    return re.match(r"(\w+)_\d+", s).group(1)
+def split_suffix(s):
+    pattern = r"(?P<col_name>\w+)_(?P<col_suffix>\d+)"
+    match = re.match(pattern, s)
+    col_name = match.group("col_name")
+    col_suffix = int(match.group("col_suffix"))
+    return col_name, col_suffix
 
 
 def reshape_pyarrow(f_in, f_out):
@@ -19,9 +24,26 @@ def reshape_pyarrow(f_in, f_out):
 
     table_long_groups = []
     for stack_cols_group in more_itertools.grouper(stack_cols, 2):
-        stack_cols_group = list(stack_cols_group)
-        arrays = list(table_wide.select(index_cols + stack_cols_group))
-        names = index_cols + [strip_suffix(x) for x in stack_cols_group]
+        names, suffixes = zip(*(split_suffix(x) for x in stack_cols_group))
+        assert len(set(suffixes)) == 1
+        suffix = suffixes[0]
+
+        index_table = table_wide.select(index_cols)
+        stack_table_group = table_wide.select(stack_cols_group).rename_columns(names)
+        appointment_num = pyarrow.array([suffix] * len(table_wide))
+
+        arrays = list(
+            itertools.chain(
+                index_table.itercolumns(),
+                stack_table_group.itercolumns(),
+                [appointment_num],
+            )
+        )
+        names = (
+            index_table.column_names
+            + stack_table_group.column_names
+            + ["appointment_num"]
+        )
         table_long_group = pyarrow.Table.from_arrays(arrays, names)
         table_long_groups.append(table_long_group)
 
