@@ -7,6 +7,7 @@ opensafely exec python:latest pytest --disable-warnings
 ```
 """
 import pyarrow
+
 from analysis import reshape_dataset
 
 
