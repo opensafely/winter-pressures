@@ -2,6 +2,7 @@ import itertools
 import re
 
 import more_itertools
+import numpy
 import pyarrow
 
 from analysis.utils import OUTPUT_DIR
@@ -25,7 +26,11 @@ def stacker(table_wide, index_names, group_size, suffix_name):
         column_names, suffixes = zip(*(split_suffix(x) for x in column_names))
         assert len(set(suffixes)) == 1, "Suffixes don't match. Is group_size correct?"
         suffix = suffixes[0]
-        suffix_column = pyarrow.array([suffix] * len(table_wide))
+        # numpy.full uses roughly 515 MiB for an array of 25 million elements; a list
+        # comprehension uses roughly 893 MiB.
+        suffix_column = pyarrow.array(
+            numpy.full(shape=len(table_wide), fill_value=suffix)
+        )
         yield pyarrow.Table.from_arrays(
             arrays=list(
                 itertools.chain(index_table.columns, columns, [suffix_column]),
