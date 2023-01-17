@@ -79,8 +79,8 @@ def test_stacker():
         "lead_time_in_days",
         "appointment_num",
     ]
-    assert sub_stack_2["patient_id"].to_pylist() == [1, 2, 3]
-    assert sub_stack_2["lead_time_in_days"].to_pylist() == [2, None, 2]
+    assert sub_stack_2["patient_id"].to_pylist() == [1, 3]
+    assert sub_stack_2["lead_time_in_days"].to_pylist() == [2, 2]
 
     assert sub_stack_3.column_names == [
         "patient_id",
@@ -89,5 +89,5 @@ def test_stacker():
         "lead_time_in_days",
         "appointment_num",
     ]
-    assert sub_stack_3["patient_id"].to_pylist() == [1, 2, 3]
-    assert sub_stack_3["lead_time_in_days"].to_pylist() == [None, None, None]
+    assert sub_stack_3["patient_id"].to_pylist() == []
+    assert sub_stack_3["lead_time_in_days"].to_pylist() == []

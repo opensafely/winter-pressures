@@ -39,7 +39,7 @@ def stacker(table_wide, index_names, group_size, suffix_name):
         suffix_column = pyarrow.array(
             numpy.full(shape=len(table_wide), fill_value=suffix)
         )
-        yield pyarrow.Table.from_arrays(
+        table_long = pyarrow.Table.from_arrays(
             arrays=list(
                 itertools.chain(index_table.columns, columns, [suffix_column]),
             ),
@@ -47,6 +47,7 @@ def stacker(table_wide, index_names, group_size, suffix_name):
                 itertools.chain(index_table.column_names, column_names, [suffix_name])
             ),
         )
+        yield table_long.filter(mask=are_valid(columns))
 
 
 def reshape_pyarrow(f_in, f_out, index_names, group_size, suffix_name):
