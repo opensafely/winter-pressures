@@ -23,8 +23,8 @@ def test_stacker():
             pyarrow.array([1, 2, 3]),
             pyarrow.array(["2022-01-01", "2022-01-01", "2022-01-01"]),
             pyarrow.array([1, 1, 1]),
-            pyarrow.array(["2022-02-02", "2022-02-02", "2022-02-02"]),
-            pyarrow.array([2, 2, 2]),
+            pyarrow.array(["2022-02-02", None, "2022-02-02"]),
+            pyarrow.array([2, None, 2]),
         ],
         names=[
             "patient_id",
@@ -61,4 +61,4 @@ def test_stacker():
         "appointment_num",
     ]
     assert sub_stack_2["patient_id"].to_pylist() == [1, 2, 3]
-    assert sub_stack_2["lead_time_in_days"].to_pylist() == [2, 2, 2]
+    assert sub_stack_2["lead_time_in_days"].to_pylist() == [2, None, 2]
