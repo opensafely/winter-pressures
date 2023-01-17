@@ -7,12 +7,27 @@ opensafely exec python:latest pytest --disable-warnings
 ```
 """
 import pyarrow
+import pytest
 
 from analysis import reshape_dataset
 
 
 def test_split_suffix():
     assert reshape_dataset.split_suffix("booked_date_1") == ("booked_date", 1)
+
+
+@pytest.mark.parametrize(
+    "columns,mask",
+    [
+        (([1, None],), [True, False]),
+        (([1, None], [1, 2]), [True, False]),
+        (([1, None, 3], [1, 2, 3]), [True, False, True]),
+    ],
+)
+def test_are_valid(columns, mask):
+    columns = tuple(pyarrow.array(x) for x in columns)
+    mask = pyarrow.array(mask)
+    assert reshape_dataset.are_valid(columns) == mask
 
 
 def test_stacker():

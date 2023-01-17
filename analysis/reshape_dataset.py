@@ -4,6 +4,7 @@ import re
 import more_itertools
 import numpy
 import pyarrow
+from pyarrow import compute
 
 from analysis.utils import OUTPUT_DIR
 
@@ -14,6 +15,13 @@ def split_suffix(s):
     col_name = match.group("col_name")
     col_suffix = int(match.group("col_suffix"))
     return col_name, col_suffix
+
+
+def are_valid(columns):
+    masks = [compute.is_valid(x) for x in columns]
+    if len(masks) == 1:
+        return masks[0]
+    return compute.and_(*masks)
 
 
 def stacker(table_wide, index_names, group_size, suffix_name):
