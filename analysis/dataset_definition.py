@@ -1,7 +1,13 @@
 import datetime
+import os
 
 from databuilder import ehrql
 from databuilder.tables.beta.tpp import appointments, practice_registrations
+
+
+def is_local_run():
+    return "DATABASE_URL" not in os.environ
+
 
 start_date = datetime.date(2019, 7, 1)
 end_date = datetime.date(2020, 6, 30)
@@ -48,7 +54,7 @@ apt = appointments.take(appointments.booked_date.is_on_or_after(start_date)).tak
     appointments.booked_date.is_on_or_before(end_date)
 )
 
-num_appointments = 10
+num_appointments = 10 if is_local_run() else 52
 for i in range(1, num_appointments + 1):
     # The first/next appointment should be first, when appointments are sorted by booked
     # date. If more than one appointment was booked on the same date, then return the
