@@ -28,6 +28,13 @@ practice_registration_in_study_period = (
     .last_for_patient()
 )
 
+# The appointments table contains rows where `booked_date` is after `start_date`; these
+# rows have negative lead times. We can't explain negative lead times, so we consider
+# these rows invalid.
+valid_appointments = appointments.take(
+    appointments.booked_date.is_on_or_before(appointments.start_date)
+)
+
 dataset = ehrql.Dataset()
 
 # In the cohort-extractor version of the study, the study definition was executed once a
@@ -50,11 +57,11 @@ dataset.region = practice_registration_in_study_period.practice_nuts1_region_nam
 # -----------------
 
 # The first appointment should have a booked date in the study period.
-apt = appointments.take(appointments.booked_date.is_on_or_after(start_date)).take(
-    appointments.booked_date.is_on_or_before(end_date)
-)
+apt = valid_appointments.take(
+    valid_appointments.booked_date.is_on_or_after(start_date)
+).take(valid_appointments.booked_date.is_on_or_before(end_date))
 
-num_appointments = 10 if is_local_run() else 52
+num_appointments = 5 if is_local_run() else 52
 for i in range(1, num_appointments + 1):
     # The first/next appointment should be first, when appointments are sorted by booked
     # date. If more than one appointment was booked on the same date, then return the
@@ -68,6 +75,6 @@ for i in range(1, num_appointments + 1):
 
     # The next appointment should have a booked date that is after the booked date of
     # the previous appointment, and in the study period.
-    apt = appointments.take(appointments.booked_date.is_after(apt.booked_date)).take(
-        appointments.booked_date.is_on_or_before(end_date)
-    )
+    apt = valid_appointments.take(
+        valid_appointments.booked_date.is_after(apt.booked_date)
+    ).take(valid_appointments.booked_date.is_on_or_before(end_date))
