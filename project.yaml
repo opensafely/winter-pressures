@@ -7,7 +7,7 @@ actions:
 
   generate_dataset:
     run: >
-      databuilder:v0.65.2
+      databuilder:v0
         generate-dataset
         analysis/dataset_definition.py
         --output output/dataset_wide.arrow
