@@ -16,6 +16,16 @@ actions:
 
   # Appointments data
   # -----------------
+  appointments_generate_dataset_sql:
+    run: >
+      sqlrunner:latest
+        analysis/appointments/dataset_query.sql
+        --output output/appointments/dataset_long.csv
+        --dummy-data-file analysis/appointments/dummy_dataset_long.csv
+    outputs:
+      highly_sensitive:
+        dataset: output/appointments/dataset_long.csv
+
   appointments_generate_dataset:
     run: >
       databuilder:v0
