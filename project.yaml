@@ -4,6 +4,16 @@ expectations:
   population_size: 5000
 
 actions:
+  # Other data
+  # ----------
+  # Add actions for other data to this section. Prefix them with a suitable name; place
+  # scripts in a similarly named sub-directory of the analysis directory; write outputs
+  # to a similarly named sub-directory of the output directory.
+  #
+  # For example, let's call our other data "metrics". We would prefix our actions
+  # "metrics_"; we would place our scripts in analysis/metrics; we would write outputs
+  # to output/metrics.
+
   # Appointments data
   # -----------------
   appointments_generate_dataset:
