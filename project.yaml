@@ -1,10 +1,9 @@
-version: '3.0'
+version: "3.0"
 
 expectations:
   population_size: 5000
 
 actions:
-
   # Appointments data
   # -----------------
   appointments_generate_dataset:
@@ -50,7 +49,7 @@ actions:
   appointments_generate_deciles_charts:
     run: >
       deciles-charts:v0.0.33
-        --input-files output/appointments/measure_*.csv 
+        --input-files output/appointments/measure_*.csv
         --output-dir output/appointments
     config:
       show_outer_percentiles: true
