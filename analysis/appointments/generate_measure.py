@@ -2,7 +2,7 @@ import pandas
 from pandas.api.types import is_datetime64_any_dtype
 from pandas.tseries.offsets import MonthBegin
 
-from analysis.utils import OUTPUT_DIR
+from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 
 f_in = OUTPUT_DIR / "dataset_long.arrow"
 f_out = OUTPUT_DIR / "measure_median_lead_time_in_days_by_nunique_patient_id.csv"

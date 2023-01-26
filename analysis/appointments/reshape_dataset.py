@@ -6,7 +6,7 @@ import numpy
 import pyarrow
 from pyarrow import compute
 
-from analysis.utils import OUTPUT_DIR
+from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 
 
 def split_suffix(s):
