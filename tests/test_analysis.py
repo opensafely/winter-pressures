@@ -9,7 +9,7 @@ opensafely exec python:latest pytest --disable-warnings
 import pyarrow
 import pytest
 
-from analysis import reshape_dataset
+from analysis.appointments import reshape_dataset
 
 
 def test_split_suffix():
