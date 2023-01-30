@@ -26,55 +26,55 @@ actions:
       highly_sensitive:
         dataset: output/appointments/dataset_long.csv
 
-  appointments_generate_dataset:
-    run: >
-      databuilder:v0
-        generate-dataset
-        analysis/appointments/dataset_definition.py
-        --output output/appointments/dataset_wide.arrow
-    outputs:
-      highly_sensitive:
-        dataset: output/appointments/dataset_wide.arrow
+  # appointments_generate_dataset:
+  #   run: >
+  #     databuilder:v0
+  #       generate-dataset
+  #       analysis/appointments/dataset_definition.py
+  #       --output output/appointments/dataset_wide.arrow
+  #   outputs:
+  #     highly_sensitive:
+  #       dataset: output/appointments/dataset_wide.arrow
 
-  appointments_get_freq_na_values:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.get_freq_na_values
-    needs: [appointments_generate_dataset]
-    outputs:
-      moderately_sensitive:
-        dataset: output/appointments/freq_na_values.csv
+  # appointments_get_freq_na_values:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.get_freq_na_values
+  #   needs: [appointments_generate_dataset]
+  #   outputs:
+  #     moderately_sensitive:
+  #       dataset: output/appointments/freq_na_values.csv
 
-  appointments_reshape_dataset:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.reshape_dataset
-    needs: [appointments_generate_dataset]
-    outputs:
-      highly_sensitive:
-        dataset: output/appointments/dataset_long.arrow
+  # appointments_reshape_dataset:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.reshape_dataset
+  #   needs: [appointments_generate_dataset]
+  #   outputs:
+  #     highly_sensitive:
+  #       dataset: output/appointments/dataset_long.arrow
 
-  appointments_generate_measure:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.generate_measure
-    needs: [appointments_reshape_dataset]
-    outputs:
-      moderately_sensitive:
-        measure: output/appointments/measure_median_lead_time_in_days_by_nunique_patient_id.csv
+  # appointments_generate_measure:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_measure
+  #   needs: [appointments_reshape_dataset]
+  #   outputs:
+  #     moderately_sensitive:
+  #       measure: output/appointments/measure_median_lead_time_in_days_by_nunique_patient_id.csv
 
-  appointments_generate_deciles_charts:
-    run: >
-      deciles-charts:v0.0.33
-        --input-files output/appointments/measure_*.csv
-        --output-dir output/appointments
-    config:
-      show_outer_percentiles: true
-    needs: [appointments_generate_measure]
-    outputs:
-      moderately_sensitive:
-        deciles_charts: output/appointments/deciles_chart_*.png
-        deciles_tables: output/appointments/deciles_table_*.csv
+  # appointments_generate_deciles_charts:
+  #   run: >
+  #     deciles-charts:v0.0.33
+  #       --input-files output/appointments/measure_*.csv
+  #       --output-dir output/appointments
+  #   config:
+  #     show_outer_percentiles: true
+  #   needs: [appointments_generate_measure]
+  #   outputs:
+  #     moderately_sensitive:
+  #       deciles_charts: output/appointments/deciles_chart_*.png
+  #       deciles_tables: output/appointments/deciles_table_*.csv
