@@ -1,8 +1,8 @@
 DECLARE @study_start_date DATE;
-SET @study_start_date = DATEFROMPARTS(2019, 7, 1);
+SET @study_start_date = DATEFROMPARTS(2021, 6, 1);
 
 DECLARE @study_end_date DATE;
-SET @study_end_date = DATEFROMPARTS(2020, 6, 30);
+SET @study_end_date = DATEFROMPARTS(2022, 12, 31);
 
 -- These queries are similar to Data Builder's tables. They provide a "view" onto the
 -- database's tables, but with a different naming convention, slightly different names,

@@ -9,8 +9,8 @@ def is_local_run():
     return "DATABASE_URL" not in os.environ
 
 
-study_start_date = datetime.date(2019, 7, 1)
-study_end_date = datetime.date(2020, 6, 30)
+study_start_date = datetime.date(2021, 6, 1)
+study_end_date = datetime.date(2022, 12, 31)
 
 # If a patient is registered at more than one practice in the study period, then return
 # the registration with the most recent start date. If there are more than one
