@@ -9,8 +9,8 @@ def is_local_run():
     return "DATABASE_URL" not in os.environ
 
 
-start_date = datetime.date(2019, 7, 1)
-end_date = datetime.date(2020, 6, 30)
+study_start_date = datetime.date(2021, 6, 1)
+study_end_date = datetime.date(2022, 12, 31)
 
 # If a patient is registered at more than one practice in the study period, then return
 # the registration with the most recent start date. If there are more than one
@@ -18,10 +18,10 @@ end_date = datetime.date(2020, 6, 30)
 # longest duration.
 practice_registration_in_study_period = (
     practice_registrations.take(
-        practice_registrations.start_date.is_on_or_before(end_date)
+        practice_registrations.start_date.is_on_or_before(study_end_date)
     )
     .take(
-        practice_registrations.end_date.is_on_or_after(start_date)
+        practice_registrations.end_date.is_on_or_after(study_start_date)
         | practice_registrations.end_date.is_null()
     )
     .sort_by(practice_registrations.start_date, practice_registrations.end_date)
@@ -58,8 +58,8 @@ dataset.region = practice_registration_in_study_period.practice_nuts1_region_nam
 
 # The first appointment should have a booked date in the study period.
 apt = valid_appointments.take(
-    valid_appointments.booked_date.is_on_or_after(start_date)
-).take(valid_appointments.booked_date.is_on_or_before(end_date))
+    valid_appointments.booked_date.is_on_or_after(study_start_date)
+).take(valid_appointments.booked_date.is_on_or_before(study_end_date))
 
 num_appointments = 5 if is_local_run() else 52
 for i in range(1, num_appointments + 1):
@@ -70,6 +70,8 @@ for i in range(1, num_appointments + 1):
 
     lead_time_in_days = (apt.start_date - apt.booked_date).days
 
+    # FIXME: Consider `to_first_of_month`, renaming to `booked_month`, and updating
+    # downstream actions.
     setattr(dataset, f"booked_date_{i}", apt.booked_date)
     setattr(dataset, f"lead_time_in_days_{i}", lead_time_in_days)
 
@@ -77,4 +79,4 @@ for i in range(1, num_appointments + 1):
     # the previous appointment, and in the study period.
     apt = valid_appointments.take(
         valid_appointments.booked_date.is_after(apt.booked_date)
-    ).take(valid_appointments.booked_date.is_on_or_before(end_date))
+    ).take(valid_appointments.booked_date.is_on_or_before(study_end_date))
