@@ -68,8 +68,8 @@ SELECT
     DATEFROMPARTS(YEAR(booked_date), MONTH(booked_date), 1) AS booked_month,
     DATEDIFF(
         DAY,
-        start_date,
-        booked_date
+        booked_date,
+        start_date
     ) AS lead_time_in_days
 FROM valid_appointments
 WHERE
