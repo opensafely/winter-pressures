@@ -26,15 +26,6 @@ actions:
       highly_sensitive:
         dataset: output/appointments/dataset_long.csv
 
-  appointments_read_csv:
-    run: python:latest
-      python
-      -m analysis.appointments.read_csv
-    needs: [appointments_generate_dataset_sql]
-    outputs:
-      moderately_sensitive:
-        log: output/appointments/read_csv.log
-
   # appointments_generate_dataset:
   #   run: >
   #     databuilder:v0
