@@ -56,15 +56,15 @@ actions:
   #     highly_sensitive:
   #       dataset: output/appointments/dataset_long.arrow
 
-  # appointments_generate_measure:
-  #   run: >
-  #     python:latest
-  #       python
-  #       -m analysis.appointments.generate_measure
-  #   needs: [appointments_reshape_dataset]
-  #   outputs:
-  #     moderately_sensitive:
-  #       measure: output/appointments/measure_median_lead_time_in_days_by_nunique_patient_id.csv
+  appointments_generate_measure:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_measure
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_median_lead_time_in_days_by_nunique_patient_id.csv
 
   # appointments_generate_deciles_charts:
   #   run: >
