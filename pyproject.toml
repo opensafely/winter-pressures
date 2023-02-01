@@ -1,3 +1,6 @@
+[tool.isort]
+profile = "black"
+
 [tool.sqlfluff.core]
 dialect = "tsql"
 exclude_rules = "L014,L028,L034"
