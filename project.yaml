@@ -14,6 +14,34 @@ actions:
   # "metrics_"; we would place our scripts in analysis/metrics; we would write outputs
   # to output/metrics.
 
+  # Metrics data
+  # ------------
+  metrics_generate_study_dataset_winter:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition
+      --index-date-range '2021-12-01 to 2022-03-30 by month' --output-dir=output/metrics
+      --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/input_*.feather
+
+  metrics_generate_study_dataset_summer:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition
+      --index-date-range '2021-06-01 to 2022-09-30 by month' --output-dir=output/metrics
+      --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/input*.feather
+
+  metrics_generate_measures:
+    run: cohortextractor:latest generate_measures --study-definition study_definition
+      --output-dir=output/metrics
+    needs:
+    - metrics_generate_study_dataset_summer
+    - metrics_generate_study_dataset_winter
+    outputs:
+      highly_sensitive:
+        measure_csv: output/metrics/measure_*_rate.csv
+
   # Appointments data
   # -----------------
   appointments_generate_dataset_sql:
