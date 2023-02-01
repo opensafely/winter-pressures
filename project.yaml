@@ -66,15 +66,15 @@ actions:
       moderately_sensitive:
         measure: output/appointments/measure_median_lead_time_in_days.csv
 
-  # appointments_generate_deciles_charts:
-  #   run: >
-  #     deciles-charts:v0.0.33
-  #       --input-files output/appointments/measure_*.csv
-  #       --output-dir output/appointments
-  #   config:
-  #     show_outer_percentiles: true
-  #   needs: [appointments_generate_measure]
-  #   outputs:
-  #     moderately_sensitive:
-  #       deciles_charts: output/appointments/deciles_chart_*.png
-  #       deciles_tables: output/appointments/deciles_table_*.csv
+  appointments_generate_deciles_charts:
+    run: >
+      deciles-charts:v0.0.33
+        --input-files output/appointments/measure_*.csv
+        --output-dir output/appointments
+    config:
+      show_outer_percentiles: true
+    needs: [appointments_generate_measure]
+    outputs:
+      moderately_sensitive:
+        deciles_charts: output/appointments/deciles_chart_*.png
+        deciles_tables: output/appointments/deciles_table_*.csv
