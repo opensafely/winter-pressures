@@ -49,6 +49,11 @@ def read(f_in):
 
 def main():
     dataset_long = read(f_in)
+
+    # FIXME: Until we rerun the `appointments_generate_dataset_sql` action, lead times
+    # will be negated (7a44dfa). They shouldn't be, so we take their absolute value.
+    dataset_long["lead_time_in_days"] = dataset_long["lead_time_in_days"].abs()
+
     by_practice = dataset_long.groupby(["booked_month", "practice"]).median()
     del dataset_long
 
