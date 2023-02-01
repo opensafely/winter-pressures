@@ -64,7 +64,7 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_median_lead_time_in_days_by_nunique_patient_id.csv
+        measure: output/appointments/measure_median_lead_time_in_days.csv
 
   # appointments_generate_deciles_charts:
   #   run: >
