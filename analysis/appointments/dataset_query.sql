@@ -24,13 +24,8 @@ appointments AS (
         Appointment.Patient_ID AS patient_id,
         CAST(Appointment.BookedDate AS DATE) AS booked_date,
         CAST(Appointment.StartDate AS DATE) AS start_date,
-        -- We differ from the dataset definition and extract `practice_pseudo_id` and
-        -- `practice_nuts1_region_name` for each appointment.
-        Organisation.Organisation_ID AS practice_pseudo_id,
-        Organisation.Region AS practice_nuts1_region_name
+        Appointment.Organisation_ID AS practice_pseudo_id
     FROM Appointment
-    INNER JOIN Organisation ON
-        Appointment.Organisation_ID = Organisation.Organisation_ID
 ),
 
 -- These queries are similar to Data Builder's reusable variables; that is, they are
@@ -52,8 +47,7 @@ valid_appointments AS (
         patient_id,
         booked_date,
         start_date,
-        practice_pseudo_id,
-        practice_nuts1_region_name
+        practice_pseudo_id
     FROM appointments
     WHERE appointments.booked_date <= appointments.start_date
 )
@@ -64,7 +58,6 @@ valid_appointments AS (
 SELECT
     patient_id,
     practice_pseudo_id AS practice,
-    practice_nuts1_region_name AS region,
     DATEFROMPARTS(YEAR(booked_date), MONTH(booked_date), 1) AS booked_month,
     DATEDIFF(
         DAY,
@@ -78,4 +71,4 @@ WHERE
     AND valid_appointments.booked_date <= @study_end_date
 -- This ensures that vectors of `lead_time_in_days`, for which we want to compute
 -- medians, are contiguous in the output.
-ORDER BY booked_month, practice, region, lead_time_in_days
+ORDER BY booked_month, practice, lead_time_in_days
