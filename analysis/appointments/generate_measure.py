@@ -2,7 +2,7 @@ import pandas
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 
-f_in = OUTPUT_DIR / "dataset_long.csv"
+f_in = OUTPUT_DIR / "dataset_long.csv.gz"
 f_out = OUTPUT_DIR / "measure_median_lead_time_in_days.csv"
 
 

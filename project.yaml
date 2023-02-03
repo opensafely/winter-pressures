@@ -48,11 +48,11 @@ actions:
     run: >
       sqlrunner:latest
         analysis/appointments/dataset_query.sql
-        --output output/appointments/dataset_long.csv
-        --dummy-data-file analysis/appointments/dummy_dataset_long.csv
+        --output output/appointments/dataset_long.csv.gz
+        --dummy-data-file analysis/appointments/dummy_dataset_long.csv.gz
     outputs:
       highly_sensitive:
-        dataset: output/appointments/dataset_long.csv
+        dataset: output/appointments/dataset_long.csv.gz
 
   # appointments_generate_dataset:
   #   run: >
