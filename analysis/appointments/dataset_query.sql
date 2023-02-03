@@ -1,5 +1,5 @@
 DECLARE @study_start_date DATE;
-SET @study_start_date = DATEFROMPARTS(2021, 6, 1);
+SET @study_start_date = DATEFROMPARTS(2018, 6, 1);
 
 DECLARE @study_end_date DATE;
 SET @study_end_date = DATEFROMPARTS(2022, 12, 31);
