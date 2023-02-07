@@ -9,7 +9,6 @@ from cohortextractor import (
 )
 sentinel_measures = ["qrisk2", "asthma", "copd", "sodium", "cholesterol", "alt", "tsh", "rbc", 'hba1c', 'systolic_bp', 'medication_review']
 
-from metrics.co_prescribing_variables import create_co_prescribing_variables
 from metrics.config import indicators_list
 
 
@@ -417,36 +416,9 @@ study = StudyDefinition(
         """,
     ),
 
-    # pincer_population=patients.satisfying(
-    #     """
-    #     registered AND
-    #     NOT died AND
-    #     (age >=18 AND age <=120) AND 
-    #     (
-    #        (age >=65 AND (NOT ppi)) OR
-    #        (methotrexate_6_3_months AND methotrexate_3_months) OR
-    #        (lithium_6_3_months AND lithium_3_months) OR
-    #        (amiodarone_12_6_months AND amiodarone_6_months) OR
-    #        ((gi_bleed OR peptic_ulcer) AND (NOT ppi)) OR
-    #        (anticoagulant) OR
-    #        (aspirin AND (NOT ppi)) OR
-    #        ((asthma AND (NOT asthma_resolved)) OR (asthma_resolved_date <= asthma_date)) OR
-    #        (heart_failure) OR
-    #        (egfr_between_1_and_45=1) OR
-    #        (age >= 75 AND acei AND acei_recent) OR
-    #        (age >=75 AND loop_diuretic AND loop_diuretic_recent)
-    #     )
-    #     """
-    # ),
 )
 
 measures = [
-    # Measure(
-    #     id="practice_population_rate",
-    #     numerator="practice_population",
-    #     denominator="pincer_population",
-    #     group_by=["practice"],
-    # )
 ]
 
 for indicator in indicators_list:
