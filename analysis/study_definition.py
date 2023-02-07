@@ -7,7 +7,7 @@ from cohortextractor import (
     codelist,
     Measure
 )
-sentinel_measures = ["qrisk2", "asthma_sro", "copd", "sodium", "cholesterol", "alt", "tsh", "rbc", 'hba1c', 'systolic_bp', 'medication_review']
+sentinel_measures = ["qrisk2", "asthma", "copd", "sodium", "cholesterol", "alt", "tsh", "rbc", 'hba1c', 'systolic_bp', 'medication_review']
 
 from metrics.co_prescribing_variables import create_co_prescribing_variables
 from metrics.config import indicators_list
@@ -214,14 +214,14 @@ study = StudyDefinition(
             "ratios": {str(1000661000000107): 0.6, str(1017381000000106): 0.4}}, }
     ),
 
-    asthma_sro=patients.with_these_clinical_events(
+    asthma=patients.with_these_clinical_events(
         codelist=asthma_codelist,
         between=["first_day_of_month(index_date)", "last_day_of_month(index_date)"],
         returning="binary_flag",
         return_expectations={"incidence": 0.5}
     ),
 
-    asthma_sro_event_code=patients.with_these_clinical_events(
+    asthma_event_code=patients.with_these_clinical_events(
         codelist=asthma_codelist,
         between=["first_day_of_month(index_date)", "last_day_of_month(index_date)"],
         returning="code",
@@ -245,294 +245,6 @@ study = StudyDefinition(
     ),
     
     ##### PINCER Indicators
-
-        ###
-    # CO-PRESCRIBING-VARS
-    ###
-    # Used in indicator E
-    **create_co_prescribing_variables(
-        anticoagulant_codelist,
-        antiplatelet_including_aspirin_codelist,
-        "anticoagulant",
-        "antiplatelet_including_aspirin",
-    ),
-    # Used in indicator F
-    **create_co_prescribing_variables(
-        aspirin_codelist,
-        antiplatelet_excluding_aspirin_codelist,
-        "aspirin",
-        "antiplatelet_excluding_aspirin",
-    ),
-    ###
-    # GI BLEED INDICATORS
-    # A - 65 or over, no GI protect, NSAID audit (GI_P3A)
-    ###
-    oral_nsaid=patients.with_these_medications(
-        codelist=oral_nsaid_codelist,
-        find_last_match_in_period=True,
-        returning="binary_flag",
-        between=["index_date - 3 months", "index_date"],
-    ),
-    # gastroprotective proton pump inhibitor
-    ppi=patients.with_these_medications(
-        codelist=ulcer_healing_drugs_codelist,
-        find_last_match_in_period=True,
-        returning="binary_flag",
-        between=["index_date - 3 months", "index_date"],
-    ),
-    indicator_a_denominator=patients.satisfying(
-        """
-        (NOT ppi) AND
-        (age >=65 AND age <=120)
-        """,
-    ),
-    indicator_a_numerator=patients.satisfying(
-        """
-        (NOT ppi) AND
-        (age >=65 AND age <=120) AND
-        oral_nsaid
-        """,
-    ),
-    ###
-    # GI BLEED INDICATORS
-    # B - Peptic ulcer/GI bleed, no PPI protect, NSAID audit (GI_P3B)
-    ###
-    # ppi from A
-    peptic_ulcer=patients.with_these_clinical_events(
-        codelist=peptic_ulcer_codelist,
-        find_last_match_in_period=True,
-        returning="binary_flag",
-        on_or_before="index_date - 3 months",
-    ),
-    gi_bleed=patients.with_these_clinical_events(
-        codelist=gi_bleed_codelist,
-        find_last_match_in_period=True,
-        returning="binary_flag",
-        on_or_before="index_date - 3 months",
-    ),
-    indicator_b_denominator=patients.satisfying(
-        """
-        (NOT ppi) AND
-        (gi_bleed OR peptic_ulcer)
-        """,
-    ),
-    indicator_b_numerator=patients.satisfying(
-        """
-        (NOT ppi) AND
-        (gi_bleed OR peptic_ulcer) AND
-        oral_nsaid
-        """,
-    ),
-    ###
-    # GI BLEED INDICATORS
-    # C - Peptic ulcer/GI bleed, no PPI protect, NSAID audit (GI_P3B)
-    ###
-    # peptic_ulcer from B
-    # gi_bleed from B
-    # ppi from A
-    # antiplatelet_excluding_aspirin from co-prescribing vars
-    # aspirin from co-prescribing vars
-    indicator_c_denominator=patients.satisfying(
-        """
-        (NOT ppi) AND
-        (gi_bleed OR peptic_ulcer)
-        """,
-    ),
-    indicator_c_numerator=patients.satisfying(
-        """
-        (NOT ppi) AND
-        (gi_bleed OR peptic_ulcer) AND
-        (antiplatelet_excluding_aspirin OR aspirin)
-        """,
-    ),
-    ###
-    # GI BLEED INDICATORS
-    # D – Warfarin/NOACS and NSAID audit (GI_P3D)
-    ###
-    # anticoagulant from co-prescribing variables
-    # oral_nsaid from A
-    indicator_d_denominator=patients.satisfying(
-        """
-    (anticoagulant)
-    """,
-    ),
-    indicator_d_numerator=patients.satisfying(
-        """
-        (anticoagulant) AND
-        oral_nsaid
-        """,
-    ),
-    ###
-    # GI BLEED INDICATORS
-    # E – Anticoagulation & Antiplatelet & No GI Protection Audit (GI_P3E)
-    ###
-    # ppi from A
-    # anticoagulant from co-prescribing variables
-    indicator_e_denominator=patients.satisfying(
-        """
-        anticoagulant AND
-        (NOT ppi)
-        """
-    ),
-    ###
-    # GI BLEED INDICATORS
-    # F – Aspirin, antiplatelet and no GI protection audit (GI_P3F)
-    ###
-    # aspirin from co-prescribing vars
-    # ppi from A
-    indicator_f_denominator=patients.satisfying(
-        """
-        aspirin AND
-        (NOT ppi)
-        """
-    ),
-    ###
-    # OTHER PRESCRIBING INDICATORS
-    # G - Asthma and non-selective betablockers audit (AS_P3G)
-    ###
-    asthma=patients.with_these_clinical_events(
-        codelist=asthma_codelist,
-        find_last_match_in_period=True,
-        returning="binary_flag",
-        include_date_of_match=True,
-        date_format="YYYY-MM-DD",
-        on_or_before="index_date - 3 months",
-    ),
-    asthma_resolved=patients.with_these_clinical_events(
-        codelist=asthma_resolved_codelist,
-        find_last_match_in_period=True,
-        returning="binary_flag",
-        include_date_of_match=True,
-        date_format="YYYY-MM-DD",
-        on_or_before="index_date",
-    ),
-
-    no_asthma_resolved=patients.satisfying(
-        """
-        asthma AND
-        (NOT asthma_resolved) 
-        """,
-    ),
-
-    non_selective_bb=patients.with_these_medications(
-        codelist=non_selective_bb_codelist,
-        find_last_match_in_period=True,
-        returning="binary_flag",
-        between=["index_date - 3 months", "index_date"],
-    ),
-    indicator_g_denominator=patients.satisfying(
-        """
-        asthma AND
-        (asthma_resolved_date < asthma_date)
-        """,
-    ),
-    indicator_g_denominator_alternative=patients.satisfying(
-        """
-        (asthma AND (NOT asthma_resolved)) OR 
-        (asthma_resolved_date <= asthma_date)
-        """
-    ),
-    indicator_g_numerator=patients.satisfying(
-        """
-        asthma AND
-        (asthma_resolved_date < asthma_date) AND
-        non_selective_bb
-        """,
-    ),
-    ###
-    # OTHER PRESCRIBING INDICATORS
-    # I - Heart failure and NSAID audit (HF_P3I)
-    ###
-    # oral_nsaid from A
-    heart_failure=patients.with_these_clinical_events(
-        codelist=heart_failure_codelist,
-        find_first_match_in_period=True,
-        returning="binary_flag",
-        on_or_before="index_date - 3 months",
-    ),
-    indicator_i_denominator=patients.satisfying(
-        """
-        heart_failure
-        """
-    ),
-    indicator_i_numerator=patients.satisfying(
-        """
-        heart_failure AND oral_nsaid
-        """
-    ),
-    ###
-    # OTHER PRESCRIBING INDICATORS
-    # K - Chronic Renal Impairment & NSAID Audit (KI_P3K)
-    ###
-    # oral_nsaid from A
-    egfr=patients.with_these_clinical_events(
-        codelist=egfr_codelist,
-        find_last_match_in_period=True,
-        returning="numeric_value",
-        on_or_before="index_date - 3 months",
-        return_expectations={
-            "float": {"distribution": "normal", "mean": 45.0, "stddev": 20},
-            "incidence": 0.5,
-        },
-    ),
-    # https://docs.opensafely.org/study-def-variables/#cohortextractor.patients.comparator_from
-    egfr_comparator=patients.comparator_from(
-        "egfr",
-        return_expectations={
-            "rate": "universal",
-            "category": {
-                "ratios": {  # ~, =, >= , > , < , <=
-                    None: 0.10,
-                    "~": 0.05,
-                    "=": 0.65,
-                    ">=": 0.05,
-                    ">": 0.05,
-                    "<": 0.05,
-                    "<=": 0.05,
-                }
-            },
-            "incidence": 0.80,
-        },
-    ),
-    egfr_less_than_45=patients.categorised_as(
-        {"0": "DEFAULT", "1": """ (egfr>=0) AND (egfr < 45)"""},
-        return_expectations={
-            "rate": "universal",
-            "category": {
-                "ratios": {
-                    "0": 0.94,
-                    "1": 0.06,
-                }
-            },
-        },
-    ),
-    egfr_between_1_and_45=patients.categorised_as(
-        {
-            "0": "DEFAULT",
-            "1": """ (egfr>=1) AND (egfr < 45) AND ( NOT egfr_comparator = '>' ) AND ( NOT egfr_comparator = '>=' ) AND ( NOT egfr_comparator = '~' ) AND ( NOT ( egfr = 1  AND egfr_comparator='<') ) """,
-        },
-        return_expectations={
-            "rate": "universal",
-            "category": {
-                "ratios": {
-                    "0": 0.94,
-                    "1": 0.06,
-                }
-            },
-        },
-    ),
-    indicator_k_denominator=patients.satisfying(
-        """
-        egfr_between_1_and_45=1
-        """,
-    ),
-    indicator_k_numerator=patients.satisfying(
-        """
-        egfr_between_1_and_45=1 AND
-        oral_nsaid
-        """,
-    ),
-    ###
     # MONITORING COMPOSITE INDICATOR
     # AC - ACEI Audit (MO_P13)
     ####
@@ -704,94 +416,37 @@ study = StudyDefinition(
         (NOT thyroid_function_test)
         """,
     ),
-    ###
-    # GI BLEED COMPOSITE INDICATORS
-    ###
-    gi_bleed_composite_denominator=patients.satisfying(
-        """
-        indicator_a_denominator OR
-        indicator_b_denominator OR
-        indicator_c_denominator OR
-        indicator_d_denominator OR
-        indicator_e_denominator OR
-        indicator_f_denominator
-        """
-    ),
-    ###
-    # OTHER PRESCRIBING COMPOSITE INDICATOR
-    ###
-    other_prescribing_composite_denominator=patients.satisfying(
-        """
-        indicator_g_denominator OR
-        indicator_i_denominator OR
-        indicator_k_denominator
-        """,
-    ),
-    ###
-    #  MONITORING COMPOSITE INDICATOR
-    ###
-    monitoring_composite_denominator=patients.satisfying(
-        """
-        indicator_ac_denominator OR
-        indicator_me_denominator OR
-        indicator_li_denominator OR
-        indicator_am_denominator
-        """
-    ),
-    ###
-    # ALL COMPOSITE INDICATOR
-    #
-    all_composite_denominator=patients.satisfying(
-        """
-        gi_bleed_composite_denominator OR
-        other_prescribing_composite_denominator OR
-        monitoring_composite_denominator
-        """
-    ),
-    
-    pincer_population=patients.satisfying(
-        """
-        registered AND
-        NOT died AND
-        (age >=18 AND age <=120) AND 
-        (
-           (age >=65 AND (NOT ppi)) OR
-           (methotrexate_6_3_months AND methotrexate_3_months) OR
-           (lithium_6_3_months AND lithium_3_months) OR
-           (amiodarone_12_6_months AND amiodarone_6_months) OR
-           ((gi_bleed OR peptic_ulcer) AND (NOT ppi)) OR
-           (anticoagulant) OR
-           (aspirin AND (NOT ppi)) OR
-           ((asthma AND (NOT asthma_resolved)) OR (asthma_resolved_date <= asthma_date)) OR
-           (heart_failure) OR
-           (egfr_between_1_and_45=1) OR
-           (age >= 75 AND acei AND acei_recent) OR
-           (age >=75 AND loop_diuretic AND loop_diuretic_recent)
-        )
-        """
-    ),
-    no_asthma_resolved_population=patients.satisfying(
-            """
-        no_asthma_resolved AND
-        pincer_population
-        """,
-    ),
-    asthma_resolved_population=patients.satisfying(
-        """
-        asthma_resolved AND
-        (NOT asthma_resolved) AND
-        pincer_population
-        """,
-    ),
+
+    # pincer_population=patients.satisfying(
+    #     """
+    #     registered AND
+    #     NOT died AND
+    #     (age >=18 AND age <=120) AND 
+    #     (
+    #        (age >=65 AND (NOT ppi)) OR
+    #        (methotrexate_6_3_months AND methotrexate_3_months) OR
+    #        (lithium_6_3_months AND lithium_3_months) OR
+    #        (amiodarone_12_6_months AND amiodarone_6_months) OR
+    #        ((gi_bleed OR peptic_ulcer) AND (NOT ppi)) OR
+    #        (anticoagulant) OR
+    #        (aspirin AND (NOT ppi)) OR
+    #        ((asthma AND (NOT asthma_resolved)) OR (asthma_resolved_date <= asthma_date)) OR
+    #        (heart_failure) OR
+    #        (egfr_between_1_and_45=1) OR
+    #        (age >= 75 AND acei AND acei_recent) OR
+    #        (age >=75 AND loop_diuretic AND loop_diuretic_recent)
+    #     )
+    #     """
+    # ),
 )
 
 measures = [
-    Measure(
-        id="practice_population_rate",
-        numerator="practice_population",
-        denominator="pincer_population",
-        group_by=["practice"],
-    )
+    # Measure(
+    #     id="practice_population_rate",
+    #     numerator="practice_population",
+    #     denominator="pincer_population",
+    #     group_by=["practice"],
+    # )
 ]
 
 for indicator in indicators_list:
@@ -804,22 +459,6 @@ for indicator in indicators_list:
             group_by=["practice"],
         )
 
-    elif indicator == "g":
-        m = Measure(
-            id=f"indicator_{indicator}_rate",
-            numerator=f"indicator_{indicator}_numerator",
-            denominator=f"indicator_{indicator}_denominator",
-            group_by=["practice"],
-        )
-
-        m_2 = Measure(
-            id=f"indicator_{indicator}_alternative_rate",
-            numerator=f"indicator_{indicator}_numerator",
-            denominator=f"indicator_{indicator}_denominator_alternative",
-            group_by=["practice"],
-        )
-        measures.append(m_2)
-
     else:
         m = Measure(
             id=f"indicator_{indicator}_rate",
@@ -829,23 +468,6 @@ for indicator in indicators_list:
         )
 
     measures.append(m)
-
-measures.extend(
-    [
-        Measure(
-            id=f"no_asthma_resolved_rate",
-            numerator=f"no_asthma_resolved_population",
-            denominator=f"pincer_population",
-            group_by=["practice"],
-        ),
-        Measure(
-            id=f"asthma_resolved_rate",
-            numerator=f"asthma_resolved_population",
-            denominator=f"pincer_population",
-            group_by=["practice"],
-        ),
-    ]
-)
 
 for measure in sentinel_measures:
     measures.extend([
