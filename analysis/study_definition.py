@@ -34,7 +34,6 @@ study = StudyDefinition(
         "rate": "exponential_increase",
         "incidence": 0.1,
     },
-    # N.B. `population` here is the population as specified in SRO. The population as specified in Pincer  is defined as `pincer_population` below
     population=patients.satisfying(
         """
         registered AND
