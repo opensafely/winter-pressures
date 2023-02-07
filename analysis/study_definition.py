@@ -67,13 +67,6 @@ study = StudyDefinition(
         return_expectations={"int" : {"distribution": "normal", "mean": 25, "stddev": 5}, "incidence" : 0.5}
     ),
 
-    practice_population=patients.satisfying(
-        """
-        age <=120 AND
-        registered
-        """,
-    ),
-
     ##### SRO measures
 
     medication_review=patients.with_these_clinical_events(
