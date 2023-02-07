@@ -60,36 +60,6 @@
       "downloaded_at": "2023-02-01 11:05:31.902252Z",
       "sha": "e7f3090ffa269fb1e3efdd5859c43a70e76efeec"
     },
-    "primis-covid19-vacc-uptake-eth2001.csv": {
-      "id": "primis-covid19-vacc-uptake/eth2001/v1",
-      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth2001/v1/",
-      "downloaded_at": "2023-02-01 11:05:32.111581Z",
-      "sha": "2ff9aea91a05f41fe911a885eee50d2494247d58"
-    },
-    "primis-covid19-vacc-uptake-non_eth2001.csv": {
-      "id": "primis-covid19-vacc-uptake/non_eth2001/v1",
-      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/non_eth2001/v1/",
-      "downloaded_at": "2023-02-01 11:05:32.328611Z",
-      "sha": "b8581424b9305f70148f1bbccc0d3e4703847df7"
-    },
-    "primis-covid19-vacc-uptake-eth_notgiptref.csv": {
-      "id": "primis-covid19-vacc-uptake/eth_notgiptref/v1",
-      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_notgiptref/v1/",
-      "downloaded_at": "2023-02-01 11:05:32.516753Z",
-      "sha": "6245c85e4bd44c0c3aa573325cf55891efee45db"
-    },
-    "primis-covid19-vacc-uptake-eth_notstated.csv": {
-      "id": "primis-covid19-vacc-uptake/eth_notstated/v1",
-      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_notstated/v1/",
-      "downloaded_at": "2023-02-01 11:05:32.695481Z",
-      "sha": "a8997e1807a07d8f56e34ba3d0b95ee0082fec82"
-    },
-    "primis-covid19-vacc-uptake-eth_norecord.csv": {
-      "id": "primis-covid19-vacc-uptake/eth_norecord/v1",
-      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/eth_norecord/v1/",
-      "downloaded_at": "2023-02-01 11:05:32.856213Z",
-      "sha": "ca003bb021a14e704a6e81c139536ef459673da4"
-    },
     "opensafely-learning-disabilities.csv": {
       "id": "opensafely/learning-disabilities/2020-07-06",
       "url": "https://codelists.opensafely.org/codelist/opensafely/learning-disabilities/2020-07-06/",
@@ -107,6 +77,72 @@
       "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/medrvw_cod/20200812/",
       "downloaded_at": "2023-02-01 11:05:33.445362Z",
       "sha": "a07dfedffda67d1a84ef3e7e8f90214c93e89a51"
+    },
+    "pincer-amio.csv": {
+      "id": "pincer/amio/560cb6d8",
+      "url": "https://codelists.opensafely.org/codelist/pincer/amio/560cb6d8/",
+      "downloaded_at": "2023-02-03 14:42:28.647308Z",
+      "sha": "d2679f8be7473556560b12fa06260ebacd7e8f94"
+    },
+    "pincer-electro.csv": {
+      "id": "pincer/electro/v1.8",
+      "url": "https://codelists.opensafely.org/codelist/pincer/electro/v1.8/",
+      "downloaded_at": "2023-02-03 14:42:29.766614Z",
+      "sha": "b3301e62cdfa0568afb893db7d88399ed26e160b"
+    },
+    "pincer-fbc.csv": {
+      "id": "pincer/fbc/v1.8",
+      "url": "https://codelists.opensafely.org/codelist/pincer/fbc/v1.8/",
+      "downloaded_at": "2023-02-03 14:42:29.992554Z",
+      "sha": "2957a922fdf056ee0100cc132e91ef545dafc01a"
+    },
+    "pincer-lith_lev.csv": {
+      "id": "pincer/lith_lev/v1.8",
+      "url": "https://codelists.opensafely.org/codelist/pincer/lith_lev/v1.8/",
+      "downloaded_at": "2023-02-03 14:42:30.601617Z",
+      "sha": "b1bbe329b27fbe815fe33568543c029614f8f782"
+    },
+    "pincer-lith.csv": {
+      "id": "pincer/lith/6f1c2a0d",
+      "url": "https://codelists.opensafely.org/codelist/pincer/lith/6f1c2a0d/",
+      "downloaded_at": "2023-02-03 14:42:30.792665Z",
+      "sha": "235b796ad5e44f660857a38207e757d9d40f2a53"
+    },
+    "pincer-lft.csv": {
+      "id": "pincer/lft/v1.8",
+      "url": "https://codelists.opensafely.org/codelist/pincer/lft/v1.8/",
+      "downloaded_at": "2023-02-03 14:42:31.001953Z",
+      "sha": "e9ea2ea19529a7ca36acb5e4494a3da1e339b3a8"
+    },
+    "pincer-diur.csv": {
+      "id": "pincer/diur/213b1078",
+      "url": "https://codelists.opensafely.org/codelist/pincer/diur/213b1078/",
+      "downloaded_at": "2023-02-03 14:42:31.208871Z",
+      "sha": "9cf891203e1c05f8663306823bea56ca31389e41"
+    },
+    "pincer-met.csv": {
+      "id": "pincer/met/082b9d43",
+      "url": "https://codelists.opensafely.org/codelist/pincer/met/082b9d43/",
+      "downloaded_at": "2023-02-03 14:42:31.402816Z",
+      "sha": "bc74bcbec94c1c5c642461c66e9f1f51710fa484"
+    },
+    "pincer-acei.csv": {
+      "id": "pincer/acei/3a4a83ad",
+      "url": "https://codelists.opensafely.org/codelist/pincer/acei/3a4a83ad/",
+      "downloaded_at": "2023-02-03 14:42:32.065268Z",
+      "sha": "40b85664718dbf3b624bdfa63a05c0a5ac707707"
+    },
+    "pincer-tft.csv": {
+      "id": "pincer/tft/v1.8",
+      "url": "https://codelists.opensafely.org/codelist/pincer/tft/v1.8/",
+      "downloaded_at": "2023-02-03 14:42:32.282290Z",
+      "sha": "4371d672116678912bb875eafc0f008f341be82f"
+    },
+    "pincer-renal.csv": {
+      "id": "pincer/renal/v1.8",
+      "url": "https://codelists.opensafely.org/codelist/pincer/renal/v1.8/",
+      "downloaded_at": "2023-02-03 14:42:31.822329Z",
+      "sha": "67ad647922c9cd203e8c86efbbf31b32d35be2c4"
     }
   }
 }

@@ -8,7 +8,8 @@ from cohortextractor import (
     Measure
 )
 sentinel_measures = ["qrisk2", "asthma", "copd", "sodium", "cholesterol", "alt", "tsh", "rbc", 'hba1c', 'systolic_bp', 'medication_review']
-demographics = ['region', 'age_band', 'imd', 'sex', 'learning_disability', 'ethnicity']
+
+from metrics.config import indicators_list
 
 
 # Import codelists
@@ -27,36 +28,31 @@ end_date = "2022-04-30"
 
 
 study = StudyDefinition(
-    index_date="2019-01-01",
+    index_date=start_date,
     default_expectations={
         "date": {"earliest": start_date, "latest": end_date},
         "rate": "exponential_increase",
         "incidence": 0.1,
     },
-    
     population=patients.satisfying(
         """
         registered AND
         (NOT died) AND
-        (age >=18 AND age <=120) AND 
-        (sex = 'M' OR sex = 'F')
+        (age >=18 AND age <=120) 
         """,
+    ),
 
-        registered = patients.registered_as_of(
+    registered = patients.registered_as_of(
         "index_date",
         return_expectations={"incidence": 0.9},
         ),
 
-        died = patients.died_from_any_cause(
+    died = patients.died_from_any_cause(
         on_or_before="index_date",
         returning="binary_flag",
         return_expectations={"incidence": 0.1}
         ),
-    ),
-
-    
-
-
+        
     age=patients.age_as_of(
         "index_date",
         return_expectations={
@@ -65,95 +61,14 @@ study = StudyDefinition(
         },
     ),
 
-    age_band=patients.categorised_as(
-        {
-            "missing": "DEFAULT",
-            "18-19": """ age >= 0 AND age < 20""",
-            "20-29": """ age >=  20 AND age < 30""",
-            "30-39": """ age >=  30 AND age < 40""",
-            "40-49": """ age >=  40 AND age < 50""",
-            "50-59": """ age >=  50 AND age < 60""",
-            "60-69": """ age >=  60 AND age < 70""",
-            "70-79": """ age >=  70 AND age < 80""",
-            "80+": """ age >=  80 AND age < 120""",
-        },
-        return_expectations={
-            "rate": "universal",
-            "category": {
-                "ratios": {
-                    "missing": 0.005,
-                    "18-19": 0.125,
-                    "20-29": 0.125,
-                    "30-39": 0.125,
-                    "40-49": 0.125,
-                    "50-59": 0.125,
-                    "60-69": 0.125,
-                    "70-79": 0.125,
-                    "80+": 0.12,
-                }
-            },
-        },
-
-    ),
-
-
-    sex=patients.sex(
-        return_expectations={
-            "rate": "universal",
-            "category": {"ratios": {"M": 0.49, "F": 0.5, "U": 0.01}},
-        }
-    ),
-
-    region=patients.registered_practice_as_of(
-        "index_date",
-        returning="nuts1_region_name",
-        return_expectations={"category": {"ratios": {
-            "North East": 0.1,
-            "North West": 0.1,
-            "Yorkshire and the Humber": 0.1,
-            "East Midlands": 0.1,
-            "West Midlands": 0.1,
-            "East of England": 0.1,
-            "London": 0.2,
-            "South East": 0.2, }}}
-    ),
-    
-    imd=patients.categorised_as(
-        {
-            "Unknown": "DEFAULT",
-            "1 (most deprived)": """index_of_multiple_deprivation >= 0  AND index_of_multiple_deprivation < 32844*1/5""",
-            "2": """index_of_multiple_deprivation >= 32844*1/5 AND index_of_multiple_deprivation < 32844*2/5""",
-            "3": """index_of_multiple_deprivation >= 32844*2/5 AND index_of_multiple_deprivation < 32844*3/5""",
-            "4": """index_of_multiple_deprivation >= 32844*3/5 AND index_of_multiple_deprivation < 32844*4/5""",
-            "5 (least deprived)": """index_of_multiple_deprivation >= 32844*4/5 AND index_of_multiple_deprivation <= 32844""",
-        },
-        index_of_multiple_deprivation=patients.address_as_of(
-            "index_date",
-            returning="index_of_multiple_deprivation",
-            round_to_nearest=100,
-        ),
-        return_expectations={
-            "rate": "universal",
-            "category": {
-                "ratios": {
-                    "Unknown": 0.05,
-                    "1 (most deprived)": 0.19,
-                    "2": 0.19,
-                    "3": 0.19,
-                    "4": 0.19,
-                    "5 (least deprived)": 0.19,
-                }
-            },
-        },
-    ),
-
-
     practice=patients.registered_practice_as_of(
         "index_date",
         returning="pseudo_id",
         return_expectations={"int" : {"distribution": "normal", "mean": 25, "stddev": 5}, "incidence" : 0.5}
     ),
-      
+
+    ##### SRO measures
+
     medication_review=patients.with_these_clinical_events(
         codelist=medication_review_codelist,
         between=["first_day_of_month(index_date)", "last_day_of_month(index_date)"],
@@ -320,10 +235,203 @@ study = StudyDefinition(
             "ratios": {str(394703002): 0.6, str(760601000000107): 0.2, str(760621000000103): 0.2}}, }
     ),
     
-   
+    ##### PINCER Indicators
+    # MONITORING COMPOSITE INDICATOR
+    # AC - ACEI Audit (MO_P13)
+    ####
+    acei=patients.with_these_medications(
+        codelist=acei_codelist,
+        find_first_match_in_period=True,
+        returning="binary_flag",
+        on_or_before="index_date - 15 months",
+    ),
+    loop_diuretic=patients.with_these_medications(
+        codelist=loop_diuretics_codelist,
+        find_first_match_in_period=True,
+        returning="binary_flag",
+        on_or_before="index_date - 15 months",
+    ),
+    acei_recent=patients.with_these_medications(
+        codelist=acei_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 6 months", "index_date"],
+    ),
+    loop_diuretic_recent=patients.with_these_medications(
+        codelist=loop_diuretics_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 6 months", "index_date"],
+    ),
+    renal_function_test=patients.with_these_clinical_events(
+        codelist=renal_function_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 15 months", "index_date"],
+    ),
+    electrolytes_test=patients.with_these_clinical_events(
+        codelist=electrolytes_test_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 15 months", "index_date"],
+    ),
+    indicator_ac_denominator=patients.satisfying(
+        """
+        (age >=75 AND age <=120) AND
+        (acei AND acei_recent) OR
+        (loop_diuretic AND loop_diuretic_recent)
+        """,
+    ),
+    indicator_ac_numerator=patients.satisfying(
+        """
+        (age >=75 AND age <=120) AND
+        ((loop_diuretic AND loop_diuretic_recent) OR (acei AND acei_recent))AND
+        ((NOT renal_function_test) OR (NOT electrolytes_test))
+        """,
+    ),
+    ###
+    # MONITORING COMPOSITE INDICATOR
+    # ME - Methotrexate audit (MO_P15)
+    ####
+    methotrexate_6_3_months=patients.with_these_medications(
+        codelist=methotrexate_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 6 months", "index_date - 3 months"],
+    ),
+    methotrexate_3_months=patients.with_these_medications(
+        codelist=methotrexate_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 3 months", "index_date"],
+    ),
+    full_blood_count=patients.with_these_clinical_events(
+        codelist=full_blood_count_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 3 months", "index_date"],
+    ),
+    liver_function_test=patients.with_these_clinical_events(
+        codelist=liver_function_test_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 3 months", "index_date"],
+    ),
+    indicator_me_denominator=patients.satisfying(
+        """
+        methotrexate_6_3_months AND
+        methotrexate_3_months
+        """,
+    ),
+    indicator_me_no_fbc_numerator=patients.satisfying(
+        """
+        methotrexate_6_3_months AND
+        methotrexate_3_months AND
+        (NOT full_blood_count)
+        """,
+    ),
+    indicator_me_no_lft_numerator=patients.satisfying(
+        """
+        methotrexate_6_3_months AND
+        methotrexate_3_months AND
+        (NOT liver_function_test)
+        """,
+    ),
+    ###
+    # MONITORING COMPOSITE INDICATOR
+    # LI - Lithium audit (MO_P17)
+    ####
+    lithium_6_3_months=patients.with_these_medications(
+        codelist=lithium_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 6 months", "index_date - 3 months"],
+    ),
+    lithium_3_months=patients.with_these_medications(
+        codelist=lithium_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 3 months", "index_date"],
+    ),
+    lithium_level_3_months=patients.with_these_clinical_events(
+        codelist=lithium_level_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 3 months", "index_date"],
+    ),
+    indicator_li_denominator=patients.satisfying(
+        """
+        lithium_6_3_months AND
+        lithium_3_months
+        """,
+    ),
+    indicator_li_numerator=patients.satisfying(
+        """
+        lithium_6_3_months AND
+        lithium_3_months AND 
+        (NOT lithium_level_3_months)
+        """,
+    ),
+    ###
+    # MONITORING COMPOSITE INDICATOR
+    # AM - Amiodarone audit (MO_P18)
+    ####
+    amiodarone_12_6_months=patients.with_these_medications(
+        codelist=amiodarone_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 12 months", "index_date - 6 months"],
+    ),
+    amiodarone_6_months=patients.with_these_medications(
+        codelist=amiodarone_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 6 months", "index_date"],
+    ),
+    thyroid_function_test=patients.with_these_clinical_events(
+        codelist=thyroid_function_test_codelist,
+        find_last_match_in_period=True,
+        returning="binary_flag",
+        between=["index_date - 6 months", "index_date"],
+    ),
+    indicator_am_denominator=patients.satisfying(
+        """
+        amiodarone_12_6_months AND
+        amiodarone_6_months
+        """,
+    ),
+    indicator_am_numerator=patients.satisfying(
+        """
+        amiodarone_12_6_months AND
+        amiodarone_6_months AND
+        (NOT thyroid_function_test)
+        """,
+    ),
+
 )
 
-measures = []
+measures = [
+]
+
+for indicator in indicators_list:
+
+    if indicator in ["me_no_fbc", "me_no_lft"]:
+        m = Measure(
+            id=f"indicator_{indicator}_rate",
+            numerator=f"indicator_{indicator}_numerator",
+            denominator=f"indicator_me_denominator",
+            group_by=["practice"],
+        )
+
+    else:
+        m = Measure(
+            id=f"indicator_{indicator}_rate",
+            numerator=f"indicator_{indicator}_numerator",
+            denominator=f"indicator_{indicator}_denominator",
+            group_by=["practice"],
+        )
+
+    measures.append(m)
 
 for measure in sentinel_measures:
     measures.extend([

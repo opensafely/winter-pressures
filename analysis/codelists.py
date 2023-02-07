@@ -46,49 +46,6 @@ systolic_bp_codelist = codelist_from_csv("codelists/opensafely-systolic-blood-pr
                                  column="code",)
 
 
-# Ethnicity codes
-eth2001 = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-eth2001.csv",
-    system="snomed",
-    column="code",
-    category_column="grouping_16_id",
-)
-
-# Any other ethnicity code
-non_eth2001 = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-non_eth2001.csv",
-    system="snomed",
-    column="code",
-)
-
-# Ethnicity not given - patient refused
-eth_notgiptref = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-eth_notgiptref.csv",
-    system="snomed",
-    column="code",
-)
-
-# Ethnicity not stated
-eth_notstated = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-eth_notstated.csv",
-    system="snomed",
-    column="code",
-)
-
-# Ethnicity no record
-eth_norecord = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-eth_norecord.csv",
-    system="snomed",
-    column="code",
-)
-
-ld_codes = codelist_from_csv(
-    "codelists/opensafely-learning-disabilities.csv",
-    system="ctv3",
-    column="CTV3Code",
-)
-
-
 
 medication_review_1 = codelist_from_csv("codelists/opensafely-care-planning-medication-review-simple-reference-set-nhs-digital.csv",
     system="snomed",
@@ -101,4 +58,82 @@ medication_review_2 = codelist_from_csv("codelists/nhsd-primary-care-domain-refs
 medication_review_codelist = combine_codelists(
     medication_review_1, 
     medication_review_2
+)
+
+
+# Used in AC
+acei_codelist = codelist_from_csv(
+    "codelists/pincer-acei.csv",
+    system="snomed",
+    column="id",
+)
+
+# Used in AC
+loop_diuretics_codelist = codelist_from_csv(
+    "codelists/pincer-diur.csv",
+    system="snomed",
+    column="id",
+)
+
+# Used in AC
+renal_function_codelist = codelist_from_csv(
+    "codelists/pincer-renal.csv",
+    system="snomed",
+    column="code",
+)
+
+# Used in AC
+electrolytes_test_codelist = codelist_from_csv(
+    "codelists/pincer-electro.csv",
+    system="snomed",
+    column="code",
+)
+
+# Used in ME
+methotrexate_codelist = codelist_from_csv(
+    "codelists/pincer-met.csv",
+    system="snomed",
+    column="id",
+)
+
+# Used in ME
+full_blood_count_codelist = codelist_from_csv(
+    "codelists/pincer-fbc.csv",
+    system="snomed",
+    column="code",
+)
+
+# Used in ME
+liver_function_test_codelist = codelist_from_csv(
+    "codelists/pincer-lft.csv",
+    system="snomed",
+    column="code",
+)
+
+# Used in LI
+lithium_codelist = codelist_from_csv(
+    "codelists/pincer-lith.csv",
+    system="snomed",
+    column="id",
+)
+
+# Used in LI
+lithium_level_codelist = codelist_from_csv(
+    "codelists/pincer-lith_lev.csv",
+    system="snomed",
+    column="code",
+)
+
+# Used in AM
+amiodarone_codelist = codelist_from_csv(
+    "codelists/pincer-amio.csv",
+    system="snomed",
+    column="id",
+)
+
+# Used in AM
+thyroid_function_test_codelist = codelist_from_csv(
+    "codelists/pincer-tft.csv",
+    system="snomed",
+    column="code",
 )
