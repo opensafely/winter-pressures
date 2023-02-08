@@ -96,6 +96,18 @@ actions:
       moderately_sensitive:
         measure: output/appointments/measure_median_lead_time_in_days_by_booked_month.csv
 
+  appointments_generate_measure_by_start_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_measure
+        --value-col lead_time_in_days
+        --index-cols start_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_median_lead_time_in_days_by_start_month.csv
+
   appointments_generate_deciles_charts:
     run: >
       deciles-charts:v0.0.33
@@ -103,7 +115,9 @@ actions:
         --output-dir output/appointments
     config:
       show_outer_percentiles: true
-    needs: [appointments_generate_measure_by_booked_month]
+    needs:
+      - appointments_generate_measure_by_booked_month
+      - appointments_generate_measure_by_start_month
     outputs:
       moderately_sensitive:
         deciles_charts: output/appointments/deciles_chart_*.png
