@@ -5,8 +5,6 @@ import pandas
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 
-f_in = OUTPUT_DIR / "dataset_long.csv.gz"
-
 
 def read(f_in, index_cols, value_col, date_col):
     # How do we ensure `pandas.read_csv` is as efficient as possible? Let's do some
@@ -58,6 +56,7 @@ def main():
     # We assume the first column in the list of columns is a date column.
     date_col = args.index_cols[0]
 
+    f_in = OUTPUT_DIR / "dataset_long.csv.gz"
     dataset_long = read(f_in, args.index_cols, args.value_col, date_col)
     medians = dataset_long.groupby(args.index_cols).median()
     del dataset_long
