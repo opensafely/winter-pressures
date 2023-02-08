@@ -21,6 +21,6 @@ study_dates <- lst(
         ),
     summer_dates = lst(
         start_date = "2021-06-01",
-        end_date = "2022-09-30",
+        end_date = "2021-09-30",
         )
 )
