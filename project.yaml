@@ -18,28 +18,31 @@ actions:
   # ------------
   metrics_generate_study_dataset_winter:
     run: cohortextractor:latest generate_cohort --study-definition study_definition
-      --index-date-range '2021-12-01 to 2022-03-30 by month' --output-dir=output/metrics
+      --param start_date='2021-12-01' --param end_date='2022-03-31'
       --output-format=feather
+      --output-file output/metrics/input_winter.feather
     outputs:
       highly_sensitive:
-        extract: output/metrics/input_*.feather
+        extract: output/metrics/input_winter.feather
 
   metrics_generate_study_dataset_summer:
     run: cohortextractor:latest generate_cohort --study-definition study_definition
-      --index-date-range '2021-06-01 to 2021-09-30 by month' --output-dir=output/metrics
+      --param start_date='2021-06-01' --param end_date='2021-09-30'
       --output-format=feather
+      --output-file output/metrics/input_summer.feather
     outputs:
       highly_sensitive:
-        extract: output/metrics/input*.feather
+        extract: output/metrics/input_summer.feather
 
   metrics_generate_measures:
     run: cohortextractor:latest generate_measures --study-definition study_definition
+      --param start_date='2021-06-01' --param end_date='2021-09-30'
       --output-dir=output/metrics
     needs:
     - metrics_generate_study_dataset_summer
     - metrics_generate_study_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/measure_*_rate.csv
 
   # Appointments data
