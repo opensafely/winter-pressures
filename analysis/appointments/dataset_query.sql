@@ -70,6 +70,8 @@ WHERE
     patient_id IN (SELECT patient_id FROM practice_registration_in_study_period)
     AND valid_appointments.booked_date >= @study_start_date
     AND valid_appointments.booked_date <= @study_end_date
+    AND valid_appointments.start_date >= @study_start_date
+    AND valid_appointments.start_date <= @study_end_date
 -- This ensures that vectors of `lead_time_in_days`, for which we want to compute
 -- medians, are contiguous in the output.
 ORDER BY booked_month, start_month, practice, lead_time_in_days
