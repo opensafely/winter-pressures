@@ -39,7 +39,7 @@ actions:
     - metrics_generate_study_dataset_summer
     - metrics_generate_study_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/measure_*_rate.csv
 
   # Appointments data
