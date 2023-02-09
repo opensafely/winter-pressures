@@ -1,12 +1,12 @@
+import argparse
+import sys
+
 import pandas
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 
-f_in = OUTPUT_DIR / "dataset_long.csv.gz"
-f_out = OUTPUT_DIR / "measure_median_lead_time_in_days.csv"
 
-
-def read(f_in):
+def read(f_in, index_cols, value_col, date_col):
     # How do we ensure `pandas.read_csv` is as efficient as possible? Let's do some
     # profiling! Our dummy long dataset:
     # * has 10 million rows (10 appointments for 1 million patients)
@@ -35,28 +35,38 @@ def read(f_in):
     # * memory_map=True
     # * squeeze=True
 
-    index_cols = ["booked_month", "practice"]
-    value_cols = ["lead_time_in_days"]
-    date_cols = ["booked_month"]
     return pandas.read_csv(
         f_in,
-        usecols=index_cols + value_cols,
-        parse_dates=date_cols,
+        usecols=index_cols + [value_col],
+        parse_dates=[date_col],
         engine="c",
         index_col=index_cols,
     )
 
 
+def parse_args(args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--value-col", required=True)
+    parser.add_argument("--index-cols", action="extend", nargs="+", required=True)
+    return parser.parse_args(args)
+
+
 def main():
-    dataset_long = read(f_in)
-    by_practice = dataset_long.groupby(["booked_month", "practice"]).median()
+    args = parse_args(sys.argv[1:])
+    # We assume the first column in the list of columns is a date column.
+    date_col = args.index_cols[0]
+
+    f_in = OUTPUT_DIR / "dataset_long.csv.gz"
+    dataset_long = read(f_in, args.index_cols, args.value_col, date_col)
+    medians = dataset_long.groupby(args.index_cols).median()
     del dataset_long
 
-    measure = by_practice.reset_index().loc[:, ["lead_time_in_days", "booked_month"]]
-    del by_practice
+    measure = medians.reset_index().loc[:, [args.value_col, date_col]]
+    del medians
     measure.columns = ["value", "date"]  # rename columns
     measure["population"] = 1
     measure = measure.loc[:, ["population", "value", "date"]]  # reorder columns
+    f_out = OUTPUT_DIR / f"measure_median_{args.value_col}_by_{date_col}.csv"
     measure.to_csv(f_out, index=False)
 
 

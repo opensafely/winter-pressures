@@ -59,6 +59,7 @@ SELECT
     patient_id,
     practice_pseudo_id AS practice,
     DATEFROMPARTS(YEAR(booked_date), MONTH(booked_date), 1) AS booked_month,
+    DATEFROMPARTS(YEAR(start_date), MONTH(start_date), 1) AS start_month,
     DATEDIFF(
         DAY,
         booked_date,
@@ -71,4 +72,4 @@ WHERE
     AND valid_appointments.booked_date <= @study_end_date
 -- This ensures that vectors of `lead_time_in_days`, for which we want to compute
 -- medians, are contiguous in the output.
-ORDER BY booked_month, practice, lead_time_in_days
+ORDER BY booked_month, start_month, practice, lead_time_in_days
