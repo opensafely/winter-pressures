@@ -26,7 +26,6 @@ def read(f_in, index_cols, date_col):
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
-    # parser.add_argument("--value-col", required=True)
     parser.add_argument("--index-cols", action="extend", nargs="+", required=True)
     return parser.parse_args(args)
 
