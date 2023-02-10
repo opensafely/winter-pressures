@@ -122,7 +122,7 @@ season_data <- mutate(season_data,
 season_data <- select(season_data,
                       !(c(numerator, denominator)))
 
-# create wider data with sumemr and winter as columns
+# create wider data with summer and winter as columns
 wide_season_data <- pivot_wider(season_data,
                                 names_from = season,
                                 values_from = proportion)
@@ -134,8 +134,8 @@ wide_season_data <- drop_na(wide_season_data)
 
 # calculate seasonal difference and seasonal rate
 practice_measure_data <- mutate(wide_season_data,
-                                seasonal_difference = summer - winter,
-                                seasonal_ratio = winter/summer)
+                                seasonal_difference = winter - summer,
+                                seasonal_log_ratio = log(winter/summer))
 
 #######################################################################
 # create seasonal difference and seasonal ratio histogram
@@ -153,7 +153,7 @@ difference_plot_data <- select(difference_plot_data, y, count, x, xmin, xmax, de
 
 # create the seasonal ratio histogram plot
 ratio_plot <- ggplot(practice_measure_data) + 
-  geom_histogram(aes(x=seasonal_ratio), binwidth = 0.05) +
+  geom_histogram(aes(x=seasonal_log_ratio), binwidth = 0.05) +
   theme_bw()
 
 # get the data used to create the histogram and select columns of interest
