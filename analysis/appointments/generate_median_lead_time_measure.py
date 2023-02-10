@@ -34,7 +34,7 @@ def read(f_in, index_cols, value_col, date_col):
     # * date_parser=dateutil.parser.isoparse
     # * memory_map=True
     # * squeeze=True
-    
+
     return pandas.read_csv(
         f_in,
         usecols=index_cols + [value_col],
@@ -65,7 +65,9 @@ def main():
     del medians
     measure.columns = ["date", "practice", "value"]  # rename columns
     measure["population"] = 1
-    measure = measure.loc[:, ["practice", "population", "value", "date"]]  # reorder columns
+    measure = measure.loc[
+        :, ["practice", "population", "value", "date"]
+    ]  # reorder columns
     f_out = OUTPUT_DIR / f"measure_median_{args.value_col}_by_{date_col}.csv"
     measure.to_csv(f_out, index=False)
 
