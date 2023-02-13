@@ -11,7 +11,7 @@ OUTPUT_DIR = BASE_DIR / "output"
 APPOINTMENTS_OUTPUT_DIR = OUTPUT_DIR / "appointments"
 
 
-def read(f_in, index_cols, value_col, date_col):
+def read(f_in, index_cols, date_col, value_col=None ):
     # How do we ensure `pandas.read_csv` is as efficient as possible? Let's do some
     # profiling! Our dummy long dataset:
     # * has 10 million rows (10 appointments for 1 million patients)

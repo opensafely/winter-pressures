@@ -19,7 +19,7 @@ def main():
     date_col = args.index_cols[0]
 
     f_in = OUTPUT_DIR / "dataset_long.csv.gz"
-    dataset_long = read(f_in, args.index_cols, args.unique_col, date_col)
+    dataset_long = read(f_in, args.index_cols, date_col, args.unique_col)
     num_patients = dataset_long.groupby(args.index_cols).nunique()
     del dataset_long
 

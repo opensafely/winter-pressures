@@ -21,7 +21,7 @@ def main():
 
     f_in = OUTPUT_DIR / "dataset_long.csv.gz"
 
-    dataset_long = read(f_in, args.index_cols, args.value_col, date_col)
+    dataset_long = read(f_in, args.index_cols, date_col, args.value_col)
     dataset_long["threshold_mask"] = ( dataset_long[args.value_col] <= args.value_threshold )
     total_counts = dataset_long.groupby(args.index_cols + ["threshold_mask"]).size()
     del dataset_long
