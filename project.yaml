@@ -42,6 +42,18 @@ actions:
       highly_sensitive:
         measure_csv: output/metrics/measure_*_rate.csv
 
+  metrics_generate_single_metric:
+    run: r:latest analysis/metrics/single_metric.R
+    needs:
+    - metrics_generate_measures
+    outputs:
+      moderately_sensitive:
+        png1: output/metrics/summer_winter_difference_histogram.png
+        png2: output/metrics/summer_winter_ratio_histogram.png
+        csv1: output/metrics/summer_winter_difference_histogram_data.csv
+        csv2: output/metrics/summer_winter_ratio_histogram_data.csv
+
+
   # Appointments data
   # -----------------
   appointments_generate_dataset_sql:
