@@ -40,9 +40,13 @@ def read(f_in, index_cols, value_col, date_col):
     # * memory_map=True
     # * squeeze=True
 
+    usecols = index_cols
+    if value_col:
+        usecols=index_cols + [value_col]
+    
     return pandas.read_csv(
         f_in,
-        usecols=index_cols + [value_col],
+        usecols=usecols,
         parse_dates=[date_col],
         engine="c",
         index_col=index_cols,

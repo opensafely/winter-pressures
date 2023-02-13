@@ -6,24 +6,6 @@ import pandas
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR, read
 
 
-# def read(f_in, index_cols, value_col, date_col):
-#     # @iaindillingham did some work previously to investigate how we might read in
-#     # sqlrunner outputs most efficiently.
-#     #
-#     # These investigations recommended that:
-#     # - only thise columns required should be read in, using the usecols argument
-#     # - all dates be parsed at read in, using the parse_dates argument
-#     # - the index be defined at read in, using the index_col argument
-#     #
-#     return pandas.read_csv(
-#         f_in,
-#         usecols=index_cols + [value_col],
-#         parse_dates=[date_col],
-#         engine="c",
-#         index_col=index_cols,
-#     )
-
-
 def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("--value-col", required=True)
