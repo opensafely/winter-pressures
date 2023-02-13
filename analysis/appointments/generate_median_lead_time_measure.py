@@ -1,9 +1,8 @@
 import argparse
 import sys
 
-import pandas
-
-from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR, read
+from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
+from analysis.utils import read
 
 
 def parse_args(args):
