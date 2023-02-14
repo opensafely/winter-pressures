@@ -165,7 +165,7 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within0days_by_booked_month.csv
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_0days_by_booked_month.csv
 
   appointments_generate_proportion_same_day_lead_time_measure_by_start_month:
     run: >
@@ -178,7 +178,7 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within0days_by_start_month.csv
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_0days_by_start_month.csv
 
 
   appointments_generate_proportion_two_day_lead_time_measure_by_booked_month:
@@ -192,7 +192,7 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within2days_by_booked_month.csv
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_2days_by_booked_month.csv
 
   appointments_generate_proportion_two_day_lead_time_measure_by_start_month:
     run: >
@@ -205,7 +205,7 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within2days_by_start_month.csv
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_2days_by_start_month.csv
 
 
   appointments_generate_deciles_charts:
