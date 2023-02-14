@@ -34,9 +34,7 @@ def main():
     )
     del total_counts
 
-    measure = measure.loc[
-        :, ["population", "value", "date"]
-    ]  # reorder columns
+    measure = measure.loc[:, ["population", "value", "date"]]  # reorder columns
 
     f_out = (
         OUTPUT_DIR
