@@ -27,7 +27,7 @@ def main():
     measure.columns = ["date", "practice", "value"]  # rename columns
     measure["population"] = 1
     measure = measure.loc[
-        :, ["practice", "population", "value", "date"]
+        :, ["population", "value", "date"]
     ]  # reorder columns
     f_out = OUTPUT_DIR / f"measure_num_unique_patients_by_{date_col}.csv"
     measure.to_csv(f_out, index=False)
