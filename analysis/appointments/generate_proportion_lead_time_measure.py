@@ -40,7 +40,7 @@ def main():
 
     f_out = (
         OUTPUT_DIR
-        / f"measure_proportion_{args.value_col}_within{args.value_threshold}days_by_{date_col}.csv"
+        / f"measure_proportion_{args.value_col}_within_{args.value_threshold}days_by_{date_col}.csv"
     )
     measure.to_csv(f_out, index=False)
 
