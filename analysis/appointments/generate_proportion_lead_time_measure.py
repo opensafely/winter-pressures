@@ -28,15 +28,14 @@ def main():
     del dataset_long
 
     total_counts = total_counts.unstack("threshold_mask", fill_value=0)
-    total_counts["population"] = total_counts.sum(axis=1)
-    measure = total_counts.reset_index().rename(
-        columns={True: "value", date_col: "date"}
-    )
+    total_counts["denominator"] = total_counts.sum(axis=1)
+    total_counts.rename(columns={True: "numerator"}, inplace=True)
+    total_counts["value"] = total_counts["numerator"] / total_counts["denominator"]
+
+    measure = total_counts.reset_index().rename(columns={date_col: "date"})
     del total_counts
 
-    measure = measure.loc[
-        :, ["population", "value", "date"]
-    ]  # reorder columns
+    measure = measure.loc[:, ["value", "date"]]  # reorder columns
 
     f_out = (
         OUTPUT_DIR
