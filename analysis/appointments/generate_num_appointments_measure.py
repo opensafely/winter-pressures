@@ -25,6 +25,7 @@ def main():
     del counts
     measure.columns = ["date", "practice", "value"]  # rename columns
     measure = measure.loc[:, ["value", "date"]]  # reorder columns
+
     f_out = OUTPUT_DIR / f"measure_num_appointments_by_{date_col}.csv"
     measure.to_csv(f_out, index=False)
 

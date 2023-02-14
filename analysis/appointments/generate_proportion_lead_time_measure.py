@@ -34,7 +34,6 @@ def main():
 
     measure = total_counts.reset_index().rename(columns={date_col: "date"})
     del total_counts
-
     measure = measure.loc[:, ["value", "date"]]  # reorder columns
 
     f_out = (

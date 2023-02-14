@@ -26,6 +26,7 @@ def main():
     del medians
     measure.columns = ["date", "practice", "value"]  # rename columns
     measure = measure.loc[:, ["value", "date"]]  # reorder columns
+
     f_out = OUTPUT_DIR / f"measure_median_{args.value_col}_by_{date_col}.csv"
     measure.to_csv(f_out, index=False)
 
