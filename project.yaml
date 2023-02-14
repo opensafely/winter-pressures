@@ -96,11 +96,11 @@ actions:
   #     highly_sensitive:
   #       dataset: output/appointments/dataset_long.arrow
 
-  appointments_generate_measure_by_booked_month:
+  appointments_generate_lead_time_measure_by_booked_month:
     run: >
       python:latest
         python
-        -m analysis.appointments.generate_measure
+        -m analysis.appointments.generate_median_lead_time_measure
         --value-col lead_time_in_days
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
@@ -108,17 +108,117 @@ actions:
       moderately_sensitive:
         measure: output/appointments/measure_median_lead_time_in_days_by_booked_month.csv
 
-  appointments_generate_measure_by_start_month:
+  appointments_generate_lead_time_measure_by_start_month:
     run: >
       python:latest
         python
-        -m analysis.appointments.generate_measure
+        -m analysis.appointments.generate_median_lead_time_measure
         --value-col lead_time_in_days
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
         measure: output/appointments/measure_median_lead_time_in_days_by_start_month.csv
+
+  appointments_generate_num_appointments_measure_by_start_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_num_appointments_measure
+        --index-cols start_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_num_appointments_by_start_month.csv
+
+  appointments_generate_num_appointments_measure_by_booked_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_num_appointments_measure
+        --index-cols booked_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_num_appointments_by_booked_month.csv
+
+  appointments_generate_num_unique_patients_measure_by_booked_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_num_unique_patients_measure
+        --unique-col patient_id
+        --index-cols booked_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_num_unique_patients_by_booked_month.csv
+
+  appointments_generate_num_unique_patients_measure_by_start_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_num_unique_patients_measure
+        --unique-col patient_id
+        --index-cols start_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_num_unique_patients_by_start_month.csv
+
+  appointments_generate_proportion_same_day_lead_time_measure_by_booked_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_proportion_lead_time_measure
+        --value-col lead_time_in_days
+        --value-threshold 0
+        --index-cols booked_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_0days_by_booked_month.csv
+
+  appointments_generate_proportion_same_day_lead_time_measure_by_start_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_proportion_lead_time_measure
+        --value-col lead_time_in_days
+        --value-threshold 0
+        --index-cols start_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_0days_by_start_month.csv
+
+
+  appointments_generate_proportion_two_day_lead_time_measure_by_booked_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_proportion_lead_time_measure
+        --value-col lead_time_in_days
+        --value-threshold 2
+        --index-cols booked_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_2days_by_booked_month.csv
+
+  appointments_generate_proportion_two_day_lead_time_measure_by_start_month:
+    run: >
+      python:latest
+        python
+        -m analysis.appointments.generate_proportion_lead_time_measure
+        --value-col lead_time_in_days
+        --value-threshold 2
+        --index-cols start_month practice
+    needs: [appointments_generate_dataset_sql]
+    outputs:
+      moderately_sensitive:
+        measure: output/appointments/measure_proportion_lead_time_in_days_within_2days_by_start_month.csv
+
 
   appointments_generate_deciles_charts:
     run: >
@@ -128,8 +228,16 @@ actions:
     config:
       show_outer_percentiles: true
     needs:
-      - appointments_generate_measure_by_booked_month
-      - appointments_generate_measure_by_start_month
+      - appointments_generate_lead_time_measure_by_booked_month
+      - appointments_generate_lead_time_measure_by_start_month
+      - appointments_generate_num_appointments_measure_by_start_month
+      - appointments_generate_num_appointments_measure_by_booked_month
+      - appointments_generate_num_unique_patients_measure_by_start_month
+      - appointments_generate_num_unique_patients_measure_by_booked_month
+      - appointments_generate_proportion_two_day_lead_time_measure_by_start_month
+      - appointments_generate_proportion_two_day_lead_time_measure_by_booked_month
+      - appointments_generate_proportion_same_day_lead_time_measure_by_start_month
+      - appointments_generate_proportion_same_day_lead_time_measure_by_booked_month
     outputs:
       moderately_sensitive:
         deciles_charts: output/appointments/deciles_chart_*.png

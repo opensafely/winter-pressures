@@ -11,6 +11,48 @@ OUTPUT_DIR = BASE_DIR / "output"
 APPOINTMENTS_OUTPUT_DIR = OUTPUT_DIR / "appointments"
 
 
+def read(f_in, index_cols, date_col, value_col=None ):
+    # How do we ensure `pandas.read_csv` is as efficient as possible? Let's do some
+    # profiling! Our dummy long dataset:
+    # * has 10 million rows (10 appointments for 1 million patients)
+    # * has five columns (patient_id, practice, region, booked_month, lead_time_in_days)
+    # * occupies 372MB on disk
+
+    # The following table shows the peak memory consumption when parsing the CSV file
+    # (read_csv) and the memory consumption of the resulting data frame (memory_usage)
+    # in MiB, with each of the arguments applied in turn.
+
+    # | read_csv | memory_usage | arguments   |
+    # | -------- | ------------ | ----------- |
+    # | 1668     | 1564         | default     |
+    # | 579      | 791          | usecols     |
+    # | 636      | 228          | parse_dates |
+    # | 600      | 228          | engine      |
+    # | 602      | 95           | index_col   |
+
+    # The peak memory consumption was determined by `%memit`; the memory consumption was
+    # determined by `dataset_long.memory_usage(deep=True).sum() / 1_024**2`.
+
+    # The following arguments increase the peak memory consumption or the memory
+    # consumption of the resulting data frame, so should be avoided:
+    # * infer_datetime_format=True
+    # * date_parser=dateutil.parser.isoparse
+    # * memory_map=True
+    # * squeeze=True
+
+    usecols = index_cols
+    if value_col:
+        usecols=index_cols + [value_col]
+    
+    return pandas.read_csv(
+        f_in,
+        usecols=usecols,
+        parse_dates=[date_col],
+        engine="c",
+        index_col=index_cols,
+    )
+
+
 def to_series(f):
     @functools.wraps(f)
     def wrapper(self, *args):
