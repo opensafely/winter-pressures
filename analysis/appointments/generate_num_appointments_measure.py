@@ -5,7 +5,6 @@ import pandas as pd
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
-from analysis.utils import seasonal_map
 from analysis.utils import summarise_to_seasons
 
 
