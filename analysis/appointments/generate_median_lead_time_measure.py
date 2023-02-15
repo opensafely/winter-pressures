@@ -1,8 +1,10 @@
 import argparse
 import sys
+import numpy as np
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
+from analysis.utils import summarise_to_seasons
 
 
 def parse_args(args):
@@ -25,10 +27,21 @@ def main():
     measure = medians.reset_index()
     del medians
     measure.columns = ["date", "practice", "value"]  # rename columns
-    measure = measure.loc[:, ["value", "date"]]  # reorder columns
+    measure_monthly = measure.loc[:, ["value", "date"]]  # reorder columns
 
-    f_out = OUTPUT_DIR / f"measure_median_{args.value_col}_by_{date_col}.csv"
-    measure.to_csv(f_out, index=False)
+    f_out = OUTPUT_DIR / f"measure_monthly_median_{args.value_col}_by_{date_col}.csv"
+    measure_monthly.to_csv(f_out, index=False)
+    del measure_monthly
+
+    ### Creating seasonal summaries
+    index_cols_nodate = args.index_cols[1:]
+    measure_season = summarise_to_seasons(
+        measure, index_cols_nodate, "date", summary_method=np.median
+    )
+    del measure
+
+    f_out = OUTPUT_DIR / f"measure_seasonal_median_{args.value_col}_by_{date_col}.csv"
+    measure_season.to_csv(f_out, index=False)
 
 
 if __name__ == "__main__":

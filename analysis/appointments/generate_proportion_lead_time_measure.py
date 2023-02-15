@@ -1,8 +1,12 @@
 import argparse
 import sys
+import numpy as np
+import pandas as pd
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
+from analysis.utils import summarise_to_seasons
+from analysis.utils import seasonal_map
 
 
 def parse_args(args):
@@ -32,15 +36,52 @@ def main():
     total_counts.rename(columns={True: "numerator"}, inplace=True)
     total_counts["value"] = total_counts["numerator"] / total_counts["denominator"]
 
+    ### Creating a measure file for a monthly decile plot ###########
     measure = total_counts.reset_index().rename(columns={date_col: "date"})
     del total_counts
-    measure = measure.loc[:, ["value", "date"]]  # reorder columns
+    measure_monthly = measure.loc[:, ["value", "date"]]  # reorder columns
 
     f_out = (
         OUTPUT_DIR
-        / f"measure_proportion_{args.value_col}_within_{args.value_threshold}days_by_{date_col}.csv"
+        / f"measure_monthly_proportion_{args.value_col}_within_{args.value_threshold}days_by_{date_col}.csv"
     )
-    measure.to_csv(f_out, index=False)
+    measure_monthly.to_csv(f_out, index=False)
+    del measure_monthly
+
+    ### Creating seasonal summaries #################################
+    index_cols_nodate = args.index_cols[1:]
+    #  Sum the numerator values for each practice across the months
+    # (as defined by analysis.utils.summarise_to_seasons())
+    summary_index = ["practice", "year", "season"]
+    measure_season_num = summarise_to_seasons(
+        measure, index_cols_nodate, date_col="date", value_col="numerator"
+    ).set_index(summary_index)
+    #  Sum the denominator values for each practice across the months
+    # (as defined by analysis.utils.summarise_to_seasons())
+    measure_season_denom = summarise_to_seasons(
+        measure, index_cols_nodate, date_col="date", value_col="denominator"
+    ).set_index(summary_index)
+    del measure
+
+    # Combine the numerators and denominators
+    measure_season = measure_season_num.join(measure_season_denom)
+    del measure_season_num
+    del measure_season_denom
+
+    # Calculate the proportion
+    measure_season["value"] = (
+        measure_season["numerator"] / measure_season["denominator"]
+    )
+    # Prepare data for output
+    measure_season = measure_season.reset_index().loc[
+        :, ["practice", "year", "season", "value"]
+    ]
+
+    f_out = (
+        OUTPUT_DIR
+        / f"measure_seasonal_proportion_{args.value_col}_within_{args.value_threshold}days_by_{date_col}.csv"
+    )
+    measure_season.to_csv(f_out, index=False)
 
 
 if __name__ == "__main__":

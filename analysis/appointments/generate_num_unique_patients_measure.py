@@ -3,6 +3,7 @@ import sys
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
+from analysis.utils import summarise_to_seasons
 
 
 def parse_args(args):
@@ -25,10 +26,19 @@ def main():
     measure = num_patients.reset_index()
     del num_patients
     measure.columns = ["date", "practice", "value"]  # rename columns
-    measure = measure.loc[:, ["value", "date"]]  # reorder columns
+    measure_monthly = measure.loc[:, ["value", "date"]]  # reorder columns
 
-    f_out = OUTPUT_DIR / f"measure_num_unique_patients_by_{date_col}.csv"
-    measure.to_csv(f_out, index=False)
+    f_out = OUTPUT_DIR / f"measure_monthly_num_unique_patients_by_{date_col}.csv"
+    measure_monthly.to_csv(f_out, index=False)
+    del measure_monthly
+
+    ### Creating seasonal summaries
+    index_cols_nodate = args.index_cols[1:]
+    measure_season = summarise_to_seasons(measure, index_cols_nodate, "date")
+    del measure
+
+    f_out = OUTPUT_DIR / f"measure_seasonal_num_unique_patients_by_{date_col}.csv"
+    measure_season.to_csv(f_out, index=False)
 
 
 if __name__ == "__main__":

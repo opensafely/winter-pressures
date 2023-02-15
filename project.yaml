@@ -106,7 +106,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_median_lead_time_in_days_by_booked_month.csv
+        monthly_measure: output/appointments/measure_monthly_median_lead_time_in_days_by_booked_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_median_lead_time_in_days_by_booked_month.csv
 
   appointments_generate_lead_time_measure_by_start_month:
     run: >
@@ -118,7 +119,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_median_lead_time_in_days_by_start_month.csv
+        monthly_measure: output/appointments/measure_monthly_median_lead_time_in_days_by_start_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_median_lead_time_in_days_by_start_month.csv
 
   appointments_generate_num_appointments_measure_by_start_month:
     run: >
@@ -129,7 +131,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_num_appointments_by_start_month.csv
+        monthly_measure: output/appointments/measure_monthly_num_appointments_by_start_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_num_appointments_by_start_month.csv
 
   appointments_generate_num_appointments_measure_by_booked_month:
     run: >
@@ -140,7 +143,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_num_appointments_by_booked_month.csv
+        monthly_measure: output/appointments/measure_monthly_num_appointments_by_booked_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_num_appointments_by_booked_month.csv
 
   appointments_generate_num_unique_patients_measure_by_booked_month:
     run: >
@@ -152,7 +156,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_num_unique_patients_by_booked_month.csv
+        monthly_measure: output/appointments/measure_monthly_num_unique_patients_by_booked_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_num_unique_patients_by_booked_month.csv
 
   appointments_generate_num_unique_patients_measure_by_start_month:
     run: >
@@ -164,7 +169,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_num_unique_patients_by_start_month.csv
+        monthly_measure: output/appointments/measure_monthly_num_unique_patients_by_start_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_num_unique_patients_by_start_month.csv
 
   appointments_generate_proportion_same_day_lead_time_measure_by_booked_month:
     run: >
@@ -177,7 +183,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within_0days_by_booked_month.csv
+        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_0days_by_booked_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_0days_by_booked_month.csv
 
   appointments_generate_proportion_same_day_lead_time_measure_by_start_month:
     run: >
@@ -190,7 +197,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within_0days_by_start_month.csv
+        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_0days_by_start_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_0days_by_start_month.csv
 
 
   appointments_generate_proportion_two_day_lead_time_measure_by_booked_month:
@@ -204,7 +212,8 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within_2days_by_booked_month.csv
+        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_2days_by_booked_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_2days_by_booked_month.csv
 
   appointments_generate_proportion_two_day_lead_time_measure_by_start_month:
     run: >
@@ -217,13 +226,13 @@ actions:
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        measure: output/appointments/measure_proportion_lead_time_in_days_within_2days_by_start_month.csv
-
+        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_2days_by_start_month.csv
+        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_2days_by_start_month.csv
 
   appointments_generate_deciles_charts:
     run: >
       deciles-charts:v0.0.33
-        --input-files output/appointments/measure_*.csv
+        --input-files output/appointments/measure_monthly_*.csv
         --output-dir output/appointments
     config:
       show_outer_percentiles: true
@@ -242,3 +251,9 @@ actions:
       moderately_sensitive:
         deciles_charts: output/appointments/deciles_chart_*.png
         deciles_tables: output/appointments/deciles_table_*.csv
+
+  run_tests:
+      run: python:latest python -m pytest --junit-xml=output/pytest.xml --verbose
+      outputs:
+        moderately_sensitive:
+          log: output/pytest.xml
