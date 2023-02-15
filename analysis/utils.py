@@ -3,15 +3,74 @@ import itertools
 import pathlib
 import string
 
-import numpy
-import pandas
+import numpy as np
+import pandas as pd
 
 BASE_DIR = pathlib.Path(__file__).parents[1]
 OUTPUT_DIR = BASE_DIR / "output"
 APPOINTMENTS_OUTPUT_DIR = OUTPUT_DIR / "appointments"
 
+# A mapping from month (as integer) to season (as integer);
+# winter is represented as 1 and summer is represented as 0
+# (we choose to use integers for memory efficiency reasons)
+month_to_season_map = {
+    # Winter is Dec, Jan, Feb, Mar
+    12: 1,
+    1: 1,
+    2: 1,
+    3: 1,
+    # Summer is Jun, Jul, Aug, Sep
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
+}
 
-def read(f_in, index_cols, date_col, value_col=None ):
+
+def summarise_to_seasons(
+    df,
+    index_cols,
+    date_col,
+    value_col="value",
+    summary_method=np.sum,
+    mapping=month_to_season_map,
+):
+    """
+    Summarises data in a dataframe to seasons.
+    df: the dataframe
+    index_cols: the name of the columns to use to group the data
+    date_col: the name of the column containing the date (this must be pd.datetime type)
+    value_col: the name of the column containing the value to be summarise [default="value"]
+    summary_method: the function to use when summarising the data [default=np.sum]
+    mapping: a dictionary mapping the month to the season
+    """
+
+    #  Remove any unecessary data before we do any calculations
+    df = df.loc[:, index_cols + [date_col, value_col]]
+
+    # Extract the month and year and represent as integers
+    df["month_n"] = df[date_col].dt.month.astype(np.int32)
+    df["year"] = df[date_col].dt.year.astype(np.int32)
+
+    # Use the mapping provided to map from the month to the season
+    df["season"] = pd.Series(df["month_n"].map(mapping), dtype=pd.Int32Dtype())
+
+    # Remove columns that are no longer necessary and remove
+    # any rows that contain NA values (these will be rows for months
+    # that are not represented in the mapping dictionary)
+    df = df.drop(["month_n"], axis=1)
+    df = df.dropna()
+
+    # Group the data and summarise using the summary_method
+    df = df.groupby(index_cols + ["season", "year"]).agg(func=summary_method)
+
+    # Reorder columns
+    df = df.reset_index().loc[:, ["practice", "year", "season", value_col]]
+
+    return df
+
+
+def read(f_in, index_cols, date_col, value_col=None):
     # How do we ensure `pandas.read_csv` is as efficient as possible? Let's do some
     # profiling! Our dummy long dataset:
     # * has 10 million rows (10 appointments for 1 million patients)
@@ -42,14 +101,10 @@ def read(f_in, index_cols, date_col, value_col=None ):
 
     usecols = index_cols
     if value_col:
-        usecols=index_cols + [value_col]
-    
-    return pandas.read_csv(
-        f_in,
-        usecols=usecols,
-        parse_dates=[date_col],
-        engine="c",
-        index_col=index_cols,
+        usecols = index_cols + [value_col]
+
+    return pd.read_csv(
+        f_in, usecols=usecols, parse_dates=[date_col], engine="c", index_col=index_cols,
     )
 
 
@@ -58,19 +113,19 @@ def to_series(f):
     def wrapper(self, *args):
         name = f.__name__.replace("_generate_", "")
         suffix = f"_{args[0]}" if args else ""
-        return pandas.Series(f(self), index=self._idx, name=f"{name}{suffix}")
+        return pd.Series(f(self), index=self._idx, name=f"{name}{suffix}")
 
     return wrapper
 
 
 class DummyDatasetGenerator:
-    _dates = pandas.date_range("2021-01-01", "2021-12-31").strftime("%Y-%m-%d")
+    _dates = pd.date_range("2021-01-01", "2021-12-31").strftime("%Y-%m-%d")
     _chars = list(string.ascii_letters)
 
     def __init__(self, num_patients, num_appointments, seed=1):
-        self._idx = pandas.RangeIndex(1, num_patients + 1, name="patient_id")
+        self._idx = pd.RangeIndex(1, num_patients + 1, name="patient_id")
         self.num_appointments = num_appointments
-        self._rng = numpy.random.default_rng(seed)
+        self._rng = np.random.default_rng(seed)
 
     @property
     def num_patients(self):
@@ -100,4 +155,4 @@ class DummyDatasetGenerator:
             (self._generate_booked_date(i), self._generate_lead_time_in_days(i))
             for i in range(1, self.num_appointments + 1)
         )
-        return pandas.concat(itertools.chain(admin, appointments), axis=1).reset_index()
+        return pd.concat(itertools.chain(admin, appointments), axis=1).reset_index()
