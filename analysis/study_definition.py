@@ -34,6 +34,7 @@ study = StudyDefinition(
     start_date = patients.fixed_value(start_date),
     end_date = patients.fixed_value(end_date),
 
+    # Start and end seperated out so we can check assumption the population are stable across each x month period
     registered_start = patients.registered_as_of(
         "index_date",
         return_expectations={"incidence": 0.9},
@@ -56,7 +57,7 @@ study = StudyDefinition(
         return_expectations={"incidence": 0.1}
         ),
         
-    age=patients.age_as_of(
+    age_start=patients.age_as_of(
         "index_date",
         return_expectations={
             "rate": "universal",
@@ -72,7 +73,7 @@ study = StudyDefinition(
         },
     ),
 
-    practice=patients.registered_practice_as_of(
+    practice_start=patients.registered_practice_as_of(
         "index_date",
         returning="pseudo_id",
         return_expectations={"int" : {"distribution": "normal", "mean": 25, "stddev": 5}, "incidence" : 0.5}
@@ -98,10 +99,10 @@ study = StudyDefinition(
         """,
     ),
 
-    population_sro = patients.satisfying(
+    population_sro_start = patients.satisfying(
         """
         population_start AND
-        age >=18 AND age <=120
+        age_start >=18 AND age_start <=120
         """,
     ),
 
@@ -112,10 +113,10 @@ study = StudyDefinition(
         """,
     ),
 
-    population_under16 = patients.satisfying(
+    population_under16_start = patients.satisfying(
         """
         population_start AND
-        age <16 
+        age_start <16 
         """,
     ),
 
@@ -306,65 +307,68 @@ study = StudyDefinition(
     appt_child = patients.satisfying(
     """
     appt AND
-    population_under16
+    population_under16_start
     """
     )
 
 )
+#### Measures
 
 measures = [
+    ##### child appt rate per child population
     Measure(
     id=f"under16_appt_rate",
     numerator="appt_child",
-    denominator="population_under16",
-    group_by=["practice"]
+    denominator="population_under16_start",
+    group_by=["practice_start"]
 ),
     
-
+    ##### child rate per total population
     Measure(
     id=f"under16_appt_pop_rate",
     numerator="appt_child",
     denominator="population_start",
-    group_by=["practice"]
+    group_by=["practice_start"]
 ),
 
-#### Check change in populations
+#### Check change in populations between start and end
     Measure(
     id=f"under16_pop_check",
-    numerator="population_under16_end",
+    numerator="population_under16_start",
     denominator="population_under16_end",
     group_by=["practice_end"]
 ),
 
     Measure(
     id=f"all_ages_pop_check",
-    numerator="population_end",
+    numerator="population_start",
     denominator="population_end",
     group_by=["practice_end"]
 ),
 
     Measure(
     id=f"sro_pop_check",
-    numerator="population_sro_end",
+    numerator="population_sro_start",
     denominator="population_sro_end",
     group_by=["practice_end"]
 )
 
 ]
 
+### SRO measures
 for measure in sentinel_measures:
     measures.extend([
         Measure(
         id=f"{measure}_rate",
         numerator=measure,
-        denominator="population_sro",
-        group_by=["practice", f"{measure}_event_code"]
+        denominator="population_sro_start",
+        group_by=["practice_start", f"{measure}_event_code"]
     ),
 
         Measure(
         id=f"{measure}_practice_only_rate",
         numerator=measure,
-        denominator="population_sro",
-        group_by=["practice"]
+        denominator="population_sro_start",
+        group_by=["practice_start"]
     )
     ])
