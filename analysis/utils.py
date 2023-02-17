@@ -10,21 +10,8 @@ BASE_DIR = pathlib.Path(__file__).parents[1]
 OUTPUT_DIR = BASE_DIR / "output"
 APPOINTMENTS_OUTPUT_DIR = OUTPUT_DIR / "appointments"
 
-# A mapping from month (as integer) to season (as integer);
-# winter is represented as 1 and summer is represented as 0
-# (we choose to use integers for memory efficiency reasons)
-month_to_season_map = {
-    # Winter is Dec, Jan, Feb, Mar
-    12: 1,
-    1: 1,
-    2: 1,
-    3: 1,
-    # Summer is Jun, Jul, Aug, Sep
-    6: 0,
-    7: 0,
-    8: 0,
-    9: 0,
-}
+# A mapping from season (string) to a list of months (as integer);
+month_to_season_map = {"winter": [1, 2, 3, 12], "summer": [6, 7, 8, 9]}
 
 
 def summarise_to_seasons(
@@ -42,7 +29,7 @@ def summarise_to_seasons(
     date_col: the name of the column containing the date (this must be pandas.datetime type)
     value_col: the name of the column containing the value to be summarise [default="value"]
     summary_method: the function to use when summarising the data [default=np.sum]
-    mapping: a dictionary mapping the month to the season
+    mapping: a dictionary mapping the season to a list of months
     """
 
     #  Remove any unecessary data before we do any calculations
@@ -53,13 +40,15 @@ def summarise_to_seasons(
     df["year"] = df[date_col].dt.year.astype(np.int32)
 
     # Use the mapping provided to map from the month to the season
-    df["season"] = pandas.Series(df["month_n"].map(mapping), dtype=pandas.Int32Dtype())
+    df.loc[df["month_n"].isin(mapping["winter"]), "season"] = 1
+    df.loc[df["month_n"].isin(mapping["summer"]), "season"] = 0
 
     # Remove columns that are no longer necessary and remove
     # any rows that contain NA values (these will be rows for months
     # that are not represented in the mapping dictionary)
     df = df.drop(["month_n"], axis=1)
     df = df.dropna()
+    df["season"] = df["season"].astype(int)
 
     # Group the data and summarise using the summary_method
     df = df.groupby(index_cols + ["season", "year"]).agg(func=summary_method)
