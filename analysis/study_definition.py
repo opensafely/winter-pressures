@@ -113,21 +113,33 @@ study = StudyDefinition(
         """,
     ),
 
-    population_under16_start = patients.satisfying(
+    population_over12_start = patients.satisfying(
         """
         population_start AND
-        age_start <16 
+        (age_start >11 AND age_start <16) 
         """,
     ),
 
-
-    population_under16_end = patients.satisfying(
+    population_over12_end = patients.satisfying(
         """
         population_end AND
-        age_end <16
+        (age_end >11 AND age_end <=15)
         """,
     ),
-        
+
+    population_under12_start = patients.satisfying(
+        """
+        population_start AND
+        (age_start >=5 AND age_start <=11) 
+        """,
+    ),
+
+    population_under12_end = patients.satisfying(
+        """
+        population_end AND
+        (age_end >=5 AND age_end <=11)
+        """,
+    ),    
 
     ##### SRO measures
 
@@ -304,10 +316,17 @@ study = StudyDefinition(
         return_expectations={"incidence": 0.5}
     ), 
 
-    appt_child = patients.satisfying(
+    appt_over12 = patients.satisfying(
     """
     appt AND
-    population_under16_start
+    population_over12_start
+    """
+    ),
+
+    appt_under12 = patients.satisfying(
+    """
+    appt AND
+    population_under12_start
     """
     )
 
@@ -317,25 +336,46 @@ study = StudyDefinition(
 measures = [
     ##### child appt rate per child population
     Measure(
-    id=f"under16_appt_rate",
-    numerator="appt_child",
-    denominator="population_under16_start",
+    id=f"over12_appt_rate",
+    numerator="appt_over12",
+    denominator="population_over12_start",
+    group_by=["practice_start"]
+),
+
+    Measure(
+    id=f"under12_appt_rate",
+    numerator="appt_under12",
+    denominator="population_under12_start",
     group_by=["practice_start"]
 ),
     
     ##### child rate per total population
     Measure(
-    id=f"under16_appt_pop_rate",
-    numerator="appt_child",
+    id=f"over12_appt_pop_rate",
+    numerator="appt_over12",
+    denominator="population_start",
+    group_by=["practice_start"]
+),
+
+    Measure(
+    id=f"over12_appt_pop_rate",
+    numerator="appt_under12",
     denominator="population_start",
     group_by=["practice_start"]
 ),
 
 #### Check change in populations between start and end
     Measure(
-    id=f"under16_pop_check",
-    numerator="population_under16_start",
-    denominator="population_under16_end",
+    id=f"over12_pop_check",
+    numerator="population_under12_start",
+    denominator="population_under12_end",
+    group_by=["practice_end"]
+),
+
+    Measure(
+    id=f"over12_pop_check",
+    numerator="population_over12_start",
+    denominator="population_over12_end",
     group_by=["practice_end"]
 ),
 
