@@ -4,7 +4,7 @@ import pathlib
 import string
 
 import numpy as np
-import pandas as pd
+import pandas
 
 BASE_DIR = pathlib.Path(__file__).parents[1]
 OUTPUT_DIR = BASE_DIR / "output"
@@ -39,7 +39,7 @@ def summarise_to_seasons(
     Summarises data in a dataframe to seasons.
     df: the dataframe
     index_cols: the name of the columns to use to group the data
-    date_col: the name of the column containing the date (this must be pd.datetime type)
+    date_col: the name of the column containing the date (this must be pandas.datetime type)
     value_col: the name of the column containing the value to be summarise [default="value"]
     summary_method: the function to use when summarising the data [default=np.sum]
     mapping: a dictionary mapping the month to the season
@@ -53,7 +53,7 @@ def summarise_to_seasons(
     df["year"] = df[date_col].dt.year.astype(np.int32)
 
     # Use the mapping provided to map from the month to the season
-    df["season"] = pd.Series(df["month_n"].map(mapping), dtype=pd.Int32Dtype())
+    df["season"] = pandas.Series(df["month_n"].map(mapping), dtype=pandas.Int32Dtype())
 
     # Remove columns that are no longer necessary and remove
     # any rows that contain NA values (these will be rows for months
@@ -103,7 +103,7 @@ def read(f_in, index_cols, date_col, value_col=None):
     if value_col:
         usecols = index_cols + [value_col]
 
-    return pd.read_csv(
+    return pandas.read_csv(
         f_in, usecols=usecols, parse_dates=[date_col], engine="c", index_col=index_cols,
     )
 
@@ -113,17 +113,17 @@ def to_series(f):
     def wrapper(self, *args):
         name = f.__name__.replace("_generate_", "")
         suffix = f"_{args[0]}" if args else ""
-        return pd.Series(f(self), index=self._idx, name=f"{name}{suffix}")
+        return pandas.Series(f(self), index=self._idx, name=f"{name}{suffix}")
 
     return wrapper
 
 
 class DummyDatasetGenerator:
-    _dates = pd.date_range("2021-01-01", "2021-12-31").strftime("%Y-%m-%d")
+    _dates = pandas.date_range("2021-01-01", "2021-12-31").strftime("%Y-%m-%d")
     _chars = list(string.ascii_letters)
 
     def __init__(self, num_patients, num_appointments, seed=1):
-        self._idx = pd.RangeIndex(1, num_patients + 1, name="patient_id")
+        self._idx = pandas.RangeIndex(1, num_patients + 1, name="patient_id")
         self.num_appointments = num_appointments
         self._rng = np.random.default_rng(seed)
 
@@ -155,4 +155,4 @@ class DummyDatasetGenerator:
             (self._generate_booked_date(i), self._generate_lead_time_in_days(i))
             for i in range(1, self.num_appointments + 1)
         )
-        return pd.concat(itertools.chain(admin, appointments), axis=1).reset_index()
+        return pandas.concat(itertools.chain(admin, appointments), axis=1).reset_index()
