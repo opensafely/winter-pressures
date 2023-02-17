@@ -29,21 +29,29 @@ study = StudyDefinition(
         "rate": "exponential_increase",
         "incidence": 0.1,
     },
-    population=patients.satisfying(
-        """
-        registered AND
-        (NOT died) AND
-        (age >=18 AND age <=120) 
-        """,
-    ),
+    population=patients.all(),
+    
+    start_date = patients.fixed_value(start_date),
+    end_date = patients.fixed_value(end_date),
 
-    registered = patients.registered_as_of(
+    registered_start = patients.registered_as_of(
         "index_date",
         return_expectations={"incidence": 0.9},
         ),
-
-    died = patients.died_from_any_cause(
+    
+    registered_end = patients.registered_as_of(
+        end_date,
+        return_expectations={"incidence": 0.9},
+        ),
+    
+    died_start = patients.died_from_any_cause(
         on_or_before="index_date",
+        returning="binary_flag",
+        return_expectations={"incidence": 0.1}
+        ),
+
+    died_end = patients.died_from_any_cause(
+        on_or_before=end_date,
         returning="binary_flag",
         return_expectations={"incidence": 0.1}
         ),
@@ -56,13 +64,69 @@ study = StudyDefinition(
         },
     ),
 
+    age_end=patients.age_as_of(
+        end_date,
+        return_expectations={
+            "rate": "universal",
+            "int": {"distribution": "population_ages"},
+        },
+    ),
+
     practice=patients.registered_practice_as_of(
         "index_date",
         returning="pseudo_id",
         return_expectations={"int" : {"distribution": "normal", "mean": 25, "stddev": 5}, "incidence" : 0.5}
     ),
-    start_date = patients.fixed_value(start_date),
-    end_date = patients.fixed_value(end_date),
+
+    practice_end=patients.registered_practice_as_of(
+        end_date,
+        returning="pseudo_id",
+        return_expectations={"int" : {"distribution": "normal", "mean": 25, "stddev": 5}, "incidence" : 0.5}
+    ),
+
+    population_start=patients.satisfying(
+        """
+        registered_start AND
+        (NOT died_start) 
+        """,
+    ),
+
+    population_end=patients.satisfying(
+        """
+        registered_end AND
+        (NOT died_end)
+        """,
+    ),
+
+    population_sro = patients.satisfying(
+        """
+        population_start AND
+        age >=18 AND age <=120
+        """,
+    ),
+
+    population_sro_end = patients.satisfying(
+        """
+        population_end AND
+        (age_end >=18 AND age_end <=120) 
+        """,
+    ),
+
+    population_under16 = patients.satisfying(
+        """
+        population_start AND
+        age <16 
+        """,
+    ),
+
+
+    population_under16_end = patients.satisfying(
+        """
+        population_end AND
+        age_end <16
+        """,
+    ),
+        
 
     ##### SRO measures
 
@@ -232,24 +296,75 @@ study = StudyDefinition(
             "ratios": {str(394703002): 0.6, str(760601000000107): 0.2, str(760621000000103): 0.2}}, }
     ),
     
+    ### appointment 
+    appt = patients.with_gp_consultations(
+        between=["first_day_of_month(start_date)", "last_day_of_month(end_date)"],
+        returning="binary_flag",
+        return_expectations={"incidence": 0.5}
+    ), 
+
+    appt_child = patients.satisfying(
+    """
+    appt AND
+    population_under16
+    """
+    )
 
 )
 
-measures = []
+measures = [
+    Measure(
+    id=f"under16_appt_rate",
+    numerator="appt_child",
+    denominator="population_under16",
+    group_by=["practice"]
+),
+    
+
+    Measure(
+    id=f"under16_appt_pop_rate",
+    numerator="appt_child",
+    denominator="population_start",
+    group_by=["practice"]
+),
+
+#### Check change in populations
+    Measure(
+    id=f"under16_pop_check",
+    numerator="population_under16_end",
+    denominator="population_under16_end",
+    group_by=["practice_end"]
+),
+
+    Measure(
+    id=f"all_ages_pop_check",
+    numerator="population_end",
+    denominator="population_end",
+    group_by=["practice_end"]
+),
+
+    Measure(
+    id=f"sro_pop_check",
+    numerator="population_sro_end",
+    denominator="population_sro_end",
+    group_by=["practice_end"]
+)
+
+]
 
 for measure in sentinel_measures:
     measures.extend([
         Measure(
         id=f"{measure}_rate",
         numerator=measure,
-        denominator="population",
+        denominator="population_sro",
         group_by=["practice", f"{measure}_event_code"]
     ),
 
         Measure(
         id=f"{measure}_practice_only_rate",
         numerator=measure,
-        denominator="population",
+        denominator="population_sro",
         group_by=["practice"]
     )
     ])
