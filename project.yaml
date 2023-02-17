@@ -96,138 +96,190 @@ actions:
   #     highly_sensitive:
   #       dataset: output/appointments/dataset_long.arrow
 
-  appointments_generate_lead_time_measure_by_booked_month:
+  # appointments_generate_lead_time_measure_by_booked_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_median_lead_time_measure
+  #       --value-col lead_time_in_days
+  #       --index-cols booked_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_median_lead_time_in_days_by_booked_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_median_lead_time_in_days_by_booked_month.csv
+
+  # appointments_generate_lead_time_measure_by_start_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_median_lead_time_measure
+  #       --value-col lead_time_in_days
+  #       --index-cols start_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_median_lead_time_in_days_by_start_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_median_lead_time_in_days_by_start_month.csv
+
+  # appointments_generate_num_appointments_measure_by_start_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_num_appointments_measure
+  #       --index-cols start_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_num_appointments_by_start_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_num_appointments_by_start_month.csv
+
+  # appointments_generate_num_appointments_measure_by_booked_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_num_appointments_measure
+  #       --index-cols booked_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_num_appointments_by_booked_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_num_appointments_by_booked_month.csv
+
+  # appointments_generate_num_unique_patients_measure_by_booked_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_num_unique_patients_measure
+  #       --unique-col patient_id
+  #       --index-cols booked_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_num_unique_patients_by_booked_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_num_unique_patients_by_booked_month.csv
+
+  # appointments_generate_num_unique_patients_measure_by_start_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_num_unique_patients_measure
+  #       --unique-col patient_id
+  #       --index-cols start_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_num_unique_patients_by_start_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_num_unique_patients_by_start_month.csv
+
+  # appointments_generate_proportion_same_day_lead_time_measure_by_booked_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_proportion_lead_time_measure
+  #       --value-col lead_time_in_days
+  #       --value-threshold 0
+  #       --index-cols booked_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_0days_by_booked_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_0days_by_booked_month.csv
+
+  # appointments_generate_proportion_same_day_lead_time_measure_by_start_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_proportion_lead_time_measure
+  #       --value-col lead_time_in_days
+  #       --value-threshold 0
+  #       --index-cols start_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_0days_by_start_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_0days_by_start_month.csv
+
+
+  # appointments_generate_proportion_two_day_lead_time_measure_by_booked_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_proportion_lead_time_measure
+  #       --value-col lead_time_in_days
+  #       --value-threshold 2
+  #       --index-cols booked_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_2days_by_booked_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_2days_by_booked_month.csv
+
+  # appointments_generate_proportion_two_day_lead_time_measure_by_start_month:
+  #   run: >
+  #     python:latest
+  #       python
+  #       -m analysis.appointments.generate_proportion_lead_time_measure
+  #       --value-col lead_time_in_days
+  #       --value-threshold 2
+  #       --index-cols start_month practice
+  #   needs: [appointments_generate_dataset_sql]
+  #   outputs:
+  #     moderately_sensitive:
+  #       monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_2days_by_start_month.csv
+  #       seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_2days_by_start_month.csv
+
+  appointments_generate_monthly_measures_by_booked_month:
     run: >
       python:latest
         python
-        -m analysis.appointments.generate_median_lead_time_measure
-        --value-col lead_time_in_days
+        -m analysis.appointments.generate_appointment_monthly_measures
+        --value-thresholds 0 2
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_median_lead_time_in_days_by_booked_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_median_lead_time_in_days_by_booked_month.csv
+        monthly_measure: output/appointments/measure_monthly_*_by_booked_month.csv
 
-  appointments_generate_lead_time_measure_by_start_month:
+
+  appointments_generate_monthly_measures_by_start_month:
     run: >
       python:latest
         python
-        -m analysis.appointments.generate_median_lead_time_measure
-        --value-col lead_time_in_days
+        -m analysis.appointments.generate_appointment_monthly_measures
+        --value-thresholds 0 2
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_median_lead_time_in_days_by_start_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_median_lead_time_in_days_by_start_month.csv
+        monthly_measure: output/appointments/measure_monthly_*_by_start_month.csv
 
-  appointments_generate_num_appointments_measure_by_start_month:
+  
+  appointments_generate_seasonal_summaries_by_start_month:
     run: >
       python:latest
         python
-        -m analysis.appointments.generate_num_appointments_measure
+        -m analysis.appointments.generate_appointment_seasonal_summaries
+        --value-thresholds 0 2
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_num_appointments_by_start_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_num_appointments_by_start_month.csv
+        monthly_measure: output/appointments/measure_seasonal_*_by_start_month.csv
 
-  appointments_generate_num_appointments_measure_by_booked_month:
+
+  appointments_generate_seasonal_summaries_by_booked_month:
     run: >
       python:latest
         python
-        -m analysis.appointments.generate_num_appointments_measure
+        -m analysis.appointments.generate_appointment_seasonal_summaries
+        --value-thresholds 0 2
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
       moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_num_appointments_by_booked_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_num_appointments_by_booked_month.csv
-
-  appointments_generate_num_unique_patients_measure_by_booked_month:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.generate_num_unique_patients_measure
-        --unique-col patient_id
-        --index-cols booked_month practice
-    needs: [appointments_generate_dataset_sql]
-    outputs:
-      moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_num_unique_patients_by_booked_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_num_unique_patients_by_booked_month.csv
-
-  appointments_generate_num_unique_patients_measure_by_start_month:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.generate_num_unique_patients_measure
-        --unique-col patient_id
-        --index-cols start_month practice
-    needs: [appointments_generate_dataset_sql]
-    outputs:
-      moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_num_unique_patients_by_start_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_num_unique_patients_by_start_month.csv
-
-  appointments_generate_proportion_same_day_lead_time_measure_by_booked_month:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.generate_proportion_lead_time_measure
-        --value-col lead_time_in_days
-        --value-threshold 0
-        --index-cols booked_month practice
-    needs: [appointments_generate_dataset_sql]
-    outputs:
-      moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_0days_by_booked_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_0days_by_booked_month.csv
-
-  appointments_generate_proportion_same_day_lead_time_measure_by_start_month:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.generate_proportion_lead_time_measure
-        --value-col lead_time_in_days
-        --value-threshold 0
-        --index-cols start_month practice
-    needs: [appointments_generate_dataset_sql]
-    outputs:
-      moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_0days_by_start_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_0days_by_start_month.csv
-
-
-  appointments_generate_proportion_two_day_lead_time_measure_by_booked_month:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.generate_proportion_lead_time_measure
-        --value-col lead_time_in_days
-        --value-threshold 2
-        --index-cols booked_month practice
-    needs: [appointments_generate_dataset_sql]
-    outputs:
-      moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_2days_by_booked_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_2days_by_booked_month.csv
-
-  appointments_generate_proportion_two_day_lead_time_measure_by_start_month:
-    run: >
-      python:latest
-        python
-        -m analysis.appointments.generate_proportion_lead_time_measure
-        --value-col lead_time_in_days
-        --value-threshold 2
-        --index-cols start_month practice
-    needs: [appointments_generate_dataset_sql]
-    outputs:
-      moderately_sensitive:
-        monthly_measure: output/appointments/measure_monthly_proportion_lead_time_in_days_within_2days_by_start_month.csv
-        seasonal_measure: output/appointments/measure_seasonal_proportion_lead_time_in_days_within_2days_by_start_month.csv
+        monthly_measure: output/appointments/measure_seasonal_*_by_booked_month.csv
+  
 
   appointments_generate_deciles_charts:
     run: >
@@ -237,16 +289,8 @@ actions:
     config:
       show_outer_percentiles: true
     needs:
-      - appointments_generate_lead_time_measure_by_booked_month
-      - appointments_generate_lead_time_measure_by_start_month
-      - appointments_generate_num_appointments_measure_by_start_month
-      - appointments_generate_num_appointments_measure_by_booked_month
-      - appointments_generate_num_unique_patients_measure_by_start_month
-      - appointments_generate_num_unique_patients_measure_by_booked_month
-      - appointments_generate_proportion_two_day_lead_time_measure_by_start_month
-      - appointments_generate_proportion_two_day_lead_time_measure_by_booked_month
-      - appointments_generate_proportion_same_day_lead_time_measure_by_start_month
-      - appointments_generate_proportion_same_day_lead_time_measure_by_booked_month
+      - appointments_generate_monthly_measures_by_booked_month
+      - appointments_generate_monthly_measures_by_start_month
     outputs:
       moderately_sensitive:
         deciles_charts: output/appointments/deciles_chart_*.png
