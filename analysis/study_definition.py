@@ -116,7 +116,7 @@ study = StudyDefinition(
     population_over12_start = patients.satisfying(
         """
         population_start AND
-        (age_start >11 AND age_start <16) 
+        (age_start >11 AND age_start <=15) 
         """,
     ),
 
