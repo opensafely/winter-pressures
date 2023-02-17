@@ -40,7 +40,7 @@ study = StudyDefinition(
         ),
     
     registered_end = patients.registered_as_of(
-        end_date,
+        "end_date",
         return_expectations={"incidence": 0.9},
         ),
     
@@ -51,7 +51,7 @@ study = StudyDefinition(
         ),
 
     died_end = patients.died_from_any_cause(
-        on_or_before=end_date,
+        on_or_before="end_date",
         returning="binary_flag",
         return_expectations={"incidence": 0.1}
         ),
@@ -65,7 +65,7 @@ study = StudyDefinition(
     ),
 
     age_end=patients.age_as_of(
-        end_date,
+        "end_date",
         return_expectations={
             "rate": "universal",
             "int": {"distribution": "population_ages"},
@@ -79,7 +79,7 @@ study = StudyDefinition(
     ),
 
     practice_end=patients.registered_practice_as_of(
-        end_date,
+        "end_date",
         returning="pseudo_id",
         return_expectations={"int" : {"distribution": "normal", "mean": 25, "stddev": 5}, "incidence" : 0.5}
     ),
