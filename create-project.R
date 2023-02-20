@@ -76,20 +76,38 @@ lapply_actions <- function(X, FUN) {
 }
 
 
-metrics_extract_action <- function(season, date_range,output) {
+metrics_extract_action <- function(season, cohort,date_range,output) {
   action(
-  name = glue("metrics_generate_study_dataset_{season}"),
+  name = glue("metrics_generate_{cohort}_dataset_{season}"),
   run = glue(
     "cohortextractor:latest generate_cohort",
-    " --study-definition study_definition",
-    " --index-date-range '{date_range[1]} to {date_range[2]} by month'",
+    " --study-definition study_definition_{cohort}",
+    " --param start_date='{date_range[1]}' --param end_date='{date_range[2]}'",
     " --output-dir=output/metrics",
     " --output-format=feather",
+    " --output-file output/metrics/input_{cohort}_{date_range[1]}.feather"
   ),
   highly_sensitive = lst(
-    extract = glue("output/metrics/{output}.feather")
+    extract = glue("output/metrics/input_{cohort}_{date_range[1]}.feather")
   ),
   )
+}
+
+metrics_measures_action <- function(cohort,date_range,output){
+  action(
+    name = glue("metrics_generate_{cohort}_measures"),
+    run = glue("cohortextractor:latest generate_measures",
+               " --param start_date='{date_range[1]}' --param end_date='{date_range[2]}'",
+               " --study-definition study_definition_{cohort}",
+               " --output-dir=output/metrics",
+    ),
+    needs = namelesslst(glue("metrics_generate_{cohort}_dataset_summer"),glue("metrics_generate_{cohort}_dataset_winter")),
+    highly_sensitive = lst(
+      measure_csv = glue("output/metrics/{output}.csv")
+    ),
+  )
+
+
 }
 
 # specify project ----
@@ -107,20 +125,15 @@ actions_list <- splice(
     "Metrics data",
     "# # # # # # # # # # # # # # # # # # #"
   ),
-  metrics_extract_action("winter",study_dates$winter_dates,"input_*"),
-  metrics_extract_action("summer",study_dates$summer_dates,"input*"),
-
-  action(
-    name = glue("metrics_generate_measures"),
-    run = glue("cohortextractor:latest generate_measures",
-               " --study-definition study_definition",
-               " --output-dir=output/metrics",
-    ),
-    needs = namelesslst("metrics_generate_study_dataset_summer","metrics_generate_study_dataset_winter"),
-    highly_sensitive = lst(
-      measure_csv = glue("output/metrics/measure_*_rate.csv")
-    ),
-  ),
+  metrics_extract_action("winter","sro",study_dates$winter_dates,"input_*"),
+  metrics_extract_action("summer","sro",study_dates$summer_dates,"input*"),
+  metrics_extract_action("winter","kids",study_dates$winter_dates,"inpu*"),
+  metrics_extract_action("summer","kids",study_dates$summer_dates,"inp*"),
+  metrics_extract_action("winter","endpopulation",study_dates$winter_dates,"in_*"),
+  metrics_extract_action("summer","endpopulation",study_dates$summer_dates,"i*"),
+  metrics_measures_action("sro",study_dates$summer_dates,"mea*"),
+  metrics_measures_action("kids",study_dates$summer_dates,"me*"),
+  metrics_measures_action("endpopulation",study_dates$summer_dates,"m*"),
   
      comment("#### End ####")
 )
