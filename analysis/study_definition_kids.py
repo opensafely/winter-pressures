@@ -8,11 +8,6 @@ from cohortextractor import (
     Measure,
     params
 )
-sentinel_measures = ["qrisk2", "asthma", "copd", "sodium", "cholesterol", "alt", "tsh", "rbc", 'hba1c', 'systolic_bp', 'medication_review']
-sentinel_measures_event = [s + "_event" for s in sentinel_measures]  
-
-from metrics.config import indicators_list
-
 
 # Import codelists
 

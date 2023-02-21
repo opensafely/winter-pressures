@@ -9,10 +9,6 @@ from cohortextractor import (
     params
 )
 sentinel_measures = ["qrisk2", "asthma", "copd", "sodium", "cholesterol", "alt", "tsh", "rbc", 'hba1c', 'systolic_bp', 'medication_review']
-# sentinel_measures_event = [s + "_event" for s in sentinel_measures]  
-
-from metrics.config import indicators_list
-
 
 # Import codelists
 
@@ -21,26 +17,6 @@ from datetime import date
 
 start_date = params["start_date"]
 end_date = params["end_date"]
-
-# flags = {
-#     name: patients.satisfying(
-#         f"""
-#         {name} AND
-#         population_sro
-#         """,   
-#     )
-#     for name in sentinel_measures
-# }
-
-# events = {
-#     name: patients.satisfying(
-#         f"""
-#         {name}_code AND
-#         population_sro
-#         """,   
-#     )
-#     for name in sentinel_measures_event
-# }
 
 # Specifiy study definition
 study = StudyDefinition(
