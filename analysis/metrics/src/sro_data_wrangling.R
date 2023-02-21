@@ -54,15 +54,6 @@ get_season_aggregate_sro_measure <- function(sro_measure_name,
 get_and_format_sro_measure_data <- function(sro_measure_name){
 
   # read in sro measure data
-<<<<<<< HEAD
-=======
-  # measure_data <- read_csv(file = here("output", 
-  #                                      "metrics", 
-  #                                      paste0("measure_", 
-  #                                             sro_measure_name, 
-  #                                             "_practice_only_rate.csv")))
-  
->>>>>>> b8dca23b283a19fc10f1835a1c219bd1946cdbc8
   measure_data <- read_csv(file = here("output", 
                                        "metrics", 
                                        paste0("measure_", 
