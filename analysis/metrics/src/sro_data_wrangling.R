@@ -1,0 +1,218 @@
+
+#######################################################################
+# read in SRO measure data and aggregate to season
+#######################################################################  
+
+get_season_aggregate_sro_measure <- function(sro_measure_name,
+                                             summer_months,
+                                             winter_months){
+
+  # read in and format SRO measure data
+  measure_data <- get_and_format_sro_measure_data(sro_measure_name = sro_measure_name)
+  
+  # create season lookup table for all the dates in the measure data
+  season_lookup <- season_assignment(measure_data = measure_data,
+                                     summer_months = summer_months,
+                                     winter_months = winter_months)
+  
+  # join season data to measure data
+  measure_data <- left_join(measure_data,
+                            season_lookup,
+                            by = c("date" = "date"))
+  
+  # check that no months have season NA
+  print(sum(is.na(measure_data$season)))
+  
+  # calculate measure value on aggregated season data, grouped by practice, 
+  #  season, and seasonal year
+  
+  grouping_variables <- c("practice",
+                          "season",
+                          "year"
+  )
+  
+  season_data <- generate_season_summary_data(
+    grouping_variables = grouping_variables,
+    measure_data = measure_data)
+  
+  # set output directory
+  output_directory <- fs::dir_create(here("output", 
+                                          "metrics", 
+                                          sro_measure_name),
+                                     recurse = TRUE)
+  # save out data as csv
+  write_csv(season_data,
+            file = here(output_directory, 
+                        "season_data.csv"))
+  
+}
+
+#######################################################################
+# read in and format SRO measure data
+#######################################################################  
+
+get_and_format_sro_measure_data <- function(sro_measure_name){
+
+  # read in sro measure data
+  # measure_data <- read_csv(file = here("output", 
+  #                                      "metrics", 
+  #                                      paste0("measure_", 
+  #                                             sro_measure_name, 
+  #                                             "_practice_only_rate.csv")))
+  
+  measure_data <- read_csv(file = here("output", 
+                                       "metrics", 
+                                       paste0("measure_", 
+                                              sro_measure_name, 
+                                              "_practice_only_rate.csv")),
+                           col_types = cols(
+                             date = col_date(),
+                             practice = col_double(),
+                             population = col_double(),
+                             value = col_double(),
+                             "{sro_measure_name}" := col_double()
+                           )
+  )
+  
+  # standardise column names
+  measure_data <- pivot_longer(measure_data,
+                               cols = all_of(sro_measure_name),
+                               names_to = "sro_measure_name", 
+                               values_to = "measure_count")
+  
+  # convert date column from character type to date type
+  measure_data$date <- as.Date(measure_data$date,
+                               tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
+  
+  # remove "value" column
+  # we need to calculate our proportions using a different denominator to the 
+  # measures framework, therefore the imported "value" column is incorrect
+  measure_data <- select(measure_data,
+                         !(value))
+  
+  measure_data
+}
+
+#######################################################################
+# create a lookup table for season indexing
+#######################################################################
+
+# each date in our data must be assigned a season: summer or winter
+# each summer season must have a corresponding winter season for comparison, and
+#  we always consider summer to occur before winter
+# paired seasons will be identified by an index: "year" column, representing the 
+#  year that the season begins
+# a summer season and a winter season must contain the same number of months; we 
+#  create an index to identify the 1st, 2nd etc month within a season
+
+
+# Generate monthly lookup table n years
+season_assignment <- function(measure_data,
+                              summer_months,
+                              winter_months){
+  
+  # Generate monthly lookup table 1 year period beginning on start date
+  single_year_season_assignment <- function(seasonal_year_start_date,
+                                            summer_months,
+                                            winter_months){ 
+    
+    # calculate the season year end date (using 1st of the month)
+    seasonal_year_end_date <- seasonal_year_start_date %m+% months(11)
+    
+    # generate monthly tibble for the year and assign seasons
+    tib <- tibble(date = as.Date(seq(seasonal_year_start_date,
+                                     seasonal_year_end_date,
+                                     by = "months")),
+                  season = case_when(month(date) %in% summer_months ~ 0L,
+                                     month(date) %in% winter_months ~ 1L,
+                                     !(month(date) %in% c(summer_months, winter_months)) ~ NA_integer_,
+                  ))
+    
+    
+    # remove the months with no assigned season (NAs)
+    tib <- drop_na(tib, season)
+    
+    # Check that the data have the correct number of months (equal number in 
+    #  summer and winter), ie no season is missing a month 
+    check_months <- identical(sort(month(tib$date)), 
+                              sort(c(summer_months, winter_months)))
+    
+    # if check_months == TRUE, assign season_month_index: an index  to enable 
+    #  matching 1st summer month to 1st winter month etc 
+    #  otherwise return NA
+    if(check_months == TRUE){
+      
+      tib <- mutate(tib,
+                    season_month_index = rep(1:length(summer_months), 
+                                             length.out = 2*length(summer_months)))
+      
+    } else {
+      tib <- NA
+    }
+    
+    # return the data, or NA if check_months condition is FALSE
+    tib
+  }
+  
+  # find the start date(s) for our season year within the data
+  seasonal_year_start_date <- unique(
+    measure_data$date[month(measure_data$date) == min(summer_months) &
+                        day(measure_data$date) == 1]
+  )
+  
+  # find number of seasonal years (start date only) in our data
+  n <- length(seasonal_year_start_date)
+  
+  # generate lookup table list with addition of a season_year_index
+  season_lookup <- lapply(1:n,
+         function(n){
+           tib <- single_year_season_assignment(
+             seasonal_year_start_date = seasonal_year_start_date[n],
+             summer_months = summer_months,
+             winter_months = winter_months)
+
+           tib <- mutate(tib,
+                         year = year(seasonal_year_start_date[n]))
+           
+           tib
+           
+         }
+  )
+  
+  # flatten the list and return lookup table
+  season_lookup <- bind_rows(season_lookup)
+  
+  season_lookup
+}
+
+#######################################################################
+# aggregate data to season and calculate proportion
+#######################################################################
+
+# take the measure data and aggregate to season values by the grouping variables
+generate_season_summary_data <- function(grouping_variables,
+                                         measure_data){
+
+  # create data that is grouped
+  season_data <- group_by(measure_data,
+                          across(all_of(grouping_variables)))
+  
+  # summarise the data:
+  # numerator: sum the measure count values over the 4 months
+  # denominator: take the median population size over the 4 months
+  season_data <- summarise(season_data,
+                           numerator = sum(measure_count),
+                           denominator = median(population),
+                           .groups = "keep")
+  
+  # calculate proportion by season
+  season_data <- mutate(season_data,
+                        value = numerator/denominator)
+  
+  select(season_data,
+         !(c(numerator, denominator)))
+  
+}
+
+
+
