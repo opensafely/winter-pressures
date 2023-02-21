@@ -1,6 +1,6 @@
-library( tibble )
+library(tibble)
 
-input_d_valid = tribble( 
+input_d_valid = tribble(
     ~practice,  ~season, ~year, ~value,
     1, 0, 2021, 0.1,
     1, 1, 2021, 0.2,
@@ -20,8 +20,9 @@ output_expected_valid = tribble(
 
 context("Testing the function generate_wide_season_data()")
 
-test_that(desc="Wide to long with valid data", {
-    ### The test dataframe (d_wide) contains long data summarising seasonal data:
+test_that( desc = "Wide to long with valid data", {
+    ### The test dataframe (input_d_valid) contains long
+    ### data summarising seasonal data:
     ### (1) practice: practice_id
     ### (2) season: where 1=winter and 0=summer
     ### (3) year: year
@@ -31,7 +32,9 @@ test_that(desc="Wide to long with valid data", {
     ### - there is a seasonal summary entry for summer AND winter
     ### - neither seasonal summary entry for summer or winter is NA
 
-    output_observed_valid = generate_wide_season_data(season_data = input_d_valid)
+    output_observed_valid = generate_wide_season_data(
+        season_data = input_d_valid
+    )
 
     expect_equal(output_observed_valid, output_expected_valid)
 })
@@ -46,13 +49,19 @@ input_d_invalid_season_code <- tribble(
 output_expected_invalid_season_code <- tribble()
 
 test_that(desc = "Wide to long with invalid season codes", {
-    ### The test dataframe (d_wide) contains long data summarising seasonal data:
+    ### The test dataframe (input_d_invalid_season_code)
+    ### contains long data summarising seasonal data:
     ### (1) practice: practice_id
     ### (2) season: where 1=winter and 0=summer
     ### (3) year: year
     ### (4) value: the value
 
-    output_observed_invalid_season_code <- generate_wide_season_data(season_data = input_d_invalid_season_code)
+    output_observed_invalid_season_code <- generate_wide_season_data(
+        season_data = input_d_invalid_season_code
+    )
 
-    expect_equal(output_observed_invalid_season_code, output_expected_invalid_season_code)
+    expect_equal(
+        output_observed_invalid_season_code,
+        output_expected_invalid_season_code
+    )
 })
