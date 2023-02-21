@@ -106,6 +106,14 @@ actions:
         csv1: output/metrics/summer_winter_difference_histogram_data.csv
         csv2: output/metrics/summer_winter_ratio_histogram_data.csv
 
+  metrics_run_sro_tests:
+    run: r:latest analysis/metrics/tests/testthat/run-all.R &> output/metrics/tests/run-all.log
+    needs: [metrics_generate_sro_measures]
+    outputs:
+      moderately_sensitive:
+        log: output/metrics/tests/run-all.log
+
+    
 
   # Appointments data
   # -----------------
