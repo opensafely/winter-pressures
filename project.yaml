@@ -16,36 +16,89 @@ actions:
 
   # Metrics data
   # ------------
-  metrics_generate_study_dataset_winter:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition
-      --index-date-range '2021-12-01 to 2022-03-30 by month' --output-dir=output/metrics
-      --output-format=feather
+  metrics_generate_sro_dataset_winter:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_sro
+      --param start_date='2021-12-01' --param end_date='2022-03-30' --output-dir=output/metrics
+      --output-format=feather --output-file output/metrics/input_sro_2021-12-01.feather
     outputs:
       highly_sensitive:
-        extract: output/metrics/input_*.feather
+        extract: output/metrics/input_sro_2021-12-01.feather
 
-  metrics_generate_study_dataset_summer:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition
-      --index-date-range '2021-06-01 to 2021-09-30 by month' --output-dir=output/metrics
-      --output-format=feather
+  metrics_generate_sro_dataset_summer:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_sro
+      --param start_date='2021-06-01' --param end_date='2021-09-30' --output-dir=output/metrics
+      --output-format=feather --output-file output/metrics/input_sro_2021-06-01.feather
     outputs:
       highly_sensitive:
-        extract: output/metrics/input*.feather
+        extract: output/metrics/input_sro_2021-06-01.feather
 
-  metrics_generate_measures:
-    run: cohortextractor:latest generate_measures --study-definition study_definition
+  metrics_generate_kids_dataset_winter:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_kids
+      --param start_date='2021-12-01' --param end_date='2022-03-30' --output-dir=output/metrics
+      --output-format=feather --output-file output/metrics/input_kids_2021-12-01.feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/input_kids_2021-12-01.feather
+
+  metrics_generate_kids_dataset_summer:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_kids
+      --param start_date='2021-06-01' --param end_date='2021-09-30' --output-dir=output/metrics
+      --output-format=feather --output-file output/metrics/input_kids_2021-06-01.feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/input_kids_2021-06-01.feather
+
+  metrics_generate_endpopulation_dataset_winter:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_endpopulation
+      --param start_date='2021-12-01' --param end_date='2022-03-30' --output-dir=output/metrics
+      --output-format=feather --output-file output/metrics/input_endpopulation_2021-12-01.feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/input_endpopulation_2021-12-01.feather
+
+  metrics_generate_endpopulation_dataset_summer:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_endpopulation
+      --param start_date='2021-06-01' --param end_date='2021-09-30' --output-dir=output/metrics
+      --output-format=feather --output-file output/metrics/input_endpopulation_2021-06-01.feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/input_endpopulation_2021-06-01.feather
+
+  metrics_generate_sro_measures:
+    run: cohortextractor:latest generate_measures --param start_date='2021-06-01'
+      --param end_date='2021-09-30' --study-definition study_definition_sro --output-dir=output/metrics
+    needs:
+    - metrics_generate_sro_dataset_summer
+    - metrics_generate_sro_dataset_winter
+    outputs:
+      highly_sensitive:
+        measure_csv: output/metrics/mea*.csv
+
+  metrics_generate_kids_measures:
+    run: cohortextractor:latest generate_measures --param start_date='2021-06-01'
+      --param end_date='2021-09-30' --study-definition study_definition_kids --output-dir=output/metrics
+    needs:
+    - metrics_generate_kids_dataset_summer
+    - metrics_generate_kids_dataset_winter
+    outputs:
+      highly_sensitive:
+        measure_csv: output/metrics/me*.csv
+
+  metrics_generate_endpopulation_measures:
+    run: cohortextractor:latest generate_measures --param start_date='2021-06-01'
+      --param end_date='2021-09-30' --study-definition study_definition_endpopulation
       --output-dir=output/metrics
     needs:
-    - metrics_generate_study_dataset_summer
-    - metrics_generate_study_dataset_winter
+    - metrics_generate_endpopulation_dataset_summer
+    - metrics_generate_endpopulation_dataset_winter
     outputs:
       highly_sensitive:
-        measure_csv: output/metrics/measure_*_rate.csv
+        measure_csv: output/metrics/m*.csv
 
   metrics_generate_single_metric:
     run: r:latest analysis/metrics/single_metric.R
     needs:
-    - metrics_generate_measures
+    - metrics_generate_sro_measures
     outputs:
       moderately_sensitive:
         png1: output/metrics/summer_winter_difference_histogram.png
