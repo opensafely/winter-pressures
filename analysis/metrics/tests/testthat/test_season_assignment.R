@@ -1,5 +1,9 @@
 library(tibble)
 
+#######################################################################
+# create dummy data for testing
+####################################################################### 
+
 summer_months <- c(6:9)
 winter_months <- c(1:3, 12)
 
@@ -60,13 +64,9 @@ expected_output2 <- tibble(
 
 
 
-season_assignment(
-  measure_data = input_dat1,
-  summer_months = summer_months,
-  winter_months = winter_months
-)
-
-
+#######################################################################
+# tests
+####################################################################### 
 
 context("Testing the function season_assignment()")
 
