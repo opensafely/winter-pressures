@@ -8,8 +8,92 @@ opensafely exec python:latest pytest --disable-warnings
 """
 import pyarrow
 import pytest
+import pandas as pd
+import numpy as np
 
+from pandas import testing
 from analysis.appointments import reshape_dataset
+from analysis.utils import summarise_to_seasons
+
+
+@pytest.fixture
+def monthly_table():
+    test_data = pd.DataFrame(
+        {
+            "date": pd.Series(
+                [
+                    ### Practice 1
+                    "2021-01-01",  # some winter dates
+                    "2021-02-01",  # ...
+                    "2021-03-01",  # ...
+                    "2021-06-01",  # some summer dates
+                    "2021-07-01",  # ...
+                    "2021-08-01",  # ...
+                    "2021-04-01",  # some neither dates
+                    "2021-05-01",  # ...
+                    ### Practice 2
+                    "2021-01-01",  # some winter dates
+                    "2021-02-01",  # ...
+                    "2021-03-01",  # ...
+                    "2021-06-01",  # some summer dates
+                    "2021-07-01",  # ...
+                    "2021-08-01",  # ...
+                    "2021-04-01",  # some neither dates
+                    "2021-05-01",  # ...
+                ]
+            ),
+            "practice": pd.Series([1] * 8 + [2] * 8),
+            "value": pd.Series(
+                [0, 1, 2, 3, 4, 5, 100, 200, 6, 7, 8, 9, 10, 11, 300, 400]
+            ),
+        }
+    )
+    test_data["date"] = pd.to_datetime(test_data["date"])
+    return test_data
+
+
+def test_summarise_to_seasons_by_sum(monthly_table):
+
+    obs_sum = summarise_to_seasons(
+        monthly_table,
+        index_cols=["practice"],
+        date_col="date",
+        value_col="value",
+        summary_method=np.sum,
+    )
+
+    exp_sum = pd.DataFrame(
+        {
+            "practice": pd.Series([1, 1, 2, 2]),
+            "year": pd.Series([2021, 2021, 2021, 2021]),
+            "season": pd.Series([0, 1, 0, 1]),
+            "value": pd.Series([12, 3, 30, 21]),
+        }
+    )
+
+    testing.assert_frame_equal(obs_sum, exp_sum)
+
+
+def test_summarise_to_seasons_by_median(monthly_table):
+
+    obs_sum = summarise_to_seasons(
+        monthly_table,
+        index_cols=["practice"],
+        date_col="date",
+        value_col="value",
+        summary_method=np.median,
+    )
+
+    exp_sum = pd.DataFrame(
+        {
+            "practice": pd.Series([1, 1, 2, 2]),
+            "year": pd.Series([2021, 2021, 2021, 2021]),
+            "season": pd.Series([0, 1, 0, 1]),
+            "value": pd.Series([4, 1, 10, 7]),
+        }
+    )
+
+    testing.assert_frame_equal(obs_sum, exp_sum)
 
 
 def test_split_suffix():
