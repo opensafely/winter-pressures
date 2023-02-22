@@ -58,8 +58,7 @@ join_sro_measure_to_season <- function(measure_data,
   season_data <- generate_season_summary_data(
     grouping_variables = grouping_variables,
     measure_data = measure_data)
-  
-  print(season_data)
+
   season_data
   
 }
