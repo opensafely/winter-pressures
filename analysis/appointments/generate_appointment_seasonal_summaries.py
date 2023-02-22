@@ -82,13 +82,18 @@ def main():
         )
         measure_season.to_csv(f_out, index=False)
 
-    del dataset_long
+        ### Dropping this column to ensure that there is no confusion due to
+        ### multiple overwritings of 'threshold_mask'.
+        dataset_long = dataset_long.drop( "threshold_mask", axis=1 )
 
     #################################################################
     ### Generate median lead time measure                         ###
     #################################################################
 
-    dataset_long = read(f_in, args.index_cols, date_col, value_col)
+    ### Note that dataset_long was created in the previous measure
+    ### using the correct parameters for read() so needn't be read in
+    ### again.
+
     medians = dataset_long.groupby(args.index_cols).median()
     del dataset_long
 
