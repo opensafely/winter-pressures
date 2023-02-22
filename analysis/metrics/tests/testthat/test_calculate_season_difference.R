@@ -39,14 +39,16 @@ test_that( desc = "Calculate seasonal difference with valid data", {
 input_d_missing = tribble(
     ~practice, ~year, ~summer, ~winter,
     1, 2021, 0.1, 0.2,
-    2, 2021, 0.3, NA
+    2, 2021, 0.3, NA,
+    2, 2021, NA, 0.3
 )
 
 
 output_expected_missing = tribble(
     ~practice, ~year, ~summer, ~winter, ~seasonal_difference,
     1, 2021, 0.1, 0.2, 0.1,
-    2, 2021, 0.3, NA, NA
+    2, 2021, 0.3, NA, NA,
+    2, 2021, NA, 0.3, NA
 )
 
 test_that(desc = "Calculate seasonal difference with missing data", {
