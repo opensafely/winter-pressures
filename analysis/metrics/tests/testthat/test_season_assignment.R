@@ -3,6 +3,8 @@ library(tibble)
 summer_months <- c(6:9)
 winter_months <- c(1:3, 12)
 
+# create input data such that we expect output season lookup table to have a 
+#  season assigned either 0 or 1 for all dates within our seasonal year
 input_dat1 <- tibble(date =  seq(as.Date("2021-01-01"), 
                    as.Date("2022-04-01"), 
                    by = "months"),
@@ -25,7 +27,9 @@ year = rep(2021, length.out = length(date)),
 )
 
 
-
+# create input data such that we expect output season lookup table to have a 
+#  season assigned either 0 or 1 for all dates within 1 seasonal year, and to 
+#  have season NA for another seasonal year
 input_dat2 <- tibble(date =  seq(as.Date("2021-01-01"), 
                                  as.Date("2022-06-01"), 
                                  by = "months"),
@@ -49,7 +53,7 @@ expected_output2 <- tibble(
                 as.Date("2023-03-01"), 
                 by = "months")
   ),
-  season = rep(c(0,0,0,0,1,1,1,1), times = 2),
+  season = c(0,0,0,0,1,1,1,1, rep(NA_integer_, times = 8)),
   season_month_index = rep(1:4, length.out = length(date)),
   year = rep(c(2021, 2022), each = 8),
 )
@@ -85,9 +89,3 @@ test_that( desc = "season_assignment with valid data", {
   ), 
   expected_output2)
 })
-
-
-
-
-
-

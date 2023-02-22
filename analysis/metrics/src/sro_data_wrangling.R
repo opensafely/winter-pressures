@@ -20,8 +20,8 @@ get_season_aggregate_sro_measure <- function(sro_measure_name,
                             season_lookup,
                             by = c("date" = "date"))
   
-  # check that no months have season NA
-  print(sum(is.na(measure_data$season)))
+  # remove any rows with NAs
+  measure_data <- drop_na(measure_data)
   
   # calculate measure value on aggregated season data, grouped by practice, 
   #  season, and seasonal year
@@ -107,23 +107,43 @@ season_assignment <- function(measure_data,
                         day(measure_data$date) == 1]
   )
   
+  # find all the dates that appear in our measure data
+  measure_data_dates <- unique(measure_data$date)
+  
   # find number of seasonal years (start date only) in our data
   n <- length(seasonal_year_start_date)
   
   # generate lookup table list with addition of a season_year_index
-  season_lookup <- lapply(1:n,
-         function(n){
-           tib <- single_year_season_assignment(
-             seasonal_year_start_date = seasonal_year_start_date[n],
-             summer_months = summer_months,
-             winter_months = winter_months)
-
-           tib <- mutate(tib,
-                         year = year(seasonal_year_start_date[n]))
-           
-           tib
-           
-         }
+  season_lookup <- lapply(
+    1:n,
+    function(n){
+      tib <- single_year_season_assignment(
+        seasonal_year_start_date = seasonal_year_start_date[n],
+        summer_months = summer_months,
+        winter_months = winter_months)
+      
+      tib <- mutate(tib,
+                    year = year(seasonal_year_start_date[n]))
+      
+      # check that all dates in our lookup table appear in the measure data
+      check_dates <- all(unique(tib$date) %in% measure_data_dates)
+      
+      if(check_dates == TRUE){
+        
+        # if all dates in lookup table are in measure data then no change
+        tib <- tib
+      } else {
+        
+        # if some dates appear in lookup table but not in measure data then 
+        #  change the season to NA for all rows. Rows with NA season will be 
+        #  removed later.
+        tib <- mutate(tib, 
+                      season = NA_integer_)
+      }
+      
+      tib
+      
+    }
   )
   
   # flatten the list and return lookup table
