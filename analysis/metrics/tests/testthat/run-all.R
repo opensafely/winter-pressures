@@ -4,6 +4,7 @@ library(tidyr)
 library(dplyr)
 
 source( here("analysis", "metrics", "src", "generate_seasonal_metrics.R") )
+source( here("analysis", "metrics", "src", "sro_data_wrangling.R") )
 
 log_file <- here("output", "metrics", "tests", "run-all.log")
 output_dir <- here("output", "metrics", "tests")
