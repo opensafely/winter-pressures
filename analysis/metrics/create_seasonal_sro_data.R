@@ -1,4 +1,3 @@
-
 #######################################################################
 # load libraries
 #######################################################################
@@ -28,11 +27,11 @@ winter_months <- c(1:3, 12)
 
 
 #######################################################################
-# define the SRO measures
+# read in SRO measure names
 #######################################################################
 
 measure_name <- pull(
-  read_csv(file = here("output", "metrics", "sro_measure_names.csv"),
+  read_csv(file = here("analysis", "metrics", "sro_measure_names.csv"),
            col_types = cols(
              sro_measure = col_character()
            )),
