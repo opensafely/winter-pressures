@@ -1,4 +1,3 @@
-
 #######################################################################
 # read in SRO measure data and aggregate to season
 #######################################################################  
@@ -6,9 +5,34 @@
 get_season_aggregate_sro_measure <- function(sro_measure_name,
                                              summer_months,
                                              winter_months){
-
+  
   # read in and format SRO measure data
   measure_data <- get_and_format_sro_measure_data(sro_measure_name = sro_measure_name)
+  
+  season_data <- join_sro_measure_to_season(measure_data = measure_data,
+                                            summer_months = summer_months,
+                                            winter_months = winter_months)
+  
+  # set output directory
+  output_directory <- fs::dir_create(here("output", 
+                                          "metrics", 
+                                          sro_measure_name),
+                                     recurse = TRUE)
+  # save out data as csv
+  write_csv(season_data,
+            file = here(output_directory, 
+                        "season_data.csv"))
+  
+}
+
+
+#######################################################################
+# join measure data to season lookup table
+####################################################################### 
+
+join_sro_measure_to_season <- function(measure_data,
+                                       summer_months,
+                                       winter_months){
   
   # create season lookup table for all the dates in the measure data
   season_lookup <- season_assignment(measure_data = measure_data,
@@ -35,17 +59,11 @@ get_season_aggregate_sro_measure <- function(sro_measure_name,
     grouping_variables = grouping_variables,
     measure_data = measure_data)
   
-  # set output directory
-  output_directory <- fs::dir_create(here("output", 
-                                          "metrics", 
-                                          sro_measure_name),
-                                     recurse = TRUE)
-  # save out data as csv
-  write_csv(season_data,
-            file = here(output_directory, 
-                        "season_data.csv"))
+  print(season_data)
+  season_data
   
 }
+
 
 #######################################################################
 # read in and format SRO measure data
