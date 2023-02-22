@@ -10,6 +10,6 @@ output_dir <- here("output", "metrics", "tests")
 
 dir.create(output_dir, showWarnings = FALSE)
 
-sink( log_file )
+sink(log_file)
+on.exit(sink())
 test_dir( here("analysis", "metrics", "tests", "testthat") )
-sink( NULL )
