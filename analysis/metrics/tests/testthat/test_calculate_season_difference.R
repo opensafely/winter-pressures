@@ -36,20 +36,20 @@ test_that( desc = "Calculate seasonal difference with valid data", {
 
 
 
-input_d_invalid = tribble(
+input_d_missing = tribble(
     ~practice, ~year, ~summer, ~winter,
     1, 2021, 0.1, 0.2,
     2, 2021, 0.3, NA
 )
 
 
-output_expected_invalid = tribble(
+output_expected_missing = tribble(
     ~practice, ~year, ~summer, ~winter, ~seasonal_difference,
     1, 2021, 0.1, 0.2, 0.1,
     2, 2021, 0.3, NA, NA
 )
 
-test_that(desc = "Calculate seasonal difference with invalid data", {
+test_that(desc = "Calculate seasonal difference with missing data", {
     ### The test dataframe (input_d_valid) contains long
     ### data summarising seasonal data:
     ### (1) practice: practice_id
@@ -67,9 +67,9 @@ test_that(desc = "Calculate seasonal difference with invalid data", {
     ###
     ### Question: should we interpret NAs as 0s?
 
-    output_observed_invalid <- calculate_season_difference(
-        input_d_invalid
+    output_observed_missing <- calculate_season_difference(
+        input_d_missing
     )
 
-    expect_equal(output_observed_invalid, output_expected_invalid)
+    expect_equal(output_observed_missing, output_expected_missing)
 })
