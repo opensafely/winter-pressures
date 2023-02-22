@@ -1,4 +1,3 @@
-rm(list = ls())
 
 #######################################################################
 # load libraries
@@ -32,8 +31,13 @@ winter_months <- c(1:3, 12)
 # define the SRO measures
 #######################################################################
 
-measure_name <- c("asthma",
-                  "cholesterol")
+measure_name <- pull(
+  read_csv(file = here("output", "metrics", "sro_measure_names.csv"),
+           col_types = cols(
+             sro_measure = col_character()
+           )),
+  sro_measure
+)
 
 #######################################################################
 # create season aggregated SRO measure data
