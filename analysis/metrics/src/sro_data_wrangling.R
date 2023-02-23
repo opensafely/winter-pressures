@@ -12,12 +12,14 @@ get_season_aggregate_sro_measure <- function(sro_measure_name){
                           col_types = cols_only(
                             population = col_double(),
                             practice=col_double(),
-                            date=col_date(format="%Y-%M-%D"),
+                            date=col_date(format="%Y-%m-%d"),
                             value=col_double()
                           )
                         )
 
   measure_data <- season_assignment(measure_data = measure_data)
+  
+  print(measure_data)
   
   # save out data as csv
   write_csv(measure_data,
