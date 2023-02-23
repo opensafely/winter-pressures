@@ -95,16 +95,13 @@ actions:
       highly_sensitive:
         measure_csv: output/metrics/m*.csv
 
-  # metrics_generate_single_metric:
-  #   run: r:latest analysis/metrics/single_metric.R
-  #   needs:
-  #   - metrics_generate_sro_measures
-  #   outputs:
-  #     moderately_sensitive:
-  #       png1: output/metrics/summer_winter_difference_histogram.png
-  #       png2: output/metrics/summer_winter_ratio_histogram.png
-  #       csv1: output/metrics/summer_winter_difference_histogram_data.csv
-  #       csv2: output/metrics/summer_winter_ratio_histogram_data.csv
+  metrics_create_seasonal_sro_data:
+    run: r:latest analysis/metrics/create_seasonal_sro_data.R
+    needs:
+    - metrics_generate_sro_measures
+    outputs:
+      highly_sensitive:
+        csv: output/metrics/season_data_*.csv
 
   metrics_run_sro_tests:
     run: r:latest analysis/metrics/tests/testthat/run-all.R
