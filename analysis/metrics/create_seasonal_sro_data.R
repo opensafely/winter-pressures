@@ -15,18 +15,6 @@ library(lubridate)
 source(here("analysis", "metrics", "src", "sro_data_wrangling.R"))
 
 #######################################################################
-# define the seasons
-#######################################################################
-
-# define the months associated with each season
-# summer: June - September inclusive
-# winter: December - March inclusive
-summer_months <- c(6:9)
-winter_months <- c(1:3, 12)
-# need to check the season lengths are the same
-
-
-#######################################################################
 # read in SRO measure names
 #######################################################################
 
@@ -43,13 +31,10 @@ measure_name <- pull(
 #######################################################################
 
 # read in SRO measure data
-# aggregate data to season by practice and seasonal year
-# calculate the value (proportion)
+# assign a season and a year
 # output to a csv
 # seasons: summer is 0, winter is 1
 
 invisible(lapply(measure_name,
-                 get_season_aggregate_sro_measure,
-                 summer_months = summer_months,
-                 winter_months = winter_months)
+                 get_season_aggregate_sro_measure)
 )
