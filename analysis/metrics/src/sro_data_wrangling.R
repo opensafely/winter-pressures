@@ -7,21 +7,21 @@ get_season_aggregate_sro_measure <- function(sro_measure_name,
                                              winter_months){
   
   # read in and format SRO measure data
-  measure_data <- get_and_format_sro_measure_data(sro_measure_name = sro_measure_name)
+  measure_data <- get_and_format_sro_measure_data(
+    sro_measure_name = sro_measure_name
+  )
   
   season_data <- join_sro_measure_to_season(measure_data = measure_data,
                                             summer_months = summer_months,
                                             winter_months = winter_months)
   
-  # set output directory
-  output_directory <- fs::dir_create(here("output", 
-                                          "metrics", 
-                                          sro_measure_name),
-                                     recurse = TRUE)
   # save out data as csv
   write_csv(season_data,
-            file = here(output_directory, 
-                        "season_data.csv"))
+            file = here("output",
+                        "metrics",
+                        paste0("season_data_", sro_measure_name, ".csv")
+            )
+  )
   
 }
 
@@ -58,7 +58,7 @@ join_sro_measure_to_season <- function(measure_data,
   season_data <- generate_season_summary_data(
     grouping_variables = grouping_variables,
     measure_data = measure_data)
-
+  
   season_data
   
 }
@@ -69,7 +69,7 @@ join_sro_measure_to_season <- function(measure_data,
 #######################################################################  
 
 get_and_format_sro_measure_data <- function(sro_measure_name){
-
+  
   # read in sro measure data
   measure_data <- read_csv(file = here("output", 
                                        "metrics", 
@@ -210,7 +210,7 @@ single_year_season_assignment <- function(seasonal_year_start_date,
 # take the measure data and aggregate to season values by the grouping variables
 generate_season_summary_data <- function(grouping_variables,
                                          measure_data){
-
+  
   # create data that is grouped
   season_data <- group_by(measure_data,
                           across(all_of(grouping_variables)))

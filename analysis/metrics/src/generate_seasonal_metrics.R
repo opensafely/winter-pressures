@@ -7,14 +7,17 @@ create_seasonal_sro_plots <- function(sro_measure_name){
   # read in the data
   season_data <- read_csv(file = here("output", 
                                       "metrics", 
-                                      sro_measure_name,
-                                      "season_data.csv"),
-                          col_types = cols(
-                            practice = col_double(),
-                            season = col_double(),
-                            value = col_double(),
-                            year = col_double()
-                          ))
+                                      paste0(
+                                        "season_data_",
+                                        sro_measure_name,
+                                        ".csv")
+  ),
+  col_types = cols(
+    practice = col_double(),
+    season = col_double(),
+    value = col_double(),
+    year = col_double()
+  ))
   
   # reformat the data and calculate per practice measures
   practice_measure_data  <- calculate_seasonal_measures(
