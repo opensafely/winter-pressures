@@ -111,14 +111,10 @@ actions:
     - appointments_generate_seasonal_summaries_by_start_month
     outputs:
       moderately_sensitive:
-        csv1: output/metrics/*/summer_winter_difference_histogram_data.csv
-        csv2: output/metrics/*/summer_winter_ratio_histogram_data.csv
-        png1: output/metrics/*/summer_winter_difference_histogram.png
-        png2: output/metrics/*/summer_winter_ratio_histogram.png
-        csv3: output/appointments/*/summer_winter_difference_histogram_data.csv
-        csv4: output/appointments/*/summer_winter_ratio_histogram_data.csv
-        png3: output/appointments/*/summer_winter_difference_histogram.png
-        png4: output/appointments/*/summer_winter_ratio_histogram.png
+        csv_sro: output/metrics/*/summer_winter_*_histogram_data.csv
+        png_sro: output/metrics/*/summer_winter_*_histogram.png
+        csv_appt: output/appointments/*/summer_winter_*_histogram_data.csv
+        png_appt: output/appointments/*/summer_winter_*_histogram.png
 
   metrics_run_sro_tests:
     run: r:latest analysis/metrics/tests/testthat/run-all.R
