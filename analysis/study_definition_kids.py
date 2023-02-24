@@ -122,7 +122,7 @@ measures = [
 ),
 
     Measure(
-    id=f"over12_appt_pop_rate",
+    id=f"under12_appt_pop_rate",
     numerator="appt_under12",
     denominator="population",
     group_by=["practice"]
