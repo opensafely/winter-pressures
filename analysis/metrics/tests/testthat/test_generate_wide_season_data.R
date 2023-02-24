@@ -56,12 +56,10 @@ test_that(desc = "Wide to long with invalid season codes", {
     ### (3) year: year
     ### (4) value: the value
 
-    output_observed_invalid_season_code <- generate_wide_season_data(
+    expect_error(
+      generate_wide_season_data(
         season_data = input_d_invalid_season_code
-    )
-
-    expect_equal(
-        output_observed_invalid_season_code,
-        output_expected_invalid_season_code
+      ),
+      "Invalid season entry: values must be either 0 or 1."
     )
 })

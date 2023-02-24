@@ -90,6 +90,11 @@ calculate_seasonal_measures <- function(season_data){
 #  and winter value. 
 generate_wide_season_data <- function(season_data){
   
+  if(isFALSE(all(season_data$season %in% c(0,1)))){
+    stop("Invalid season entry: values must be either 0 or 1.",
+         call. = FALSE)
+  }
+  
   # create wider data with summer and winter as columns
   wide_season_data <- pivot_wider(season_data,
                                   names_from = season,
