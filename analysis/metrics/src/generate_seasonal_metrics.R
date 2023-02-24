@@ -2,6 +2,7 @@
 # create plots of season comparison data
 #######################################################################
 
+# SRO data
 create_seasonal_sro_plots <- function(sro_measure_name){
   
   # read in the data
@@ -60,6 +61,67 @@ create_seasonal_sro_plots <- function(sro_measure_name){
   
 }
 
+
+# appointment data
+create_seasonal_appointment_plots <- function(appointment_measure_name){
+  
+  # read in the data
+  season_data <- read_csv(file = here("output", 
+                                      "appointments", 
+                                      paste0(
+                                        "measure_seasonal_",
+                                        appointment_measure_name,
+                                        ".csv")
+  ),
+  col_types = cols(
+    practice = col_double(),
+    season = col_double(),
+    value = col_double(),
+    year = col_double()
+  ))
+  
+  
+  # reformat the data and calculate per practice measures
+  practice_measure_data  <- calculate_seasonal_measures(
+    season_data = season_data
+  )
+  
+  # create seasonal difference and seasonal ratio histogram and plot data
+  plots <- generate_plots_and_data(
+    practice_measure_data = practice_measure_data
+  )
+  
+  # save plots and data
+  
+  output_directory <- fs::dir_create(
+    path = here("output", 
+                "appointments", 
+                appointment_measure_name),
+    recurse = TRUE
+  )
+  
+  ggsave(plots$difference_plot,
+         filename = "summer_winter_difference_histogram.png",
+         device = "png",
+         path = output_directory)
+  
+  write.csv(plots$difference_plot_data,
+            file = paste(output_directory,
+                         "summer_winter_difference_histogram_data.csv",
+                         sep = "/"))
+  
+  ggsave(plots$ratio_plot,
+         filename = "summer_winter_ratio_histogram.png",
+         device = "png",
+         path = output_directory)
+  
+  write.csv(plots$ratio_plot_data,
+            file = paste(output_directory,
+                         "summer_winter_ratio_histogram_data.csv",
+                         sep = "/"))
+  
+}
+
 #######################################################################
 # calculate the seasonal measure
 #######################################################################
@@ -78,7 +140,6 @@ calculate_seasonal_measures <- function(season_data){
   practice_measure_data
   
 }
-
 
 #######################################################################
 # widen season data

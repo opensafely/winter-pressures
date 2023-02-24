@@ -107,12 +107,18 @@ actions:
     run: r:latest analysis/metrics/seasonal_measures.R
     needs:
     - metrics_create_seasonal_sro_data
+    - appointments_generate_seasonal_summaries_by_booked_month
+    - appointments_generate_seasonal_summaries_by_start_month
     outputs:
       moderately_sensitive:
         csv1: output/metrics/*/summer_winter_difference_histogram_data.csv
         csv2: output/metrics/*/summer_winter_ratio_histogram_data.csv
         png1: output/metrics/*/summer_winter_difference_histogram.png
         png2: output/metrics/*/summer_winter_ratio_histogram.png
+        csv3: output/appointments/*/summer_winter_difference_histogram_data.csv
+        csv4: output/appointments/*/summer_winter_ratio_histogram_data.csv
+        png3: output/appointments/*/summer_winter_difference_histogram.png
+        png4: output/appointments/*/summer_winter_ratio_histogram.png
 
   metrics_run_sro_tests:
     run: r:latest analysis/metrics/tests/testthat/run-all.R
