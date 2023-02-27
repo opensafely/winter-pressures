@@ -23,21 +23,31 @@ create_seasonal_sro_plots <- function(sro_measure_name){
   practice_measure_data  <- calculate_seasonal_measures(
     season_data = season_data
   )
-  
+
   # create seasonal difference and seasonal ratio histogram and plot data
   plots <- generate_plots_and_data(
     practice_measure_data = practice_measure_data
   )
   
-  # save plots and data
-  
+  # create directory to save plots and data
   output_directory <- fs::dir_create(
-    path = here("output", 
-                "metrics", 
-                sro_measure_name),
+    path = here(
+      "output",
+      "metrics",
+      sro_measure_name
+    ),
     recurse = TRUE
   )
   
+  # raw data
+  write.csv(practice_measure_data,
+    file = paste(output_directory,
+      "summer_winter_all_metrics.csv",
+      sep = "/"
+    )
+  )
+
+  # difference plot and data
   ggsave(plots$difference_plot,
          filename = "summer_winter_difference_histogram.png",
          device = "png",
@@ -48,6 +58,7 @@ create_seasonal_sro_plots <- function(sro_measure_name){
                          "summer_winter_difference_histogram_data.csv",
                          sep = "/"))
   
+  # log2 ratio plot and data
   ggsave(plots$ratio_plot,
          filename = "summer_winter_ratio_histogram.png",
          device = "png",
