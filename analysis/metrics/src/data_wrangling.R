@@ -10,7 +10,6 @@ get_season_aggregate_sro_measure <- function(sro_measure_name){
                                               sro_measure_name, 
                                               "_practice_only_rate.csv")),
                           col_types = cols_only(
-                            population = col_double(),
                             practice=col_double(),
                             date=col_date(format="%Y-%m-%d"),
                             value=col_double()
@@ -24,6 +23,36 @@ get_season_aggregate_sro_measure <- function(sro_measure_name){
             path = here("output",
                         "metrics",
                         paste0("season_data_", sro_measure_name, ".csv")
+            )
+  )
+  
+}
+
+#######################################################################
+# read in kids appointment data and aggregate to season
+#######################################################################  
+
+get_season_aggregate_kids_measure <- function(kids_measure_name){
+  
+  measure_data <- read_csv(file = here("output", 
+                                       "metrics", 
+                                       paste0("measure_", 
+                                              kids_measure_name, 
+                                              ".csv")),
+                           col_types = cols_only(
+                             practice=col_double(),
+                             date=col_date(format="%Y-%m-%d"),
+                             value=col_double()
+                           )
+  )
+  
+  measure_data <- season_assignment(measure_data = measure_data)
+  
+  # save out data as csv
+  write_csv(measure_data,
+            path = here("output",
+                        "metrics",
+                        paste0("season_data_", kids_measure_name, ".csv")
             )
   )
   

@@ -34,6 +34,38 @@ create_seasonal_sro_plots <- function(sro_measure_name){
   
 }
 
+# kids appointment data
+create_seasonal_kids_plots <- function(kids_appt_measure_name){
+  
+  # read in the data
+  season_data <- read_csv(file = here("output", 
+                                      "metrics", 
+                                      paste0(
+                                        "season_data_",
+                                        kids_appt_measure_name,
+                                        ".csv")
+  ),
+  col_types = cols(
+    practice = col_double(),
+    season = col_double(),
+    value = col_double(),
+    year = col_double()
+  ))
+  
+  # set output directory
+  output_directory <- fs::dir_create(
+    path = here("output", 
+                "metrics", 
+                kids_appt_measure_name),
+    recurse = TRUE
+  )
+  
+  seasonal_measure_outputs(
+    output_directory = output_directory,
+    season_data = season_data)
+  
+}
+
 
 # appointment data
 create_seasonal_appointment_plots <- function(appointment_measure_name){
@@ -90,7 +122,6 @@ seasonal_measure_outputs <- function(output_directory,
   
 }
 
-
 #######################################################################
 # calculate the seasonal measure
 #######################################################################
@@ -124,6 +155,9 @@ generate_wide_season_data <- function(season_data){
     stop("Invalid season entry: values must be either 0 or 1.",
          call. = FALSE)
   }
+  
+  # remove duplicate rows from the input data
+  season_data <- distinct(season_data)
   
   # create wider data with summer and winter as columns
   wide_season_data <- pivot_wider(season_data,

@@ -30,6 +30,25 @@ invisible(lapply(sro_measure_name,
                  create_seasonal_sro_plots)
 )
 
+
+#######################################################################
+# read in kids appointment season data
+#######################################################################
+
+kids_measure_name <- pull(
+  read_csv(file = here("analysis", "metrics", "kids_appt_measure_names.csv"),
+           col_types = cols(
+             kids_appt_measure = col_character()
+           )),
+  kids_appt_measure
+)
+
+
+invisible(lapply(kids_measure_name,
+                 create_seasonal_kids_plots)
+)
+
+
 #######################################################################
 # read in appointment season data
 #######################################################################
@@ -45,4 +64,3 @@ appointment_measure_name <- pull(
 invisible(lapply(appointment_measure_name,
                  create_seasonal_appointment_plots)
 )
-
