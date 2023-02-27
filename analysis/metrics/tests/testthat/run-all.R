@@ -2,9 +2,10 @@ library(testthat, quietly = T, warn.conflicts = FALSE)
 library(here)
 library(tidyr)
 library(dplyr)
+library(lubridate)
 
 source( here("analysis", "metrics", "src", "generate_seasonal_metrics.R") )
-source( here("analysis", "metrics", "src", "sro_data_wrangling.R") )
+source( here("analysis", "metrics", "src", "data_wrangling.R") )
 
 log_file <- here("output", "metrics", "tests", "run-all.log")
 output_dir <- here("output", "metrics", "tests")
