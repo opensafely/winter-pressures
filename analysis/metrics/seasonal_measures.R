@@ -35,7 +35,7 @@ invisible(lapply(sro_measure_name,
 #######################################################################
 
 appointment_measure_name <- pull(
-  read_csv(file = here("analysis", "metrics", "appointments_measure_names.csv"),
+  read_csv(file = here("analysis", "appointments", "appointments_measure_names.csv"),
            col_types = cols(
              appointment_measure = col_character()
            )),

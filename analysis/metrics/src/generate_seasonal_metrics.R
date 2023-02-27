@@ -20,18 +20,7 @@ create_seasonal_sro_plots <- function(sro_measure_name){
     year = col_double()
   ))
   
-  # reformat the data and calculate per practice measures
-  practice_measure_data  <- calculate_seasonal_measures(
-    season_data = season_data
-  )
-  
-  # create seasonal difference and seasonal ratio histogram and plot data
-  plots <- generate_plots_and_data(
-    practice_measure_data = practice_measure_data
-  )
-  
-  # save plots and data
-  
+  # set output directory
   output_directory <- fs::dir_create(
     path = here("output", 
                 "metrics", 
@@ -39,25 +28,9 @@ create_seasonal_sro_plots <- function(sro_measure_name){
     recurse = TRUE
   )
   
-  ggsave(plots$difference_plot,
-         filename = "summer_winter_difference_histogram.png",
-         device = "png",
-         path = output_directory)
-  
-  write.csv(plots$difference_plot_data,
-            file = paste(output_directory,
-                         "summer_winter_difference_histogram_data.csv",
-                         sep = "/"))
-  
-  ggsave(plots$ratio_plot,
-         filename = "summer_winter_ratio_histogram.png",
-         device = "png",
-         path = output_directory)
-  
-  write.csv(plots$ratio_plot_data,
-            file = paste(output_directory,
-                         "summer_winter_ratio_histogram_data.csv",
-                         sep = "/"))
+  seasonal_measure_outputs(
+    output_directory = output_directory,
+    season_data = season_data)
   
 }
 
@@ -80,6 +53,26 @@ create_seasonal_appointment_plots <- function(appointment_measure_name){
     year = col_double()
   ))
   
+  # set output directory
+  output_directory <- fs::dir_create(
+    path = here("output", 
+                "appointments", 
+                appointment_measure_name),
+    recurse = TRUE
+  )
+  
+  seasonal_measure_outputs(
+    output_directory = output_directory,
+    season_data = season_data)
+  
+}
+
+#######################################################################
+# create outputs from practice level data
+#######################################################################
+
+seasonal_measure_outputs <- function(output_directory,
+                                     season_data){
   
   # reformat the data and calculate per practice measures
   practice_measure_data  <- calculate_seasonal_measures(
@@ -92,35 +85,11 @@ create_seasonal_appointment_plots <- function(appointment_measure_name){
   )
   
   # save plots and data
-  
-  output_directory <- fs::dir_create(
-    path = here("output", 
-                "appointments", 
-                appointment_measure_name),
-    recurse = TRUE
-  )
-  
-  ggsave(plots$difference_plot,
-         filename = "summer_winter_difference_histogram.png",
-         device = "png",
-         path = output_directory)
-  
-  write.csv(plots$difference_plot_data,
-            file = paste(output_directory,
-                         "summer_winter_difference_histogram_data.csv",
-                         sep = "/"))
-  
-  ggsave(plots$ratio_plot,
-         filename = "summer_winter_ratio_histogram.png",
-         device = "png",
-         path = output_directory)
-  
-  write.csv(plots$ratio_plot_data,
-            file = paste(output_directory,
-                         "summer_winter_ratio_histogram_data.csv",
-                         sep = "/"))
+  save_plots_and_data(output_directory = output_directory,
+                      plot_list = plots)
   
 }
+
 
 #######################################################################
 # calculate the seasonal measure
@@ -229,4 +198,32 @@ generate_plots_and_data <- function(practice_measure_data){
        difference_plot_data = difference_plot_data,
        ratio_plot_data = ratio_plot_data)
   
+}
+
+#######################################################################
+# save plots and plot data
+#######################################################################
+
+save_plots_and_data <- function(output_directory,
+                                plot_list){
+  
+  ggsave(plot_list$difference_plot,
+         filename = "summer_winter_difference_histogram.png",
+         device = "png",
+         path = output_directory)
+  
+  write.csv(plot_list$difference_plot_data,
+            file = paste(output_directory,
+                         "summer_winter_difference_histogram_data.csv",
+                         sep = "/"))
+  
+  ggsave(plot_list$ratio_plot,
+         filename = "summer_winter_ratio_histogram.png",
+         device = "png",
+         path = output_directory)
+  
+  write.csv(plot_list$ratio_plot_data,
+            file = paste(output_directory,
+                         "summer_winter_ratio_histogram_data.csv",
+                         sep = "/"))
 }
