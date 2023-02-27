@@ -95,10 +95,11 @@ actions:
       highly_sensitive:
         measure_csv: output/metrics/m*.csv
 
-  metrics_create_seasonal_sro_data:
-    run: r:latest analysis/metrics/create_seasonal_sro_data.R
+  metrics_create_seasonal_data:
+    run: r:latest analysis/metrics/create_seasonal_data.R
     needs:
     - metrics_generate_sro_measures
+    - metrics_generate_kids_measures
     outputs:
       highly_sensitive:
         csv: output/metrics/season_data_*.csv
@@ -106,7 +107,7 @@ actions:
   metrics_create_seasonal_measures:
     run: r:latest analysis/metrics/seasonal_measures.R
     needs:
-    - metrics_create_seasonal_sro_data
+    - metrics_create_seasonal_data
     - appointments_generate_seasonal_summaries_by_booked_month
     - appointments_generate_seasonal_summaries_by_start_month
     outputs:
