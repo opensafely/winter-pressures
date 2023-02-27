@@ -14,7 +14,7 @@ actions:
   # "metrics_"; we would place our scripts in analysis/metrics; we would write outputs
   # to output/metrics.
 
-  # Metrics data
+  # Metrics data extraction
   # ------------
   metrics_generate_sro_dataset_winter:
     run: cohortextractor:latest generate_cohort --study-definition study_definition_sro
@@ -71,7 +71,7 @@ actions:
     - metrics_generate_sro_dataset_summer
     - metrics_generate_sro_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/mea*.csv
 
   metrics_generate_kids_measures:
@@ -81,7 +81,7 @@ actions:
     - metrics_generate_kids_dataset_summer
     - metrics_generate_kids_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/me*.csv
 
   metrics_generate_endpopulation_measures:
@@ -92,9 +92,11 @@ actions:
     - metrics_generate_endpopulation_dataset_summer
     - metrics_generate_endpopulation_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/m*.csv
 
+  # Metrics data analysis
+  # ------------
   metrics_create_seasonal_sro_data:
     run: r:latest analysis/metrics/create_seasonal_sro_data.R
     needs:

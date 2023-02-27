@@ -59,7 +59,7 @@ actions:
     - metrics_generate_sro_dataset_summer
     - metrics_generate_sro_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/mea*.csv
 
   metrics_generate_kids_measures:
@@ -69,7 +69,7 @@ actions:
     - metrics_generate_kids_dataset_summer
     - metrics_generate_kids_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/me*.csv
 
   metrics_generate_endpopulation_measures:
@@ -80,7 +80,7 @@ actions:
     - metrics_generate_endpopulation_dataset_summer
     - metrics_generate_endpopulation_dataset_winter
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/metrics/m*.csv
 
   ## #### End #### 
