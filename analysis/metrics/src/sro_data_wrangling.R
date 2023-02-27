@@ -18,9 +18,7 @@ get_season_aggregate_sro_measure <- function(sro_measure_name){
                         )
 
   measure_data <- season_assignment(measure_data = measure_data)
-  
-  print(measure_data)
-  
+
   # save out data as csv
   write_csv(measure_data,
             path = here("output",
