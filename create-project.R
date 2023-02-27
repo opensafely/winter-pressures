@@ -102,7 +102,7 @@ metrics_measures_action <- function(cohort,date_range,output){
                " --output-dir=output/metrics",
     ),
     needs = namelesslst(glue("metrics_generate_{cohort}_dataset_summer"),glue("metrics_generate_{cohort}_dataset_winter")),
-    highly_sensitive = lst(
+    moderately_sensitive = lst(
       measure_csv = glue("output/metrics/{output}.csv")
     ),
   )
