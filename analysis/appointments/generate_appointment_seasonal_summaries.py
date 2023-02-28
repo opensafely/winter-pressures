@@ -2,6 +2,7 @@ import argparse
 import sys
 import numpy as np
 import pandas as pd
+import datetime
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
@@ -14,6 +15,8 @@ def parse_args(args):
         "--value-thresholds", action="extend", nargs="+", required=True, type=int
     )
     parser.add_argument("--index-cols", action="extend", nargs="+", required=True)
+    parser.add_argument("--start-date")
+    parser.add_argument("--end-date")
     return parser.parse_args(args)
 
 
@@ -31,7 +34,7 @@ def main():
 
     value_col = "lead_time_in_days"
 
-    dataset_long = read(f_in, args.index_cols, date_col, value_col)
+    dataset_long = read(f_in, args.index_cols, date_col, args.start_date, args.end_date, value_col)
 
     for value_threshold in args.value_thresholds:
         dataset_long["threshold_mask"] = dataset_long[value_col] <= value_threshold
@@ -117,7 +120,7 @@ def main():
 
     unique_col = "patient_id"
 
-    dataset_long = read(f_in, args.index_cols, date_col, unique_col)
+    dataset_long = read(f_in, args.index_cols, date_col, args.start_date, args.end_date, unique_col)
     num_patients = dataset_long.groupby(args.index_cols).nunique()
     del dataset_long
 
@@ -137,7 +140,7 @@ def main():
     ### Generate num appointment measure                          ###
     #################################################################
 
-    dataset_long = read(f_in, args.index_cols, date_col)
+    dataset_long = read(f_in, args.index_cols, date_col, args.start_date, args.end_date )
     counts = dataset_long.groupby(args.index_cols).size()
     del dataset_long
 
