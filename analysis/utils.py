@@ -2,6 +2,7 @@ import functools
 import itertools
 import pathlib
 import string
+from datetime import date
 
 import numpy as np
 import pandas
@@ -61,7 +62,7 @@ def summarise_to_seasons(
 def filter_by_date(d, date_col, start_date, end_date):
     return d.reset_index().set_index(date_col).loc[start_date:end_date]
 
-def read(f_in, index_cols, date_col, value_col=None):
+def read(f_in, index_cols, date_col, start_date='1900-01-01', end_date=str(date.today()), value_col=None):
     # How do we ensure `pandas.read_csv` is as efficient as possible? Let's do some
     # profiling! Our dummy long dataset:
     # * has 10 million rows (10 appointments for 1 million patients)
@@ -94,9 +95,13 @@ def read(f_in, index_cols, date_col, value_col=None):
     if value_col:
         usecols = index_cols + [value_col]
 
-    return pandas.read_csv(
+    d_in = pandas.read_csv(
         f_in, usecols=usecols, parse_dates=[date_col], engine="c", index_col=index_cols,
     )
+
+    d_filtered = filter_by_date( d_in, date_col, start_date, end_date )
+    
+    return d_filtered.reset_index().set_index(index_cols)
 
 
 def to_series(f):
