@@ -13,7 +13,43 @@ import numpy as np
 
 from pandas import testing
 from analysis.appointments import reshape_dataset
-from analysis.utils import summarise_to_seasons
+from analysis.utils import summarise_to_seasons, filter_by_date
+
+test_month_start = pd.to_datetime("2021-01-01")
+plus_month = 8
+test_month_end = test_month_start + pd.DateOffset(months=plus_month)
+
+@pytest.fixture
+def monthly_table_with_index():
+    test_data = pd.DataFrame(
+        {
+            "date": pd.date_range(start=test_month_start, end=test_month_end, freq="M") + pd.offsets.MonthBegin(0),
+            "practice": 1,
+        }
+    )
+    test_data["date"] = pd.to_datetime(test_data["date"])
+    return test_data.set_index(['date','practice'])
+
+@pytest.mark.parametrize(
+    "test_start_date, test_end_date, num_months",
+    [
+        (test_month_start, test_month_start + pd.DateOffset(months=4), 4),
+        (test_month_start + pd.DateOffset(months=4), test_month_start, 0),
+        (test_month_start, test_month_start + pd.DateOffset(months=12), plus_month),
+        (test_month_start - pd.DateOffset(months=1), test_month_end + pd.DateOffset(months=1), plus_month),
+    ],
+)
+
+def test_filter_by_date(monthly_table_with_index, test_start_date, test_end_date, num_months ):
+
+    obs_filtered = filter_by_date(
+        monthly_table_with_index,
+        date_col="date",
+        start_date = str(test_start_date),
+        end_date = str(test_end_date)
+    )
+    
+    assert len(obs_filtered) == num_months
 
 
 @pytest.fixture
@@ -98,6 +134,8 @@ def test_summarise_to_seasons_by_median(monthly_table):
 
 def test_split_suffix():
     assert reshape_dataset.split_suffix("booked_date_1") == ("booked_date", 1)
+
+
 
 
 @pytest.mark.parametrize(
