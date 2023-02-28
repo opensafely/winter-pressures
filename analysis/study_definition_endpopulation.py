@@ -80,7 +80,7 @@ study = StudyDefinition(
 measures = [
 #### Check change in populations between start and end
     Measure(
-    id=f"end_population_over12",
+    id=f"end_population_under12",
     numerator="population_under12",
     denominator="population",
     group_by=["practice"]
