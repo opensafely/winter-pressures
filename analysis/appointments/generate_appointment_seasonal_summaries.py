@@ -34,7 +34,14 @@ def main():
 
     value_col = "lead_time_in_days"
 
-    dataset_long = read(f_in, args.index_cols, date_col, args.start_date, args.end_date, value_col)
+    dataset_long = read(
+        f_in=f_in,
+        index_cols=args.index_cols,
+        date_col=date_col,
+        value_col=value_col,
+        start_date=args.start_date,
+        end_date=args.end_date,
+    )
 
     for value_threshold in args.value_thresholds:
         dataset_long["threshold_mask"] = dataset_long[value_col] <= value_threshold
@@ -87,7 +94,7 @@ def main():
 
         ### Dropping this column to ensure that there is no confusion due to
         ### multiple overwritings of 'threshold_mask'.
-        dataset_long = dataset_long.drop( "threshold_mask", axis=1 )
+        dataset_long = dataset_long.drop("threshold_mask", axis=1)
 
     #################################################################
     ### Generate median lead time measure                         ###
@@ -120,7 +127,14 @@ def main():
 
     unique_col = "patient_id"
 
-    dataset_long = read(f_in, args.index_cols, date_col, args.start_date, args.end_date, unique_col)
+    dataset_long = read(
+        f_in=f_in,
+        index_cols=args.index_cols,
+        date_col=date_col,
+        value_col=unique_col,
+        start_date=args.start_date,
+        end_date=args.end_date,
+    )
     num_patients = dataset_long.groupby(args.index_cols).nunique()
     del dataset_long
 
@@ -140,7 +154,13 @@ def main():
     ### Generate num appointment measure                          ###
     #################################################################
 
-    dataset_long = read(f_in, args.index_cols, date_col, args.start_date, args.end_date )
+    dataset_long = read(
+        f_in=f_in,
+        index_cols=args.index_cols,
+        date_col=date_col,
+        start_date=args.start_date,
+        end_date=args.end_date,
+    )
     counts = dataset_long.groupby(args.index_cols).size()
     del dataset_long
 
