@@ -187,12 +187,14 @@ generate_wide_season_data <- function(season_data){
 
 calculate_season_difference <- function(wide_season_data){
   mutate(wide_season_data,
-         seasonal_difference = winter - summer)
+         seasonal_difference = 100*(winter - summer)/summer
+         )
 }
 
 calculate_season_ratio <- function(wide_season_data){
   mutate(wide_season_data,
-         seasonal_log2_ratio = log2(winter/summer))
+         seasonal_log2_ratio = log2(winter/summer)
+         )
 }
 
 
@@ -205,7 +207,7 @@ generate_plots_and_data <- function(practice_measure_data){
   # create the seasonal difference histogram plot
   difference_plot <- ggplot(practice_measure_data) + 
     geom_histogram(aes(x=seasonal_difference), 
-                   binwidth = 0.05) +
+                   bins = 50) +
     theme_bw()
   
   # get the data used to create the histogram and select columns of interest
@@ -222,7 +224,7 @@ generate_plots_and_data <- function(practice_measure_data){
   # create the seasonal ratio histogram plot
   ratio_plot <- ggplot(practice_measure_data) + 
     geom_histogram(aes(x=seasonal_log2_ratio), 
-                   binwidth = 0.05) +
+                   bins = 50) +
     theme_bw()
   
   # get the data used to create the histogram and select columns of interest
