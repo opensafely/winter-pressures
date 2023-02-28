@@ -372,3 +372,12 @@ actions:
       outputs:
         moderately_sensitive:
           log: output/pytest.xml
+
+
+  # Presentations and documents
+  # ---------------------------
+  generate_preliminary_report:
+    run: r:latest -e 'rmarkdown::render("reports/preliminary_report.rmd", output_dir = "/workspace/output/docs", knit_root_dir = "/workspace",)'
+    outputs:
+      moderately_sensitive:
+        report: output/docs/preliminary_report.pptx

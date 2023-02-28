@@ -1,0 +1,31 @@
+---
+title: "OpenSAFELY Winter pressures"
+author: "OpenSAFELY collaborative"
+date: 2023-03-28
+# output: beamer_presentation
+output: powerpoint_presentation
+---
+
+```{r echo=FALSE}
+library(readr)
+library(knitr)
+library(here)
+knitr::opts_chunk$set( echo=FALSE, message=FALSE, warning=FALSE )
+
+# set output directory
+output_directory <- fs::dir_create(
+path = here("output", 
+            "docs")
+)
+
+```
+
+# Winter pressures
+
+## Metrics of services being overwhelmed
+
+## Variation in service pressure between practices and regions
+
+## Patient services in outlier practices
+
+## Early warning systems
