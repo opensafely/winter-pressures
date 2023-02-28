@@ -58,6 +58,8 @@ def summarise_to_seasons(
 
     return df
 
+def filter_by_date(d, date_col, start_date, end_date):
+    return d.reset_index().set_index(date_col).loc[start_date:end_date]
 
 def read(f_in, index_cols, date_col, value_col=None):
     # How do we ensure `pandas.read_csv` is as efficient as possible? Let's do some
