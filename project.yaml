@@ -14,6 +14,55 @@ actions:
   # "metrics_"; we would place our scripts in analysis/metrics; we would write outputs
   # to output/metrics.
 
+  metrics_monthly_sro_data:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_sro_monthly
+        --index-date-range '2018-06-01 to 2022-12-31 by month' --output-dir=output/metrics/monthly
+        --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/monthly/input_sro_monthly*.feather
+
+  metrics_monthly_sro_data_measures:
+    run: cohortextractor:latest generate_measures --study-definition study_definition_sro_monthly --output-dir=output/metrics/monthly
+    needs:
+    - metrics_monthly_sro_data
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/metrics/monthly/measure_*.csv
+
+  metrics_monthly_kids_data:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_kids_monthly
+        --index-date-range '2018-06-01 to 2022-12-31 by month' --output-dir=output/metrics/monthly
+        --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/metrics/monthly/input_kids_monthly*.feather
+
+  metrics_monthly_kids_data_measures:
+    run: cohortextractor:latest generate_measures --study-definition study_definition_kids_monthly --output-dir=output/metrics/monthly
+    needs:
+    - metrics_monthly_kids_data
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/metrics/monthly/measure*.csv
+
+  metrics_generate_deciles_charts:
+    run: >
+      deciles-charts:v0.0.33
+        --input-files output/metrics/monthly/measure_*.csv
+        --output-dir output/metrics
+    config:
+      show_outer_percentiles: true
+    needs:
+      - metrics_monthly_sro_data_measures
+      - metrics_monthly_kids_data_measures
+    outputs:
+      moderately_sensitive:
+        deciles_charts: output/metrics/deciles_chart_*.png
+        deciles_tables: output/metrics/deciles_table_*.csv
+
+
+
   # Metrics data extraction
   # ------------
   metrics_generate_sro_dataset_winter:
