@@ -380,4 +380,4 @@ actions:
     run: r:latest -e 'rmarkdown::render("reports/preliminary_report.rmd", output_dir = "/workspace/output/docs", knit_root_dir = "/workspace",)'
     outputs:
       moderately_sensitive:
-        report: output/docs/preliminary_report.pptx
+        report: output/docs/preliminary_report.html

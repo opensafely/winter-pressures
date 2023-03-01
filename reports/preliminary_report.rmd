@@ -2,15 +2,25 @@
 title: "OpenSAFELY Winter pressures"
 author: "OpenSAFELY collaborative"
 date: 2023-03-28
-# output: beamer_presentation
-output: powerpoint_presentation
+# output: powerpoint_presentation
+output:
+    html_document:
+        number_sections: false
+        toc: true
 ---
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE }
 library(readr)
 library(knitr)
 library(here)
+library(magrittr)
+library(stringr)
+library(dplyr)
+library(glue)
+
 knitr::opts_chunk$set( echo=FALSE, message=FALSE, warning=FALSE )
+
+source( here( "reports", "report_variables.R" ) )
 
 # set output directory
 output_directory <- fs::dir_create(
@@ -20,12 +30,61 @@ path = here("output",
 
 ```
 
-# Winter pressures
+# Winter pressures: introduction
 
-## Metrics of services being overwhelmed
+# Metrics of services being overwhelmed
 
-## Variation in service pressure between practices and regions
+```{r}
+sro_deciles_format = "deciles_chart_.*_practice_only_rate\\.png"
+kids_deciles_format = "deciles_chart_.*12_appt.*\\.png"
+appt_deciles_format = "deciles_chart_.*\\.png"
 
-## Patient services in outlier practices
+metrics_directory = here("output","metrics")
+appt_directory = here("output","appointments")
 
-## Early warning systems
+sro_decile_plots = list.files(
+    path=metrics_directory,
+    pattern=sro_deciles_format,
+    full.names = TRUE
+)
+
+kids_decile_plots = list.files(
+    path=metrics_directory,
+    pattern=kids_deciles_format,
+    full.names = TRUE
+)
+
+appt_decile_plots = list.files(
+    path=appt_directory,
+    pattern=appt_deciles_format,
+    full.names = TRUE
+)
+
+all_decile_plots = tibble(
+    filename = c(
+        sro_decile_plots,
+        kids_decile_plots,
+        appt_decile_plots )
+) %>% mutate( name = filename %>%
+    basename %>%
+    str_remove("^deciles_chart_") %>%
+    str_remove(".png$" )
+) %>% mutate( description = measure_to_description(name) )
+```
+
+```{r, results="asis"}
+
+for ( i in 1:nrow(all_decile_plots) ) {
+    this_file = all_decile_plots$filename[i]
+    this_title = all_decile_plots$description[i]
+    print( glue( "### {this_title}\n\n") )
+    print( glue( "![Decile plot for {this_title}]({this_file})\n\n" ) )
+}
+
+```
+
+# Variation in service pressure between practices and regions
+
+# Patient services in outlier practices
+
+# Early warning systems
