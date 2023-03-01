@@ -1,3 +1,5 @@
+# Import functions
+
 from cohortextractor import (
     StudyDefinition,
     patients,
@@ -12,26 +14,23 @@ from cohortextractor import (
 from codelists import *
 from datetime import date
 
-start_date = params["start_date"]
-end_date = params["end_date"]
-
+start_date = "2018-06-01"
 
 # Specifiy study definition
 study = StudyDefinition(
-    index_date=end_date,
+    index_date=start_date,
     default_expectations={
-        "date": {"earliest": start_date, "latest": end_date},
+        "date": {"earliest": "index_date", "latest": "today"},
         "rate": "exponential_increase",
         "incidence": 0.1,
     },
-    
     population = patients.satisfying(
         """
         registered AND
         (NOT died) 
         """,
     ),
-
+    
     registered = patients.registered_as_of(
         "index_date",
         return_expectations={"incidence": 0.9},
@@ -70,33 +69,59 @@ study = StudyDefinition(
         """,
     ),
 
-    population_sro = patients.satisfying(
-        """
-        (age >=18 AND age <=120)
-        """,
+    ### appointment 
+    appt = patients.with_gp_consultations(
+        between=["first_day_of_month(index_date)", "last_day_of_month(index_date)"],
+        returning="binary_flag",
+        return_expectations={"incidence": 0.5}
+    ), 
+
+    appt_over12 = patients.satisfying(
+    """
+    appt AND
+    population_over12
+    """
     ),
+
+    appt_under12 = patients.satisfying(
+    """
+    appt AND
+    population_under12
+    """
+    )
+
 )
+#### Measures
 
 measures = [
-#### Check change in populations between start and end
+    ##### child appt rate per child population
     Measure(
-    id=f"end_population_under12",
-    numerator="population_under12",
-    denominator="population",
+    id=f"over12_appt_rate",
+    numerator="appt_over12",
+    denominator="population_over12",
     group_by=["practice"]
-    ),
+),
 
     Measure(
-    id=f"end_population_over12",
-    numerator="population_over12",
+    id=f"under12_appt_rate",
+    numerator="appt_under12",
+    denominator="population_under12",
+    group_by=["practice"]
+),
+    
+    ##### child rate per total population
+    Measure(
+    id=f"over12_appt_pop_rate",
+    numerator="appt_over12",
     denominator="population",
     group_by=["practice"]
-    ),
+),
 
     Measure(
-    id=f"end_population_sro",
-    numerator="population_sro",
+    id=f"under12_appt_pop_rate",
+    numerator="appt_under12",
     denominator="population",
     group_by=["practice"]
-    ),
+),
+
 ]
