@@ -416,12 +416,6 @@ actions:
         deciles_charts: output/appointments/deciles_chart_*.png
         deciles_tables: output/appointments/deciles_table_*.csv
 
-  run_tests:
-      run: python:latest python -m pytest --junit-xml=output/pytest.xml --verbose
-      outputs:
-        moderately_sensitive:
-          log: output/pytest.xml
-
   # Combining data
   # -----------------
   combine_seasonal_data:
@@ -433,3 +427,19 @@ actions:
     outputs:
       moderately_sensitive:
         csv: output/combined/combined_seasonal_data.csv
+
+
+  # Tests
+  # -----------------
+  run_python_tests:
+      run: python:latest python -m pytest --junit-xml=output/pytest.xml --verbose
+      outputs:
+        moderately_sensitive:
+          log: output/pytest.xml
+
+  run_r_tests:
+    run: r:latest analysis/tests/testthat/run-all.R
+    needs: [combine_seasonal_data]
+    outputs:
+      moderately_sensitive:
+        log: output/tests/run-all.log
