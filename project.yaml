@@ -403,7 +403,7 @@ actions:
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_monthly_*_by_booked_month.csv
 
 
@@ -416,7 +416,7 @@ actions:
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_monthly_*_by_start_month.csv
 
   
@@ -429,7 +429,7 @@ actions:
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_start_month.csv
 
 
@@ -442,7 +442,7 @@ actions:
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_booked_month.csv
   
 
