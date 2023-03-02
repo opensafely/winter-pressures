@@ -278,7 +278,18 @@ actions:
     outputs:
       highly_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_booked_month.csv
-  
+
+  ### Some of the measures need to be normalised by list size, specifically
+  ### anything that starts with 'measure_monthly_num'
+  appointments_generate_normalised_counts:
+    run: r:latest analysis/normalise_counts.R
+    needs:
+      - appointments_generate_monthly_measures_by_booked_month
+      - appointments_generate_monthly_measures_by_start_month
+      - monthly_practice_listsize_measures
+    outputs:
+      highly_sensitive:
+        normalised_csvs: output/appointments/measure_monthly_normalised_*.csv
 
   appointments_generate_deciles_charts:
     run: >
