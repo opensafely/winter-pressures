@@ -42,5 +42,6 @@ write.csv(combined_data_with_deciles_wide,
     file = paste(output_directory,
         "combined_seasonal_data_with_deciles.csv",
         sep = "/"
-    )
+    ),
+    row.names=FALSE
 )
