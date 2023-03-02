@@ -467,6 +467,7 @@ actions:
     needs:
       - appointments_generate_monthly_measures_by_booked_month
       - appointments_generate_monthly_measures_by_start_month
+      - appointments_generate_normalised_counts
     outputs:
       moderately_sensitive:
         deciles_charts: output/appointments/deciles_chart_*.png
