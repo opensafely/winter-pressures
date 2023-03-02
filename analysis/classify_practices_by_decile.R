@@ -3,7 +3,7 @@ library(tidyr)
 library(readr)
 library(magrittr)
 library(glue)
-# library(stringr)
+library(stringr)
 library(here)
 
 output_directory = here( "output", "combined" )
@@ -16,99 +16,50 @@ combined_data = paste(
     read_csv() %>%
     select( -X1 )
 
-summary_methods = combined_data %>%
-    select(starts_with("seasonal")) %>%
-    colnames
-
-measures = combined_data %>%
-    pull(variable) %>%
-    unique()
-
-years = combined_data %>%
-    pull(year) %>%
-    unique()
-
 combined_data_with_deciles = combined_data
 
-add_decile = function(d,value_column,num_quantiles=10){
-    decile_column = glue("{value_column}_decile")
 
-    d_converted = d %>%
-        mutate({{ decile_column }} := ntile(!!as.name(value_column), num_quantiles))
-    
-    return ( d_converted )
+calculate_deciles = function( d, num_quantiles = 10 ) {
+    return( ntile( d, num_quantiles ))
 }
 
+calculate_seasonal_deciles_across_years_and_variables = function(data) {
 
-for (this_summary_method in summary_methods) {
-    this_summary_data = combined_data %>%
-        select(practice, year, {{ this_summary_method }}, variable)
+    data_long = data %>%
+        pivot_longer(
+            cols = starts_with("seasonal"),
+            names_to = "method",
+            values_to = "value"
+        )
 
-    this_decile_holder = tibble()
+    data_with_deciles = data_long %>%
+        group_by(year, variable, method) %>%
+        mutate(decile = calculate_deciles(value))
 
-    for (this_year in years) {
-        for (this_measure in measures) {
-            this_measure_data = this_summary_data %>%
-                filter(year == this_year & variable == this_measure)
+    return( data_with_deciles )
+}
 
-            converted_measure_data = add_decile(
-                d = this_measure_data,
-                value_column = this_summary_method,
-                num_quantiles = 10
-            )
+column_edit = function(s) {
+    new_s = s %>% str_remove("^value_")
 
-            this_decile_holder = this_decile_holder %>% bind_rows(converted_measure_data)
-        }
+    if ( s %>% str_detect("^decile_" ) ) {
+        new_s = new_s %>% str_remove("^decile_")
+        new_s = glue( "{new_s}_decile" )
     }
-
-    combined_data_with_deciles = combined_data_with_deciles %>%
-        left_join(this_decile_holder, by = c("practice", "year", "variable", this_summary_method))
+    return( new_s )
 }
 
-combined_data_with_deciles = combined_data
+combined_data_with_deciles = calculate_seasonal_deciles_across_years_and_variables(combined_data)
 
-add_decile = function(d,value_column,num_quantiles=10){
-    decile_column = glue("{value_column}_decile")
+combined_data_with_deciles_wide = combined_data_with_deciles %>%
+    pivot_wider(
+        id_cols = c("practice", "year", "variable"),
+        names_from = "method",
+        values_from = c("value","decile")
+    ) %>%
+    select(practice, year, starts_with("value"), starts_with("decile"), variable)
 
-    d_converted = d %>%
-        mutate({{ decile_column }} := ntile(!!as.name(value_column), num_quantiles))
-    
-    return ( d_converted )
-}
-
-
-for (this_summary_method in summary_methods) {
-    this_summary_data = combined_data %>%
-        select(practice, year, {{ this_summary_method }}, variable)
-
-    this_decile_holder = tibble()
-
-    for (this_year in years) {
-        for (this_measure in measures) {
-            this_measure_data = this_summary_data %>%
-                filter(year == this_year & variable == this_measure)
-
-            converted_measure_data = add_decile(
-                d = this_measure_data,
-                value_column = this_summary_method,
-                num_quantiles = 10
-            )
-
-            this_decile_holder = this_decile_holder %>% bind_rows(converted_measure_data)
-        }
-    }
-
-    combined_data_with_deciles = combined_data_with_deciles %>%
-        left_join(this_decile_holder, by = c("practice", "year", "variable", this_summary_method))
-}
-
-column_order = c(
-    "practice", "year",
-    c(summary_methods, glue("{summary_methods}_decile")) %>% sort,
-    "variable" )
-
-combined_data_with_deciles = combined_data_with_deciles %>%
-    select( !!! column_order )
+colnames(combined_data_with_deciles_wide) = lapply(colnames(combined_data_with_deciles_wide), column_edit)
 
 ### Create output directory
 output_directory <- fs::dir_create(
@@ -116,7 +67,7 @@ output_directory <- fs::dir_create(
 )
 
 ### Write data file file
-write.csv(combined_data_with_deciles,
+write.csv(combined_data_with_deciles_wide,
     file = paste(output_directory,
         "combined_seasonal_data_with_deciles.csv",
         sep = "/"
