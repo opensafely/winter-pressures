@@ -329,6 +329,14 @@ actions:
         csv: output/combined/combined_seasonal_data.csv
 
 
+  classify_practices_by_decile:
+      run: r:latest analysis/classify_practices_by_decile.R
+      needs:
+      - combine_seasonal_data
+      outputs:
+        moderately_sensitive:
+          csv: output/combined/combined_seasonal_data_with_deciles.csv
+
   # Tests
   # -----------------
   run_python_tests:
