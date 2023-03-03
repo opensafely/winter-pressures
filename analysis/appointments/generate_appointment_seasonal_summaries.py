@@ -1,27 +1,29 @@
 import argparse
-import sys
 import numpy as np
-import pandas as pd
+import datetime
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
 from analysis.utils import summarise_to_seasons
 
-
-def parse_args(args):
+def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--value-thresholds", action="extend", nargs="+", required=True, type=int
     )
     parser.add_argument("--index-cols", action="extend", nargs="+", required=True)
-    return parser.parse_args(args)
+    parser.add_argument("--start-date", type=datetime.date.fromisoformat)
+    parser.add_argument("--end-date"  , type=datetime.date.fromisoformat)
+    return parser.parse_args()
 
 
 def main():
-    args = parse_args(sys.argv[1:])
+    args = parse_args()
     # We assume the first column in the list of columns is a date column.
     date_col = args.index_cols[0]
     index_cols_nodate = args.index_cols[1:]
+    start_date = str(args.start_date)
+    end_date = str(args.end_date)
 
     f_in = OUTPUT_DIR / "dataset_long.csv.gz"
 
@@ -31,7 +33,14 @@ def main():
 
     value_col = "lead_time_in_days"
 
-    dataset_long = read(f_in, args.index_cols, date_col, value_col)
+    dataset_long = read(
+        f_in=f_in,
+        index_cols=args.index_cols,
+        date_col=date_col,
+        value_col=value_col,
+        start_date=start_date,
+        end_date=end_date,
+    )
 
     for value_threshold in args.value_thresholds:
         dataset_long["threshold_mask"] = dataset_long[value_col] <= value_threshold
@@ -84,7 +93,7 @@ def main():
 
         ### Dropping this column to ensure that there is no confusion due to
         ### multiple overwritings of 'threshold_mask'.
-        dataset_long = dataset_long.drop( "threshold_mask", axis=1 )
+        dataset_long = dataset_long.drop("threshold_mask", axis=1)
 
     #################################################################
     ### Generate median lead time measure                         ###
@@ -117,7 +126,14 @@ def main():
 
     unique_col = "patient_id"
 
-    dataset_long = read(f_in, args.index_cols, date_col, unique_col)
+    dataset_long = read(
+        f_in=f_in,
+        index_cols=args.index_cols,
+        date_col=date_col,
+        value_col=unique_col,
+        start_date=start_date,
+        end_date=end_date,
+    )
     num_patients = dataset_long.groupby(args.index_cols).nunique()
     del dataset_long
 
@@ -137,7 +153,13 @@ def main():
     ### Generate num appointment measure                          ###
     #################################################################
 
-    dataset_long = read(f_in, args.index_cols, date_col)
+    dataset_long = read(
+        f_in=f_in,
+        index_cols=args.index_cols,
+        date_col=date_col,
+        start_date=start_date,
+        end_date=end_date,
+    )
     counts = dataset_long.groupby(args.index_cols).size()
     del dataset_long
 
