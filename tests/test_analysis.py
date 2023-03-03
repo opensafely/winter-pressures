@@ -13,7 +13,67 @@ import numpy as np
 
 from pandas import testing
 from analysis.appointments import reshape_dataset
-from analysis.utils import summarise_to_seasons
+from analysis.utils import summarise_to_seasons, filter_by_date
+
+test_month_start = pd.to_datetime("2021-01-01")
+plus_month = 8
+test_month_end = test_month_start + pd.DateOffset(months=plus_month)
+
+@pytest.fixture
+def monthly_table_with_index():
+    test_data = pd.DataFrame(
+        {
+            "date": pd.date_range(start=test_month_start, end=test_month_end, freq="M") + pd.offsets.MonthBegin(0),
+            "practice": 1,
+        }
+    )
+    return test_data.set_index(['date','practice'])
+
+### Some testing parameters to be used by test_filter_by_date();
+### these scenarios test that the filter_by_date function to check 
+### that the correct number of months are present in the output
+### data frame.
+### Scenario 1: Request to filter data to 4 months, defined by
+###             test_month_start to four months later, where those
+###             four months all exist in our dataset. We expect to
+###             have four months in the resulting dataset.
+### Scenario 2: Request to filter data to 4 months, where the start
+###             date is four months AFTER the end date. We expect to
+###             have zero months in the resulting dataset.
+### Scenario 3: Request to filter data to 12 months, where the input
+###             data only runs to 8 months after the start date. We
+###             expect to have eight months in the resulting dataset.
+### Scenario 4: Request to filter data to 1 month before the start date
+###             to 1 month after the end date (i.e., 10 months in total)
+###             of the input data. We expect to have eight months
+###             in the resulting dataset.
+@pytest.mark.parametrize(
+    "test_start_date, test_end_date, num_months",
+    [
+        (test_month_start, test_month_start + pd.DateOffset(months=4), 4),
+        (test_month_start + pd.DateOffset(months=4), test_month_start, 0),
+        (test_month_start, test_month_start + pd.DateOffset(months=12), plus_month),
+        (test_month_start - pd.DateOffset(months=1), test_month_end + pd.DateOffset(months=1), plus_month),
+    ],
+)
+
+def test_filter_by_date(monthly_table_with_index, test_start_date, test_end_date, num_months ):
+
+    obs_filtered = filter_by_date(
+        monthly_table_with_index,
+        date_col="date",
+        start_date = str(test_start_date),
+        end_date = str(test_end_date)
+    )
+    
+    exp_months = pd.date_range(start=test_start_date, end=test_end_date, freq="M") + pd.offsets.MonthBegin(0)
+    exp_months = exp_months.intersection(monthly_table_with_index.index.get_level_values('date'))
+    exp_months = exp_months.strftime('%Y-%m-%d').rename('date')
+
+    obs_months = obs_filtered.index.strftime('%Y-%m-%d')
+
+    assert len(obs_filtered) == num_months
+    assert all(exp_months == obs_months)
 
 
 @pytest.fixture
@@ -98,6 +158,8 @@ def test_summarise_to_seasons_by_median(monthly_table):
 
 def test_split_suffix():
     assert reshape_dataset.split_suffix("booked_date_1") == ("booked_date", 1)
+
+
 
 
 @pytest.mark.parametrize(
