@@ -18,8 +18,6 @@ combined_data = paste(
     read_csv() %>%
     select( -X1 )
 
-combined_data_with_deciles = combined_data
-
 combined_data_with_deciles = calculate_seasonal_deciles_across_years_and_variables(combined_data)
 
 combined_data_with_deciles_wide = combined_data_with_deciles %>%
