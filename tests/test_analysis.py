@@ -27,9 +27,26 @@ def monthly_table_with_index():
             "practice": 1,
         }
     )
-    test_data["date"] = pd.to_datetime(test_data["date"])
     return test_data.set_index(['date','practice'])
 
+### Some testing parameters to be used by test_filter_by_date();
+### these scenarios test that the filter_by_date function to check 
+### that the correct number of months are present in the output
+### data frame.
+### Scenario 1: Request to filter data to 4 months, defined by
+###             test_month_start to four months later, where those
+###             four months all exist in our dataset. We expect to
+###             have four months in the resulting dataset.
+### Scenario 2: Request to filter data to 4 months, where the start
+###             date is four months AFTER the end date. We expect to
+###             have zero months in the resulting dataset.
+### Scenario 3: Request to filter data to 12 months, where the input
+###             data only runs to 8 months after the start date. We
+###             expect to have eight months in the resulting dataset.
+### Scenario 4: Request to filter data to 1 month before the start date
+###             to 1 month after the end date (i.e., 10 months in total)
+###             of the input data. We expect to have eight months
+###             in the resulting dataset.
 @pytest.mark.parametrize(
     "test_start_date, test_end_date, num_months",
     [
@@ -49,7 +66,14 @@ def test_filter_by_date(monthly_table_with_index, test_start_date, test_end_date
         end_date = str(test_end_date)
     )
     
+    exp_months = pd.date_range(start=test_start_date, end=test_end_date, freq="M") + pd.offsets.MonthBegin(0)
+    exp_months = exp_months.intersection(monthly_table_with_index.index.get_level_values('date'))
+    exp_months = exp_months.strftime('%Y-%m-%d').rename('date')
+
+    obs_months = obs_filtered.index.strftime('%Y-%m-%d')
+
     assert len(obs_filtered) == num_months
+    assert all(exp_months == obs_months)
 
 
 @pytest.fixture
@@ -128,7 +152,7 @@ def test_summarise_to_seasons_by_median(monthly_table):
             "value": pd.Series([4, 1, 10, 7]),
         }
     )
-    
+
     testing.assert_frame_equal(obs_sum, exp_sum)
 
 
