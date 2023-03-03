@@ -15,4 +15,4 @@ dir.create(output_dir, showWarnings = FALSE)
 
 sink(log_file)
 on.exit(sink())
-test_dir( here("tests", "testthat") )
+test_dir(here("tests", "testthat"), stop_on_failure = TRUE)
