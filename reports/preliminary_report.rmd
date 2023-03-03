@@ -1,0 +1,136 @@
+---
+title: "OpenSAFELY Winter pressures"
+author: "OpenSAFELY collaborative"
+date: 2023-03-28
+# output: powerpoint_presentation
+output:
+    html_document:
+        number_sections: false
+        toc: true
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+library(readr)
+library(knitr)
+library(here)
+library(magrittr)
+library(stringr)
+library(dplyr)
+library(glue)
+
+knitr::opts_chunk$set( echo=FALSE, message=FALSE, warning=FALSE )
+
+source( here( "reports", "report_variables.R" ) )
+
+# set output directory
+output_directory <- fs::dir_create(
+path = here("output", 
+            "docs")
+)
+
+```
+
+# Winter pressures: introduction
+
+# Metrics of services being overwhelmed
+
+```{r}
+sro_deciles_format = "deciles_chart_.*_practice_only_rate\\.png"
+kids_deciles_format = "deciles_chart_.*12_appt.*\\.png"
+appt_deciles_format = "deciles_chart_.*\\.png"
+
+sro_decile_plots = list.files(
+    path=metrics_directory,
+    pattern=sro_deciles_format,
+    full.names = TRUE
+)
+
+kids_decile_plots = list.files(
+    path=metrics_directory,
+    pattern=kids_deciles_format,
+    full.names = TRUE
+)
+
+appt_decile_plots = list.files(
+    path=appt_directory,
+    pattern=appt_deciles_format,
+    full.names = TRUE
+)
+
+all_decile_plots = tibble(
+    filename = c(
+        sro_decile_plots,
+        kids_decile_plots,
+        appt_decile_plots )
+) %>% mutate( name = filename %>%
+    basename %>%
+    str_remove("^deciles_chart_") %>%
+    str_remove(".png$" )
+) %>% 
+    left_join( measure_descriptions, by=c("name"="long_name"))
+
+```
+
+```{r, results="asis"}
+
+for ( i in 1:nrow(all_decile_plots) ) {
+    this_file = all_decile_plots$filename[i]
+    this_title = all_decile_plots$description[i]
+    print( glue( "### {this_title}\n\n") )
+    print( glue( "![{this_title}: decile plot]({this_file})\n\n" ) )
+}
+
+```
+
+# Variation in service pressure between practices and regions
+
+```{r}
+
+target_ratio_file = "summer_winter_ratio_histogram.png"
+all_seasonal_ratio_histogram_filenames = list.files( path=here(), pattern=target_ratio_file, full.names=TRUE, recursive=TRUE )
+
+target_difference_file = "summer_winter_difference_histogram.png"
+all_seasonal_difference_histogram_filenames = list.files( path=here(), pattern=target_difference_file, full.names=TRUE, recursive=TRUE )
+
+```
+
+```{r}
+
+all_seasonal_ratios = tibble(
+    filename = c( all_seasonal_ratio_histogram_filenames )
+) %>% mutate( name = filename %>%
+    dirname %>%
+    basename
+) %>% 
+rename( ratio_filename = filename )
+
+all_seasonal_differences = tibble(
+    filename = c( all_seasonal_difference_histogram_filenames )
+) %>% mutate( name = filename %>%
+    dirname %>%
+    basename
+) %>% 
+rename( difference_filename = filename )
+
+all_seasonal_comparisons = all_seasonal_ratios %>% 
+    left_join( all_seasonal_differences, by="name" ) %>%
+    left_join( measure_descriptions, by=c("name"="short_name"))
+
+```
+
+```{r, results="asis"}
+
+for ( i in 1:nrow(all_seasonal_comparisons) ) {
+    this_difference_file = all_seasonal_comparisons$difference_filename[i]
+    this_ratio_file = all_seasonal_comparisons$ratio_filename[i]
+    this_title = all_seasonal_comparisons$description[i]
+    print( glue( "### {this_title}\n\n") )
+
+    print( glue( "![{this_title}: seasonal difference plot]({this_difference_file})\n\n" ) )
+    print( glue( "![{this_title}: seasonal log2 ratio plot]({this_ratio_file})\n\n" ) )
+}
+
+```
+# Patient services in outlier practices
+
+# Early warning systems
