@@ -23,7 +23,7 @@ def main():
     date_col = args.index_cols[0]
     index_cols_nodate = args.index_cols[1:]
     start_date = str(args.start_date)
-    end_date = str(args.start_date)
+    end_date = str(args.end_date)
 
     f_in = OUTPUT_DIR / "dataset_long.csv.gz"
 

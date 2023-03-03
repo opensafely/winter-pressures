@@ -125,7 +125,7 @@ def test_summarise_to_seasons_by_median(monthly_table):
             "practice": pd.Series([1, 1, 2, 2]),
             "year": pd.Series([2021, 2021, 2021, 2021]),
             "season": pd.Series([0, 1, 0, 1]),
-            "value": pd.Series([4, 1, 10, 7]),
+            "value": pd.Series([4.0, 1.0, 10.0, 7.0]),
         }
     )
 
