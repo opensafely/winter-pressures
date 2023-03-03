@@ -287,8 +287,7 @@ actions:
           log: output/pytest.xml
 
   run_r_tests:
-    run: r:latest analysis/tests/testthat/run-all.R
-    needs: [combine_seasonal_data]
+    run: r:latest tests/testthat/run-all.R
     outputs:
       moderately_sensitive:
         log: output/tests/run-all.log
