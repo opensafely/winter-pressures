@@ -9,8 +9,8 @@ input_d_valid = tribble(
 
 output_expected_valid = tribble(
     ~practice, ~year, ~summer, ~winter, ~seasonal_difference,
-    1, 2021, 0.1, 0.2, 0.1,
-    2, 2021, 0.3, 0.4, 0.1
+    1, 2021, 0.1, 0.2, 100*((0.2-0.1)/0.1),
+    2, 2021, 0.3, 0.4, 100*((0.4-0.3)/0.3)
 )
 
 
@@ -46,7 +46,7 @@ input_d_missing = tribble(
 
 output_expected_missing = tribble(
     ~practice, ~year, ~summer, ~winter, ~seasonal_difference,
-    1, 2021, 0.1, 0.2, 0.1,
+    1, 2021, 0.1, 0.2, 100*((0.2-0.1)/0.1),
     2, 2021, 0.3, NA, NA,
     2, 2021, NA, 0.3, NA
 )
