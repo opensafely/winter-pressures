@@ -1,14 +1,12 @@
 import argparse
-import sys
 import numpy as np
-import pandas as pd
 import datetime
 
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
 from analysis.utils import summarise_to_seasons
 
-def parse_args(args):
+def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--value-thresholds", action="extend", nargs="+", required=True, type=int
@@ -16,11 +14,11 @@ def parse_args(args):
     parser.add_argument("--index-cols", action="extend", nargs="+", required=True)
     parser.add_argument("--start-date", type=datetime.date.fromisoformat)
     parser.add_argument("--end-date"  , type=datetime.date.fromisoformat)
-    return parser.parse_args(args)
+    return parser.parse_args()
 
 
 def main():
-    args = parse_args(sys.argv[1:])
+    args = parse_args()
     # We assume the first column in the list of columns is a date column.
     date_col = args.index_cols[0]
     index_cols_nodate = args.index_cols[1:]
