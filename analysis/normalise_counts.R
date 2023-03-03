@@ -5,6 +5,8 @@ library(glue)
 library(stringr)
 library(here)
 
+source(here("analysis", "utils.R"))
+
 listsize_file = here("output", "listsize", "measure_listsize.csv")
 
 listsizes = read_csv(listsize_file,
@@ -44,10 +46,7 @@ for (f in target_files) {
 
     cat(glue("[{f_count}] Reading in '{basename(f)}'\n\n"))
 
-    d_normalised = d %>%
-        left_join(listsizes,by=c("date","practice")) %>%
-        mutate( value = raw_count/population ) %>%
-        select( value, date )
+    d_normalised = normalise_raw_counts( d, listsizes )
 
     output_file = paste(output_dir,
         basename(f) %>% str_replace("num", "normalised_num"),
