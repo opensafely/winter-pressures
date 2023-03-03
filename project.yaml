@@ -378,3 +378,17 @@ actions:
     outputs:
       moderately_sensitive:
         report: output/docs/preliminary_report.html
+
+  create_release:
+    run: r:latest analysis/create_release.R
+    needs:
+      - generate_preliminary_report
+      - appointments_generate_deciles_charts
+      - metrics_generate_deciles_charts
+      - metrics_create_seasonal_measures
+    outputs:
+      moderately_sensitive:
+        html: output/release/*.html
+        txt: output/meta-release/*.txt
+        plot_data: output/release/*/*.csv
+        plot_png: output/release/*/*.png
