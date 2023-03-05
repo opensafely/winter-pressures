@@ -84,6 +84,19 @@ for ( i in 1:nrow(all_decile_plots) ) {
 
 # Variation in service pressure between practices and regions
 
+## Summary statistics for all seasonal comparisons
+
+```{r}
+
+summary_statistics_file = here("output","combined","seasonal_summaries.csv")
+
+summary_statistics = read_csv( summary_statistics_file )
+
+summary_statistics %>% kable
+
+```
+
+
 ```{r}
 
 target_ratio_file = "summer_winter_ratio_histogram.png"
