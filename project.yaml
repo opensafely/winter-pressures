@@ -278,6 +278,14 @@ actions:
         moderately_sensitive:
           csv: output/combined/combined_seasonal_data_with_deciles.csv
 
+  summarise_seasonal_comparisons:
+      run: r:latest analysis/summarise_seasonal_comparisons.R
+      needs:
+      - combine_seasonal_data
+      outputs:
+        moderately_sensitive:
+          csv: output/combined/seasonal_summaries.csv
+
   # Tests
   # -----------------
   run_python_tests:
