@@ -301,6 +301,7 @@ actions:
       - appointments_generate_deciles_charts
       - appointments_generate_seasonal_summaries_by_booked_month
       - appointments_generate_seasonal_summaries_by_start_month
+      - summarise_seasonal_comparisons
     outputs:
       moderately_sensitive:
         report: output/docs/preliminary_report.html
