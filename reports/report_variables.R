@@ -25,14 +25,18 @@ measure_descriptions = tribble(
     "monthly_num_appointments_by_start_month", "Number of appointments (by start month)",
     "monthly_num_unique_patients_by_booked_month", "Number of unique patients (by booked month)",
     "monthly_num_unique_patients_by_start_month", "Number of unique patients (by start month)",
+    "monthly_normalised_num_appointments_by_booked_month", "Number of appointments normalised by list size (by booked month)",
+    "monthly_normalised_num_appointments_by_start_month", "Number of appointments normalised by list size (by start month)",
+    "monthly_normalised_num_unique_patients_by_booked_month", "Number of unique patients normalised by list size (by booked month)",
+    "monthly_normalised_num_unique_patients_by_start_month", "Number of unique patients normalised by list size (by start month)",
     "monthly_proportion_lead_time_in_days_within_0days_by_booked_month", "Proportion of same day appointments (by booked month)",
     "monthly_proportion_lead_time_in_days_within_0days_by_start_month", "Proportion of same day appointments (by start month)",
     "monthly_proportion_lead_time_in_days_within_2days_by_booked_month", "Proportion of appointments within 2 days (by booked month)",
     "monthly_proportion_lead_time_in_days_within_2days_by_start_month", "Proportion of appointments within 2 days (by start month)"
 ) %>% mutate( short_name = long_name %>%
-str_remove( "_practice_only_rate$" ) %>%
-str_remove( "^monthly_" ) ) %>%
-select(short_name, long_name, everything() )
+    str_remove( "_practice_only_rate$" ) %>%
+    str_remove( "^monthly_" ) ) %>%
+    select(short_name, long_name, everything() )
 
 measure_to_description = function( m, use_short_name = FALSE ) {
     description = ""
