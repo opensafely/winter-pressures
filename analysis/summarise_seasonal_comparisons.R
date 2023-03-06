@@ -20,7 +20,7 @@ summary_statistics = combined_data %>%
         names_to = "method",
         values_to = "value",
         cols = starts_with("seasonal") ) %>%
-    group_by( year, method ) %>%
+    group_by( year, variable, method ) %>%
     summarise( 
         num = n(),
         num_missing = sum( is.na( value ) ),
