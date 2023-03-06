@@ -88,7 +88,7 @@ for ( i in 1:nrow(all_decile_plots) ) {
 
 ```{r, results="asis"}
 
-summary_statistics_file = here("output","combined","seasonal_summaries.csv")
+summary_statistics_file = here("output","combined","seasonal_summaries_nondisclosive.csv")
 
 summary_statistics = read_csv( summary_statistics_file )
 

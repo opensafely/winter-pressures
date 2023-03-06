@@ -27,3 +27,9 @@ column_edit = function(s) {
     }
     return( new_s )
 }
+
+redact_and_round <- function(d, redact_below = 5, round_to = 5) {
+    d_nondisclosive <- plyr::round_any(d, round_to)
+    d_nondisclosive[d_nondisclosive < redact_below] <- NA
+    return(d_nondisclosive)
+}
