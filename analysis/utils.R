@@ -1,3 +1,4 @@
+
 calculate_deciles = function( d, num_quantiles = 10 ) {
     return( ntile( d, num_quantiles ))
 }
@@ -34,4 +35,26 @@ redact_and_round <- function(d, redact_below = 5, round_to = 5, redaction_string
     d_nondisclosive <- plyr::round_any(d_nondisclosive, round_to)
     d_nondisclosive = replace_na(d_nondisclosive, redaction_string)
     return(d_nondisclosive)
+}
+
+normalise_raw_counts = function(raw_counts, practice_populations) {
+
+    counts_normalised <- raw_counts %>%
+        inner_join(practice_populations, by = c("date", "practice")) %>%
+        mutate( value = raw_count / population ) %>%
+        select(value, date, practice)
+
+    population_missing <- raw_counts %>%
+        anti_join(practice_populations, by = c("date", "practice"))
+
+    raw_counts_missing <- practice_populations %>%
+        anti_join(raw_counts, by = c("date", "practice"))
+    
+
+    return(list(
+        normalised = counts_normalised,
+        raw_counts_missing = raw_counts_missing,
+        population_missing = population_missing
+    ))
+
 }

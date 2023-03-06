@@ -89,7 +89,7 @@ def main():
     measure = num_patients.reset_index()
     del num_patients
     measure.columns = ["date", "practice", "value"]  # rename columns
-    measure_monthly = measure.loc[:, ["value", "date"]]  # reorder columns
+    measure_monthly = measure.loc[:, ["value", "date", "practice"]]  # reorder columns
 
     f_out = OUTPUT_DIR / f"measure_monthly_num_unique_patients_by_{date_col}.csv"
     measure_monthly.to_csv(f_out, index=False)
@@ -108,7 +108,7 @@ def main():
     measure.columns = ["date", "practice", "value"]  # rename columns
 
     ### Creating a measure file for a monthly decile plot
-    measure_monthly = measure.loc[:, ["value", "date"]]  # reorder columns
+    measure_monthly = measure.loc[:, ["value", "date", "practice"]]  # reorder columns
     f_out = OUTPUT_DIR / f"measure_monthly_num_appointments_by_{date_col}.csv"
     measure_monthly.to_csv(f_out, index=False)
     del measure_monthly

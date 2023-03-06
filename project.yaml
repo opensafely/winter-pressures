@@ -4,6 +4,51 @@ expectations:
   population_size: 5000
 
 actions:
+
+  monthly_practice_listsize_2018:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_listsize_monthly
+        --index-date-range '2018-06-01 to 2019-05-31 by month' --output-dir=output/listsize
+        --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/listsize/input_listsize_monthl*.feather
+
+  monthly_practice_listsize_2019:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_listsize_monthly
+        --index-date-range '2019-06-01 to 2020-05-31 by month' --output-dir=output/listsize
+        --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/listsize/input_listsize_month*.feather
+
+  monthly_practice_listsize_2020:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_listsize_monthly
+        --index-date-range '2020-06-01 to 2021-05-31 by month' --output-dir=output/listsize
+        --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/listsize/input_listsize_mont*.feather
+
+  monthly_practice_listsize_2021:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_listsize_monthly
+        --index-date-range '2021-06-01 to 2022-12-31 by month' --output-dir=output/listsize
+        --output-format=feather
+    outputs:
+      highly_sensitive:
+        extract: output/listsize/input_listsize_mon*.feather
+
+  monthly_practice_listsize_measures:
+    run: cohortextractor:latest generate_measures --study-definition study_definition_listsize_monthly --output-dir=output/listsize
+    needs:
+    - monthly_practice_listsize_2018
+    - monthly_practice_listsize_2019
+    - monthly_practice_listsize_2020
+    - monthly_practice_listsize_2021
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/listsize/measure_*.csv
+
+
   # Other data
   # ----------
   # Add actions for other data to this section. Prefix them with a suitable name; place
@@ -188,7 +233,7 @@ actions:
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_monthly_*_by_booked_month.csv
 
 
@@ -201,7 +246,7 @@ actions:
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_monthly_*_by_start_month.csv
 
   
@@ -216,7 +261,7 @@ actions:
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_start_month.csv
 
 
@@ -231,9 +276,22 @@ actions:
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      moderately_sensitive:
+      highly_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_booked_month.csv
-  
+
+  ### Some of the measures need to be normalised by list size, specifically
+  ### anything that starts with 'measure_monthly_num'
+  appointments_generate_normalised_counts:
+    run: r:latest analysis/normalise_counts.R
+    needs:
+      - appointments_generate_monthly_measures_by_booked_month
+      - appointments_generate_monthly_measures_by_start_month
+      - monthly_practice_listsize_measures
+    outputs:
+      highly_sensitive:
+        normalised_csvs: output/appointments/measure_monthly_normalised_*.csv
+      moderately_sensitive:
+        check_csvs: output/check/*CHECK.csv
 
   appointments_generate_deciles_charts:
     run: >
@@ -245,6 +303,7 @@ actions:
     needs:
       - appointments_generate_monthly_measures_by_booked_month
       - appointments_generate_monthly_measures_by_start_month
+      - appointments_generate_normalised_counts
     outputs:
       moderately_sensitive:
         deciles_charts: output/appointments/deciles_chart_*.png
