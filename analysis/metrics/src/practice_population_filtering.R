@@ -29,14 +29,15 @@ get_practices_to_remove <- function(measure_name,
   
   #return the unique practices that are either: 
   #small population, large population change, NA population
-  unique(practices_with_population_change,
+  unique(c(practices_with_population_change,
          practices_with_small_population)
+  )
   
 }
 
 #######################################################################
 # identify practices with small population
-######################################################################
+#######################################################################
 
 get_practices_with_small_start_population <- function(joined_data,
                                                       population_size_threshold){
