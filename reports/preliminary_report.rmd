@@ -21,6 +21,7 @@ library(glue)
 knitr::opts_chunk$set( echo=FALSE, message=FALSE, warning=FALSE )
 
 source( here( "reports", "report_variables.R" ) )
+source( here( "analysis", "utils.R" ) )
 
 # set output directory
 output_directory <- fs::dir_create(
@@ -85,6 +86,11 @@ for ( i in 1:nrow(all_decile_plots) ) {
 # Variation in service pressure between practices and regions
 
 ## Summary statistics for all seasonal comparisons
+
+Disclosivity controls are as follows:
+
+1. counts below `r formals(redact_and_round)$redact_below` are redacted and replacted with the string "`r formals(redact_and_round)$redaction_string`"
+2. counts are then rounded to `r formals(redact_and_round)$round_to` 
 
 ```{r, results="asis"}
 
