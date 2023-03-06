@@ -40,9 +40,9 @@ get_practices_to_remove <- function(measure_name,
 
 get_practices_with_small_start_population <- function(joined_data,
                                                       population_size_threshold){
-  
+
   dat <- filter(joined_data,
-                start_population < population_size_threshold)
+                is.na(start_population) | start_population < population_size_threshold)
   
   practices <- unique(pull(dat,
                            practice))
@@ -68,7 +68,7 @@ get_practices_with_population_change <- function(joined_data,
   # filter data to practices with a percent change of NA or less than the threshold value
   dat_to_remove <- 
     filter(dat,
-           is.na(population_pc_change | population_pc_change > percentage_threshold))
+           is.na(population_pc_change) | population_pc_change > percentage_threshold)
   
   # get the unique practice IDs from dat_to_remove
   practices <- unique(pull(dat_to_remove,
