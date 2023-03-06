@@ -104,13 +104,13 @@ create_seasonal_appointment_plots <- function(appointment_measure_name){
 #######################################################################
 
 seasonal_measure_outputs <- function(output_directory,
-                                     season_data){
+                                     season_data) {
   
   # reformat the data and calculate per practice measures
   practice_measure_data  <- calculate_seasonal_measures(
     season_data = season_data
   )
-  
+
   # create seasonal difference and seasonal ratio histogram and plot data
   plots <- generate_plots_and_data(
     practice_measure_data = practice_measure_data
@@ -125,9 +125,11 @@ seasonal_measure_outputs <- function(output_directory,
   )
 
   # save plots and data
-  save_plots_and_data(output_directory = output_directory,
-                      plot_list = plots)
-  
+  save_plots_and_data(
+    output_directory = output_directory,
+    plot_list = plots
+  )
+
 }
 
 #######################################################################
@@ -212,14 +214,21 @@ generate_plots_and_data <- function(practice_measure_data){
   
   # get the data used to create the histogram and select columns of interest
   difference_plot_data <- ggplot_build(difference_plot)$data[[1]]
-  difference_plot_data <- select(difference_plot_data, 
-                                 y, 
-                                 count, 
-                                 x, 
-                                 xmin, 
-                                 xmax, 
-                                 density)
   
+  # Sometimes dummy data results in an empty dataframe -
+  # this check for this so that the action will run locally
+  # (and in GitHub actions)
+  if (nrow(difference_plot_data) > 0) {
+    difference_plot_data <- select(
+      difference_plot_data,
+      y,
+      count,
+      x,
+      xmin,
+      xmax,
+      density
+    )
+  }
   
   # create the seasonal ratio histogram plot
   ratio_plot <- ggplot(practice_measure_data) + 
@@ -229,13 +238,21 @@ generate_plots_and_data <- function(practice_measure_data){
   
   # get the data used to create the histogram and select columns of interest
   ratio_plot_data <- ggplot_build(ratio_plot)$data[[1]]
-  ratio_plot_data <- select(ratio_plot_data, 
-                            y, 
-                            count, 
-                            x, 
-                            xmin, 
-                            xmax, 
-                            density)
+
+  # Sometimes dummy data results in an empty dataframe -
+  # this check for this so that the action will run locally
+  # (and in GitHub actions)
+  if (nrow(ratio_plot_data) > 0) {
+    ratio_plot_data <- select(
+      ratio_plot_data,
+      y,
+      count,
+      x,
+      xmin,
+      xmax,
+      density
+    )
+  }
   
   list(difference_plot = difference_plot,
        ratio_plot = ratio_plot,
