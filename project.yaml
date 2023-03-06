@@ -164,14 +164,6 @@ actions:
         raw_csv: output/*/*/summer_winter_all_metrics.csv
         plot_csv: output/*/*/summer_winter_*_histogram_data.csv
         plot_png: output/*/*/summer_winter_*_histogram.png
-
-  metrics_run_sro_tests:
-    run: r:latest analysis/metrics/tests/testthat/run-all.R
-    needs: [metrics_generate_sro_measures]
-    outputs:
-      moderately_sensitive:
-        log: output/metrics/tests/run-all.log
-
     
 
   # Appointments data
@@ -287,8 +279,7 @@ actions:
           log: output/pytest.xml
 
   run_r_tests:
-    run: r:latest analysis/tests/testthat/run-all.R
-    needs: [combine_seasonal_data]
+    run: r:latest tests/testthat/run-all.R
     outputs:
       moderately_sensitive:
         log: output/tests/run-all.log
