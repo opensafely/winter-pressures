@@ -86,15 +86,37 @@ for ( i in 1:nrow(all_decile_plots) ) {
 
 ## Summary statistics for all seasonal comparisons
 
-```{r}
+```{r, results="asis"}
 
 summary_statistics_file = here("output","combined","seasonal_summaries.csv")
 
 summary_statistics = read_csv( summary_statistics_file )
 
-summary_statistics %>% kable
+method_list = summary_statistics %>% pull( method ) %>% unique
+
+for ( this_method in method_list ) {
+
+    print( glue( "### {method_labels[this_method]}\n\n") )
+
+    print( glue( "This is defined as: {method_formula[this_method]}\n\n") )
+
+    stats_to_print = summary_statistics %>%
+        filter( method == this_method )  %>%
+        left_join( measure_descriptions, by=c("variable"="short_name")) %>%
+        select( -variable, -method, -long_name ) %>%
+        select( description, year, everything() ) %>%
+        arrange( year )
+
+    these_column_names = get_statistics_labels(stats_to_print %>% colnames)
+
+    stats_to_print %>%
+        kable( col.names=these_column_names ) %>%
+        print
+}
 
 ```
+
+## Seasonal comparisons
 
 
 ```{r}
