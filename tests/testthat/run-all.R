@@ -6,6 +6,7 @@ library(lubridate)
 
 source(here("analysis", "metrics", "src", "generate_seasonal_metrics.R"))
 source(here("analysis", "metrics", "src", "data_wrangling.R"))
+source(here("analysis", "metrics", "src", "practice_population_filtering.R"))
 source(here("analysis", "utils.R"))
 
 log_file <- here("output", "tests", "run-all.log")
