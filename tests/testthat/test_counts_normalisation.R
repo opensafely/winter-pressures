@@ -28,7 +28,8 @@ test_that( desc = glue("Valid data"), {
         0.05, "2021-02-01", 2
     ) %>% mutate( date = as_date(date) )
 
-    output_observed = normalise_raw_counts(input_raw_counts, input_practice_populations)
+    out = normalise_raw_counts(input_raw_counts, input_practice_populations)
+    output_observed = out$normalised
     
     output_expected = output_expected %>% arrange(practice, date)
     output_observed = output_observed %>% arrange(practice, date)
@@ -55,7 +56,8 @@ test_that(desc = glue("One missing raw count"), {
         0.05, "2021-02-01", 2
     ) %>% mutate(date = as_date(date))
 
-    output_observed <- normalise_raw_counts(input_raw_counts_missing_count, input_practice_populations)
+    out <- normalise_raw_counts(input_raw_counts_missing_count, input_practice_populations)
+    output_observed = out$normalised
 
     output_expected <- output_expected %>% arrange(practice, date)
     output_observed <- output_observed %>% arrange(practice, date)
@@ -82,7 +84,8 @@ test_that(desc = glue("One missing population"), {
         NA, "2021-02-01", 2
     ) %>% mutate(date = as_date(date))
 
-    output_observed <- normalise_raw_counts(input_raw_counts, input_practice_populations_one_missing)
+    out <- normalise_raw_counts(input_raw_counts, input_practice_populations_one_missing)
+    output_observed = out$normalised
 
     output_expected <- output_expected %>% arrange(practice, date)
     output_observed <- output_observed %>% arrange(practice, date)
@@ -90,3 +93,57 @@ test_that(desc = glue("One missing population"), {
     expect_equal(output_observed, output_expected)
 })
 
+
+
+input_practice_populations_practice_missing <- input_practice_populations %>%
+    filter( practice != 2 )
+
+test_that(desc = glue("One whole practice missing from practice population"), {
+    output_expected <- tribble(
+        ~value, ~date, ~practice,
+        0.5, "2021-01-01", 1,
+        1.0, "2021-02-01", 1
+    ) %>% mutate(date = as_date(date))
+
+    output_expected_missing_practice_population = input_raw_counts %>% filter(practice == 2)
+
+    out = normalise_raw_counts(input_raw_counts, input_practice_populations_practice_missing)
+    output_observed = out$normalised
+    
+    output_expected <- output_expected %>% arrange(practice, date)
+    output_observed <- output_observed %>% arrange(practice, date)
+
+    expect_equal(output_observed,output_expected)
+    
+    output_observed_missing_practice_population = out$population_missing %>% arrange(practice, date)
+    output_expected_missing_practice_population = output_expected_missing_practice_population %>% arrange(practice,date) 
+
+    expect_equal(output_observed_missing_practice_population, output_expected_missing_practice_population)
+})
+
+
+input_raw_counts_practice_missing <- input_raw_counts %>%
+    filter(practice != 2)
+
+test_that(desc = glue("One whole practice missing from raw counts"), {
+    output_expected <- tribble(
+        ~value, ~date, ~practice,
+        0.5, "2021-01-01", 1,
+        1.0, "2021-02-01", 1
+    ) %>% mutate(date = as_date(date))
+
+    output_expected_missing_raw_counts = input_practice_populations %>% filter(practice == 2)
+
+    out = normalise_raw_counts(input_raw_counts_practice_missing, input_practice_populations)
+    output_observed = out$normalised
+    
+    output_expected <- output_expected %>% arrange(practice, date)
+    output_observed <- output_observed %>% arrange(practice, date)
+
+    expect_equal(output_observed,output_expected)
+    
+    output_observed_missing_raw_counts = out$raw_counts_missing %>% arrange(practice, date)
+    output_expected_missing_raw_counts = output_expected_missing_raw_counts %>% arrange(practice, date)
+
+    expect_equal(output_observed_missing_raw_counts, output_expected_missing_raw_counts)
+})

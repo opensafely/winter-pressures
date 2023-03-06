@@ -290,6 +290,8 @@ actions:
     outputs:
       highly_sensitive:
         normalised_csvs: output/appointments/measure_monthly_normalised_*.csv
+      moderately_sensitive:
+        check_csvs: output/check/*CHECK.csv
 
   appointments_generate_deciles_charts:
     run: >

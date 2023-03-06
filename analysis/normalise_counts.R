@@ -31,6 +31,12 @@ target_files = list.files(
 
 output_dir = target_dir
 
+### Creating a directory to record which practices are not present
+### in either the raw counts or the population data
+check_directory <- fs::dir_create(
+    path = here("output", "check")
+)
+
 f_count = 0
 
 for (f in target_files) {
@@ -46,8 +52,12 @@ for (f in target_files) {
 
     cat(glue("[{f_count}] Reading in '{basename(f)}'\n\n"))
 
-    d_normalised = normalise_raw_counts( d, listsizes )
+    out = normalise_raw_counts(d, listsizes)
+    
+    ### == Recording the normalised counts ==========================
 
+    d_normalised = out$normalised
+    
     output_file = paste(output_dir,
         basename(f) %>% str_replace("num", "normalised_num"),
         sep = "/"
@@ -55,7 +65,39 @@ for (f in target_files) {
     
     cat(glue("[{f_count}] Writing out '{basename(output_file)}'\n\n"))
 
-    ###  Write data file
     write.csv(d_normalised, file = output_file, row.names=FALSE, quote=FALSE)
+
+    ### == Recording practices with raw counts missing ==============
+
+    d_raw_counts_missing = out$raw_counts_missing %>% select(-practice)
+
+    raw_counts_check_file = paste(check_directory,
+        basename(f) %>%
+            str_replace("num", "normalised_num") %>%
+            str_replace(".csv","_RAW-COUNT-CHECK.csv"),
+        sep = "/"
+    )
+
+    cat(glue("[{f_count}] Writing out {nrow(d_raw_counts_missing)} records with raw counts missing\n\n"))
+
+    write.csv(d_raw_counts_missing, file = raw_counts_check_file, row.names = FALSE, quote = FALSE)
+
+
+    ### == Recording practices with population missing ==============
+
+    d_population_missing <- out$population_missing %>% select( -practice )
+
+    population_check_file <- paste(check_directory,
+        basename(f) %>%
+            str_replace("num", "normalised_num") %>%
+            str_replace(".csv", "_POPULATION-CHECK.csv"),
+        sep = "/"
+    )
+
+    cat(glue("[{f_count}] Writing out {nrow(d_population_missing)} records with population missing\n\n"))
+
+    ###  Write data file
+    write.csv(d_population_missing, file = population_check_file, row.names = FALSE, quote = FALSE)
+
 
 }

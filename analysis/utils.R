@@ -32,10 +32,21 @@ column_edit = function(s) {
 normalise_raw_counts = function(raw_counts, practice_populations) {
 
     counts_normalised <- raw_counts %>%
-        left_join(practice_populations, by = c("date", "practice")) %>%
+        inner_join(practice_populations, by = c("date", "practice")) %>%
         mutate( value = raw_count / population ) %>%
         select(value, date, practice)
 
-    return( counts_normalised )
+    population_missing <- raw_counts %>%
+        anti_join(practice_populations, by = c("date", "practice"))
+
+    raw_counts_missing <- practice_populations %>%
+        anti_join(raw_counts, by = c("date", "practice"))
+    
+
+    return(list(
+        normalised = counts_normalised,
+        raw_counts_missing = raw_counts_missing,
+        population_missing = population_missing
+    ))
 
 }
