@@ -37,6 +37,7 @@ summary_statistics = combined_data %>%
 summary_statistics_nondisclosive = summary_statistics %>%
     mutate(across(starts_with("num"), redact_and_round))
 
+
 ### Create output directory
 output_directory <- fs::dir_create(
     path = here("output","combined")
