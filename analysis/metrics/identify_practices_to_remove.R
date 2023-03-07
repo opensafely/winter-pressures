@@ -42,8 +42,9 @@ list_practcies_to_remove <- lapply(measure,
        population_size_threshold = population_size_threshold)
 
 all_practices_to_remove <- unique(unlist(list_practcies_to_remove))
+all_practices_to_remove <- tibble(practice = all_practices_to_remove)
 
-print(paste0("Number of practices removed: ", length(all_practices_to_remove)))
+print(paste0("Number of practices removed: ", nrow(all_practices_to_remove)))
 
 
 #######################################################################
@@ -51,4 +52,5 @@ print(paste0("Number of practices removed: ", length(all_practices_to_remove)))
 #######################################################################
 
 write.csv(all_practices_to_remove,
-          file = "output/metrics/practices_to_remove.csv")
+          file = "output/metrics/practices_to_remove.csv",
+          row.names = FALSE)
