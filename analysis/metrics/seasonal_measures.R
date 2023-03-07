@@ -127,5 +127,5 @@ for (m in appointment_measure_name) {
 # )
 
 # Touching file
-write.table(x, file = here("output","check","seasonal_measures_CHECK.log"), col.names = FALSE)
+write.table(data.frame(), file = here("output", "check", "seasonal_measures_CHECK.log"), col.names = FALSE)
 
