@@ -29,10 +29,14 @@ column_edit = function(s) {
     return( new_s )
 }
 
+mround <- function(x,base){
+	base*round(x/base)
+}
+
 redact_and_round <- function(d, redact_below = 5, round_to = 5, redaction_string="[REDACTED]") {
     d_nondisclosive = d
     d_nondisclosive[d_nondisclosive < redact_below] <- NA
-    d_nondisclosive <- plyr::round_any(d_nondisclosive, round_to)
+    d_nondisclosive <- mround(d_nondisclosive, round_to)
     d_nondisclosive = replace_na(d_nondisclosive, redaction_string)
     return(d_nondisclosive)
 }
