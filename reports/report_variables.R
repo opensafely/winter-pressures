@@ -34,9 +34,9 @@ measure_descriptions = tribble(
     "monthly_proportion_lead_time_in_days_within_2days_by_booked_month", "Proportion of appointments within 2 days (by booked month)",
     "monthly_proportion_lead_time_in_days_within_2days_by_start_month", "Proportion of appointments within 2 days (by start month)"
 ) %>% mutate( short_name = long_name %>%
-str_remove( "_practice_only_rate$" ) %>%
-str_remove( "^monthly_" ) ) %>%
-select(short_name, long_name, everything() )
+    str_remove( "_practice_only_rate$" ) %>%
+    str_remove( "^monthly_" ) ) %>%
+    select(short_name, long_name, everything() )
 
 measure_to_description = function( m, use_short_name = FALSE ) {
     description = ""
@@ -52,4 +52,37 @@ measure_to_description = function( m, use_short_name = FALSE ) {
     }
 
     return( description )
+}
+
+method_labels = list(
+    seasonal_difference = "Percentage seasonal difference",
+    seasonal_log2_ratio = "Seasonal difference (log2 ratio)"
+)
+
+method_formula = list(
+    seasonal_difference = "100*(winter-summer)/summer",
+    seasonal_log2_ratio = "log2(winter/summer)"
+)
+
+statistics_labels = list(
+    description = "Metric",
+    num = "Num practices",
+    num_missing = "Num practices with missing data",
+    num_infinite = "Num practices with infinite data",
+    mean = "Mean",
+    median = "Median",
+    max = "Maximum",
+    min = "Minimum",
+    IQR = "IQR",
+    Q1 = "Q1 (25%)",
+    Q3 = "Q3 (75%)"
+)
+
+get_statistics_labels = function( x ) {
+    labels = statistics_labels[x]
+    missing_mask = names(statistics_labels[x]) %>% is.na()
+    replacements = x[missing_mask] %>% str_to_title()
+    labels[missing_mask] = replacements
+    names(labels)[missing_mask] = x[missing_mask]
+    return( labels %>% unlist )
 }

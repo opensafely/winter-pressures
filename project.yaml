@@ -329,6 +329,17 @@ actions:
         moderately_sensitive:
           csv: output/combined/combined_seasonal_data_with_deciles.csv
 
+  summarise_seasonal_comparisons:
+      run: r:latest analysis/summarise_seasonal_comparisons.R
+      needs:
+      - combine_seasonal_data
+      outputs:
+        moderately_sensitive:
+          csv: output/combined/seasonal_summaries.csv
+          redacted_csv: output/combined/seasonal_summaries_nondisclosive.csv
+
+
+
   # Tests
   # -----------------
   run_python_tests:
@@ -352,6 +363,7 @@ actions:
       - appointments_generate_deciles_charts
       - appointments_generate_seasonal_summaries_by_booked_month
       - appointments_generate_seasonal_summaries_by_start_month
+      - summarise_seasonal_comparisons
     outputs:
       moderately_sensitive:
         report: output/docs/preliminary_report.html
