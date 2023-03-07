@@ -169,6 +169,7 @@ actions:
     - metrics_create_seasonal_data
     - appointments_generate_seasonal_summaries_by_booked_month
     - appointments_generate_seasonal_summaries_by_start_month
+    - identify_practices_to_remove
     outputs:
       moderately_sensitive:
         raw_csv: output/*/*/summer_winter_all_metrics.csv

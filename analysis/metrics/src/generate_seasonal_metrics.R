@@ -111,7 +111,7 @@ seasonal_measure_outputs <- function(output_directory,
                        "practices_to_remove.csv"
   ),
   col_types = cols(
-    practice = col_double(),
+    practice = col_double()
   )
   )
   
