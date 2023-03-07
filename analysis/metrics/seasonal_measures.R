@@ -126,3 +126,6 @@ for (m in appointment_measure_name) {
 #                  create_seasonal_appointment_plots)
 # )
 
+# Touching file
+write.table(x, file = here("output","check","seasonal_measures_CHECK.log"), col.names = FALSE)
+
