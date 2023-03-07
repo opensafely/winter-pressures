@@ -125,7 +125,3 @@ for (m in appointment_measure_name) {
 # invisible(lapply(appointment_measure_name,
 #                  create_seasonal_appointment_plots)
 # )
-
-# Touching file
-write.table(data.frame(), file = here("output", "check", "seasonal_measures_CHECK.log"), col.names = FALSE)
-
