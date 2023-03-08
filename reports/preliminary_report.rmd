@@ -17,6 +17,7 @@ library(magrittr)
 library(stringr)
 library(dplyr)
 library(glue)
+library(R.utils)
 
 knitr::opts_chunk$set( echo=FALSE, message=FALSE, warning=FALSE )
 
@@ -34,6 +35,9 @@ path = here("output",
 # Winter pressures: introduction
 
 # Metrics of services being overwhelmed
+
+# Variation in service pressure between practices and regions
+
 
 ```{r}
 sro_deciles_format = "deciles_chart_.*_practice_only_rate\\.png"
@@ -83,7 +87,19 @@ for ( i in 1:nrow(all_decile_plots) ) {
 
 ```
 
-# Variation in service pressure between practices and regions
+```{r}
+
+practice_file = here("output","metrics","practices_to_remove.csv")
+num_practices_removed = countLines(practice_file)[1]-1
+
+```
+
+Before calculating the seasonal comparisons, we filtered out practices that:
+
+1. had a list size of less than 1000 
+2. changed >10% between the start and end of the period
+
+This removed `r num_practices_removed` practices.
 
 ## Summary statistics for all seasonal comparisons
 
@@ -174,5 +190,6 @@ for ( i in 1:nrow(all_seasonal_comparisons) ) {
 
 ```
 # Patient services in outlier practices
+
 
 # Early warning systems
