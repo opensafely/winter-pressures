@@ -9,8 +9,12 @@ input_d_valid = tribble(
     3, 0, 2021, 0.5,
     3, 1, 2022, 0.6,
     4, 0, 2022, 0.7,
-    4, 1, 2022, NA
+    4, 1, 2022, NA,
+    5, 0, 2021, 0.1,
+    5, 1, 2021, 0.2,
 )
+
+input_practices_to_remove <- c(5)
 
 output_expected_valid = tribble(
     ~practice, ~year, ~summer, ~winter,
@@ -33,7 +37,8 @@ test_that( desc = "Wide to long with valid data", {
     ### - neither seasonal summary entry for summer or winter is NA
 
     output_observed_valid = generate_wide_season_data(
-        season_data = input_d_valid
+        season_data = input_d_valid,
+        practices_to_remove = input_practices_to_remove
     )
 
     expect_equal(output_observed_valid, output_expected_valid)
@@ -58,7 +63,8 @@ test_that(desc = "Wide to long with invalid season codes", {
 
     expect_error(
       generate_wide_season_data(
-        season_data = input_d_invalid_season_code
+        season_data = input_d_invalid_season_code,
+        practices_to_remove = input_practices_to_remove
       ),
       "Invalid season entry: values must be either 0 or 1."
     )

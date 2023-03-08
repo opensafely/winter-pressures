@@ -189,6 +189,16 @@ actions:
       moderately_sensitive:
         measure_csv: output/metrics/m*.csv
 
+  identify_practices_to_remove:
+    run: r:latest analysis/metrics/identify_practices_to_remove.R
+    needs:
+    - metrics_generate_sro_measures
+    - metrics_generate_kids_measures
+    - metrics_generate_endpopulation_measures
+    outputs:
+      highly_sensitive:
+        csv: output/metrics/practices_to_remove.csv
+
   metrics_create_seasonal_data:
     run: r:latest analysis/metrics/create_seasonal_data.R
     needs:
@@ -204,6 +214,7 @@ actions:
     - metrics_create_seasonal_data
     - appointments_generate_seasonal_summaries_by_booked_month
     - appointments_generate_seasonal_summaries_by_start_month
+    - identify_practices_to_remove
     outputs:
       moderately_sensitive:
         raw_csv: output/*/*/summer_winter_all_metrics.csv

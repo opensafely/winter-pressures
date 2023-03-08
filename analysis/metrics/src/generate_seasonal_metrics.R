@@ -105,10 +105,23 @@ create_seasonal_appointment_plots <- function(appointment_measure_name){
 
 seasonal_measure_outputs <- function(output_directory,
                                      season_data) {
+
+  practices_to_remove <- read_csv(file = here("output", 
+                       "metrics", 
+                       "practices_to_remove.csv"
+  ),
+  col_types = cols(
+    practice = col_double()
+  )
+  )
+  
+  practices_to_remove <- pull(practices_to_remove,
+                              practice)
   
   # reformat the data and calculate per practice measures
   practice_measure_data  <- calculate_seasonal_measures(
-    season_data = season_data
+    season_data = season_data,
+    practices_to_remove = practices_to_remove
   )
 
   # create seasonal difference and seasonal ratio histogram and plot data
@@ -136,9 +149,13 @@ seasonal_measure_outputs <- function(output_directory,
 # calculate the seasonal measure
 #######################################################################
 
-calculate_seasonal_measures <- function(season_data){
+calculate_seasonal_measures <- function(season_data,
+                                        practices_to_remove){
   
-  wide_season_data <- generate_wide_season_data(season_data = season_data)
+  wide_season_data <- generate_wide_season_data(
+    season_data = season_data,
+    practices_to_remove = practices_to_remove
+  )
   
   # calculate seasonal difference and seasonal rate ratio
   practice_measure_data <- calculate_season_difference(
@@ -152,6 +169,18 @@ calculate_seasonal_measures <- function(season_data){
 }
 
 #######################################################################
+# Remove necessary practices from season data
+#######################################################################
+
+remove_practices_from_season_data <- function(season_data,
+                                                practices_to_remove){
+  
+  filter(season_data,
+         !(practice %in% practices_to_remove))
+  
+}
+
+#######################################################################
 # widen season data
 #######################################################################
 
@@ -159,7 +188,24 @@ calculate_seasonal_measures <- function(season_data){
 #  column values.
 # Remove all rows that have NA values; this ensures a practice has both a summer 
 #  and winter value. 
-generate_wide_season_data <- function(season_data){
+generate_wide_season_data <- function(season_data,
+                                      practices_to_remove){
+  
+  practices_before_removal <- unique(season_data$practice)
+  
+  # remove necessary practices from season data
+  season_data <- remove_practices_from_season_data(
+    season_data = season_data,
+    practices_to_remove = practices_to_remove
+  )
+  
+  practices_after_removal <- unique(season_data$practice)
+  
+  print(paste0("Number of practices before removal: ",
+               length(practices_before_removal)))
+  
+  print(paste0("Number of practices after removal: ",
+               length(practices_after_removal)))
   
   if(isFALSE(all(season_data$season %in% c(0,1)))){
     stop("Invalid season entry: values must be either 0 or 1.",
