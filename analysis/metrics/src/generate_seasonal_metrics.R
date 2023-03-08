@@ -190,12 +190,22 @@ remove_practices_from_season_data <- function(season_data,
 #  and winter value. 
 generate_wide_season_data <- function(season_data,
                                       practices_to_remove){
-
+  
+  practices_before_removal <- unique(season_data$practice)
+  
   # remove necessary practices from season data
   season_data <- remove_practices_from_season_data(
     season_data = season_data,
     practices_to_remove = practices_to_remove
   )
+  
+  practices_after_removal <- unique(season_data$practice)
+  
+  print(paste0("Number of practices before removal: ",
+               length(practices_before_removal)))
+  
+  print(paste0("Number of practices after removal: ",
+               length(practices_after_removal)))
   
   if(isFALSE(all(season_data$season %in% c(0,1)))){
     stop("Invalid season entry: values must be either 0 or 1.",
