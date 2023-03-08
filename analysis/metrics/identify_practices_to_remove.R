@@ -27,13 +27,27 @@ measure <- c("over12_appt_pop_rate",
              "under12_appt_rate",
              "sro")
 
-list_practices_to_remove <- lapply(measure, 
+# find practices with small population from only 1 measure
+practices_with_small_population <- get_practices_to_remove(
+  percentage_threshold = percentage_threshold,
+  population_size_threshold = population_size_threshold,
+  practice_removal_criterion = "small_population",
+  measure = "over12_appt_pop_rate")
+
+# find practices with population change over all measures
+list_practices_with_population_change <- lapply(measure, 
        get_practices_to_remove,
        percentage_threshold = percentage_threshold,
-       population_size_threshold = population_size_threshold)
+       population_size_threshold = population_size_threshold,
+       practice_removal_criterion = "large_population_change")
 
-all_practices_to_remove <- unique(unlist(list_practices_to_remove))
-all_practices_to_remove <- tibble(practice = all_practices_to_remove)
+practices_with_population_change <- unique(unlist(list_practices_with_population_change))
+
+# combine the practices with small population and with large population change
+all_practices_to_remove <- tibble(practice = unique(c(practices_with_population_change,
+                                                      practices_with_small_population)
+)
+)
 
 print(paste0("Number of practices removed: ", nrow(all_practices_to_remove)))
 

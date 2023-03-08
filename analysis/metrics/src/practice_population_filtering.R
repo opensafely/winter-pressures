@@ -4,7 +4,8 @@
 
 get_practices_to_remove <- function(measure_name,
                                     percentage_threshold,
-                                    population_size_threshold){
+                                    population_size_threshold,
+                                    practice_removal_criterion){
   
   start_population_data <- get_start_population_data(measure_name)
   
@@ -17,21 +18,31 @@ get_practices_to_remove <- function(measure_name,
                                       "date")
   )
   
-  # get the unique practices with population change or NA values
-  practices_with_population_change <- 
-    get_practices_with_population_change(joined_data = population_data,
-                                         percentage_threshold = percentage_threshold)
+  if(practice_removal_criterion == "small_population"){
+    
+    # get the unique practices with a small population or NA values
+    practices_to_remove  <-
+      get_practices_with_small_start_population(
+        joined_data = population_data,
+        population_size_threshold = population_size_threshold)
+    
+  } else if(practice_removal_criterion == "large_population_change"){
+    
+    # get the unique practices with population change or NA values
+    practices_to_remove <- 
+      get_practices_with_population_change(
+        joined_data = population_data,
+        percentage_threshold = percentage_threshold
+      )
+    
+  } else {
+    
+    stop("Incorrect practice_removal_criterion: must be either small_population 
+         or large_population_change")
+    
+  }
   
-  # get the unique practices with a small population or NA values
-  practices_with_small_population <-
-    get_practices_with_small_start_population(joined_data = population_data,
-                                              population_size_threshold = population_size_threshold)
-  
-  #return the unique practices that are either: 
-  #small population, large population change, NA population
-  unique(c(practices_with_population_change,
-         practices_with_small_population)
-  )
+  practices_to_remove 
   
 }
 
@@ -177,17 +188,35 @@ get_end_population_data <- function(measure_name){
   
   # read in the end population data, necessary columns only
   
-  if(measure_name %in% c("sro", 
-                         "over12_appt_pop_rate", 
-                         "under12_appt_pop_rate"
+  if(measure_name == "sro"){
+   
+    end_measure_name <- measure_name
+    
+    end_population_data <- read_csv(
+      file = here("output", 
+                  "metrics", 
+                  paste0("measure_end_population_",
+                         end_measure_name,
+                         ".csv")
+      ),
+      col_types = cols_only(
+        practice=col_double(),
+        date=col_date(format="%Y-%m-%d"),
+        population_sro=col_double()
+      )
+    )
+    
+    end_population_data <- rename(
+      end_population_data,
+      end_population = population_sro
+    )
+    
+  } else if(measure_name %in% c("over12_appt_pop_rate", 
+                                "under12_appt_pop_rate"
   )
   ){
     
-    if(measure_name == "sro"){
-      
-      end_measure_name <- measure_name
-      
-    } else if(measure_name == "over12_appt_pop_rate") {
+     if(measure_name == "over12_appt_pop_rate") {
       
       end_measure_name <- "over12"
       
