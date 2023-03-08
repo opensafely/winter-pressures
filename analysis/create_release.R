@@ -100,6 +100,27 @@ for (f in seasonal_comparison_histograms ) {
     )
 }
 
+#####################################################################
+### Seasonal summaries for all metrics
+#####################################################################
+
+seasonal_summary_output_dir <- ghere(
+    "output",
+    "release",
+    "seasonal-summary"
+)
+
+fs::dir_create(seasonal_summary_output_dir)
+
+summaries_file = ghere("output", "combined", "seasonal_summaries_nondisclosive.csv")
+
+fs::file_copy(
+    summaries_file,
+    fs::path(seasonal_comparison_output_dir, basename(summaries_file) ),
+    overwrite = TRUE
+)
+
+
 
 #####################################################################
 ### Create some meta release files

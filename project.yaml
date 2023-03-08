@@ -386,6 +386,7 @@ actions:
       - appointments_generate_deciles_charts
       - metrics_generate_deciles_charts
       - metrics_create_seasonal_measures
+      - summarise_seasonal_comparisons
     outputs:
       moderately_sensitive:
         html: output/release/*.html
