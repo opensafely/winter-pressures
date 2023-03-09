@@ -375,6 +375,22 @@ actions:
       - appointments_generate_seasonal_summaries_by_booked_month
       - appointments_generate_seasonal_summaries_by_start_month
       - summarise_seasonal_comparisons
+      - identify_practices_to_remove
     outputs:
       moderately_sensitive:
         report: output/docs/preliminary_report.html
+
+  create_release:
+    run: r:latest analysis/create_release.R
+    needs:
+      - generate_preliminary_report
+      - appointments_generate_deciles_charts
+      - metrics_generate_deciles_charts
+      - metrics_create_seasonal_measures
+      - summarise_seasonal_comparisons
+    outputs:
+      moderately_sensitive:
+        html: output/release/*.html
+        txt: output/meta-release/*.txt
+        plot_data: output/release/*/*.csv
+        plot_png: output/release/*/*.png
