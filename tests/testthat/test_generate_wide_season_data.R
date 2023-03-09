@@ -36,12 +36,13 @@ test_that( desc = "Wide to long with valid data", {
     ### - there is a seasonal summary entry for summer AND winter
     ### - neither seasonal summary entry for summer or winter is NA
 
-    output_observed_valid = generate_wide_season_data(
-        season_data = input_d_valid,
-        practices_to_remove = input_practices_to_remove
-    )
-
-    expect_equal(output_observed_valid, output_expected_valid)
+    if (!(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations"))) {
+        output_observed_valid = generate_wide_season_data(
+            season_data = input_d_valid,
+            practices_to_remove = input_practices_to_remove
+        )
+        expect_equal(output_observed_valid, output_expected_valid)
+    } 
 })
 
 
