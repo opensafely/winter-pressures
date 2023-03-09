@@ -12,6 +12,9 @@ practice_level_store = data.frame()
 
 f_count = 0
 
+cat(glue("{length(practice_level_files)} files have been identified"))
+cat(glue("- {practice_level_files}\n\n"))
+
 for (f in practice_level_files) {
     f_count = f_count + 1
     v = dirname(f) %>%
@@ -47,5 +50,5 @@ write.csv(practice_level_store,
     file = paste(output_directory,
         "combined_seasonal_data.csv",
         sep = "/"
-    )
+    ), row.names=FALSE
 )

@@ -35,26 +35,30 @@ sro_measure_name <- pull(
   sro_measure
 )
 
-for (m in sro_measure_name) {
-  print_title(m)
-  tryCatch(
-    expr ={ create_seasonal_sro_plots(m) },
+invisible(lapply(
+  sro_measure_name,
+  create_seasonal_sro_plots
+))
 
-    error=function(cond) {
-      message(glue("There was an error creating seasonal measures for the {m} data"))
-      message(glue("[ERROR]>> {cond}"))
-    },
 
-    warning=function(cond) {
-      message(glue("There was a warning creating seasonal measures for the {m} data"))
-      message(glue("[WARNING]>> {cond}"))
-    },
+# for (m in sro_measure_name) {
+#   print_title(m)
+#   tryCatch(
+#     expr ={ create_seasonal_sro_plots(m) },
+
+#     error=function(cond) {
+#       message(glue("There was an error creating seasonal measures for the {m} data"))
+#       message(glue("[ERROR]>> {cond}"))
+#     },
+
+#     warning=function(cond) {
+#       message(glue("There was a warning creating seasonal measures for the {m} data"))
+#       message(glue("[WARNING]>> {cond}"))
+#     },
     
-    finally = {}
-  )
-}
-
-
+#     finally = {}
+#   )
+# }
 
 #######################################################################
 # read in kids appointment season data
@@ -68,27 +72,27 @@ kids_measure_name <- pull(
   kids_appt_measure
 )
 
-# invisible(lapply(kids_measure_name,
-#                  create_seasonal_kids_plots)
-# )
+invisible(lapply(kids_measure_name,
+                 create_seasonal_kids_plots)
+)
 
-for (m in kids_measure_name) {
-  print_title(m)
-  tryCatch(
-    expr = {
-      create_seasonal_kids_plots(m)
-    },
-    error = function(cond) {
-      message(glue("There was an error creating seasonal measures for the {m} data"))
-      message(glue("[ERROR]>> {cond}"))
-    },
-    warning = function(cond) {
-      message(glue("There was a warning creating seasonal measures for the {m} data"))
-      message(glue("[WARNING]>> {cond}"))
-    },
-    finally = {}
-  )
-}
+# for (m in kids_measure_name) {
+#   print_title(m)
+#   tryCatch(
+#     expr = {
+#       create_seasonal_kids_plots(m)
+#     },
+#     error = function(cond) {
+#       message(glue("There was an error creating seasonal measures for the {m} data"))
+#       message(glue("[ERROR]>> {cond}"))
+#     },
+#     warning = function(cond) {
+#       message(glue("There was a warning creating seasonal measures for the {m} data"))
+#       message(glue("[WARNING]>> {cond}"))
+#     },
+#     finally = {}
+#   )
+# }
 
 
 #######################################################################
@@ -103,25 +107,26 @@ appointment_measure_name <- pull(
   appointment_measure
 )
 
+invisible(lapply(appointment_measure_name,
+                 create_seasonal_appointment_plots)
+)
 
-for (m in appointment_measure_name) {
-  print_title(m)
-  tryCatch(
-    expr = {
-      create_seasonal_kids_plots(m)
-    },
-    error = function(cond) {
-      message(glue("There was an error creating seasonal measures for the {m} data"))
-      message(glue("[ERROR]>> {cond}"))
-    },
-    warning = function(cond) {
-      message(glue("There was a warning creating seasonal measures for the {m} data"))
-      message(glue("[WARNING]>> {cond}"))
-    },
-    finally = {}
-  )
-}
 
-# invisible(lapply(appointment_measure_name,
-#                  create_seasonal_appointment_plots)
-# )
+# for (m in appointment_measure_name) {
+#   print_title(m)
+#   tryCatch(
+#     expr = {
+#       create_seasonal_appointment_plots(m)
+#     },
+#     error = function(cond) {
+#       message(glue("There was an error creating seasonal measures for the {m} data"))
+#       message(glue("[ERROR]>> {cond}"))
+#     },
+#     warning = function(cond) {
+#       message(glue("There was a warning creating seasonal measures for the {m} data"))
+#       message(glue("[WARNING]>> {cond}"))
+#     },
+#     finally = {}
+#   )
+# }
+

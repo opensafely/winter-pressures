@@ -12,8 +12,7 @@ output_file = "combined_seasonal_data.csv"
 combined_data = paste(
     output_directory, output_file,
     sep = "/" ) %>%
-    read_csv() %>%
-    select( -X1 )
+    read_csv()
 
 summary_statistics = combined_data %>%
     pivot_longer(

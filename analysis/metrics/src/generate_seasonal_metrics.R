@@ -129,13 +129,16 @@ seasonal_measure_outputs <- function(output_directory,
     practice_measure_data = practice_measure_data
   )
   
+  o_file = paste(output_directory,
+    "summer_winter_all_metrics.csv",
+    sep = "/"
+  )
   # save raw practice level data
   write.csv(practice_measure_data,
-    file = paste(output_directory,
-      "summer_winter_all_metrics.csv",
-      sep = "/"
-    )
+    file = o_file
   )
+
+  cat(glue("Writing {nrow(practice_measure_data)} to file {output_directory}\n"))
 
   # save plots and data
   save_plots_and_data(
