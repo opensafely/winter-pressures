@@ -11,7 +11,7 @@ source(here("analysis", "design.R"))
 
 outdir <- here("output", "epi")
 
-patient_outcomes <- read_feather(here(outdir,"input_epi.feather"))
+patient_outcomes <- read_feather(here("output", "epi", "input_epi.feather"))
 
 # TODO remove once we are happy with deciles outputs
 # # create dummy practice deciles
@@ -66,4 +66,4 @@ irr <- patient_outcomes %>%
   )
 
 
-  write_csv(irr,here(outdir,"irr_data.csv"))
+  write_csv(irr, here("output", "epi", "irr_data.csv"))
