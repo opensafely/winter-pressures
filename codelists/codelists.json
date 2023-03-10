@@ -78,71 +78,137 @@
       "downloaded_at": "2023-02-01 11:05:33.445362Z",
       "sha": "a07dfedffda67d1a84ef3e7e8f90214c93e89a51"
     },
-    "pincer-amio.csv": {
-      "id": "pincer/amio/560cb6d8",
-      "url": "https://codelists.opensafely.org/codelist/pincer/amio/560cb6d8/",
-      "downloaded_at": "2023-02-03 14:42:28.647308Z",
-      "sha": "d2679f8be7473556560b12fa06260ebacd7e8f94"
+    "opensafely-icd-10-chapter-i.csv": {
+      "id": "opensafely/icd-10-chapter-i/10e46159",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-i/10e46159/",
+      "downloaded_at": "2023-03-02 11:13:53.230223Z",
+      "sha": "7aca1aa8a92cace55d48ddd5a62a5d13a41888e9"
     },
-    "pincer-electro.csv": {
-      "id": "pincer/electro/v1.8",
-      "url": "https://codelists.opensafely.org/codelist/pincer/electro/v1.8/",
-      "downloaded_at": "2023-02-03 14:42:29.766614Z",
-      "sha": "b3301e62cdfa0568afb893db7d88399ed26e160b"
+    "opensafely-icd-10-chapter-ii.csv": {
+      "id": "opensafely/icd-10-chapter-ii/77d4ee23",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-ii/77d4ee23/",
+      "downloaded_at": "2023-03-02 11:13:53.456198Z",
+      "sha": "c9e0232948887271d5e2f56b90c38d9c6334872c"
     },
-    "pincer-fbc.csv": {
-      "id": "pincer/fbc/v1.8",
-      "url": "https://codelists.opensafely.org/codelist/pincer/fbc/v1.8/",
-      "downloaded_at": "2023-02-03 14:42:29.992554Z",
-      "sha": "2957a922fdf056ee0100cc132e91ef545dafc01a"
+    "opensafely-icd-10-chapter-iii.csv": {
+      "id": "opensafely/icd-10-chapter-iii/5ec57aee",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-iii/5ec57aee/",
+      "downloaded_at": "2023-03-02 11:13:53.686990Z",
+      "sha": "fbae3dc0074d906abef541d99e6f84e52cdc142a"
     },
-    "pincer-lith_lev.csv": {
-      "id": "pincer/lith_lev/v1.8",
-      "url": "https://codelists.opensafely.org/codelist/pincer/lith_lev/v1.8/",
-      "downloaded_at": "2023-02-03 14:42:30.601617Z",
-      "sha": "b1bbe329b27fbe815fe33568543c029614f8f782"
+    "opensafely-icd-10-chapter-iv.csv": {
+      "id": "opensafely/icd-10-chapter-iv/45b607b9",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-iv/45b607b9/",
+      "downloaded_at": "2023-03-02 11:21:59.164847Z",
+      "sha": "8b9a52bb63a85cc7a74136843ac38230d78e7dc3"
     },
-    "pincer-lith.csv": {
-      "id": "pincer/lith/6f1c2a0d",
-      "url": "https://codelists.opensafely.org/codelist/pincer/lith/6f1c2a0d/",
-      "downloaded_at": "2023-02-03 14:42:30.792665Z",
-      "sha": "235b796ad5e44f660857a38207e757d9d40f2a53"
+    "opensafely-icd-10-chapter-v.csv": {
+      "id": "opensafely/icd-10-chapter-v/2ca69484",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-v/2ca69484/",
+      "downloaded_at": "2023-03-02 11:21:59.429908Z",
+      "sha": "dd8336968ec120c27c0783d3d15cd355394552e1"
     },
-    "pincer-lft.csv": {
-      "id": "pincer/lft/v1.8",
-      "url": "https://codelists.opensafely.org/codelist/pincer/lft/v1.8/",
-      "downloaded_at": "2023-02-03 14:42:31.001953Z",
-      "sha": "e9ea2ea19529a7ca36acb5e4494a3da1e339b3a8"
+    "opensafely-icd-10-chapter-vi.csv": {
+      "id": "opensafely/icd-10-chapter-vi/1397214f",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-vi/1397214f/",
+      "downloaded_at": "2023-03-02 11:21:59.669036Z",
+      "sha": "aff530c94ef4b580972344b5d2f23b50c0c76535"
     },
-    "pincer-diur.csv": {
-      "id": "pincer/diur/213b1078",
-      "url": "https://codelists.opensafely.org/codelist/pincer/diur/213b1078/",
-      "downloaded_at": "2023-02-03 14:42:31.208871Z",
-      "sha": "9cf891203e1c05f8663306823bea56ca31389e41"
+    "opensafely-icd-10-chapter-vii.csv": {
+      "id": "opensafely/icd-10-chapter-vii/7a87ae19",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-vii/7a87ae19/",
+      "downloaded_at": "2023-03-02 11:21:59.909035Z",
+      "sha": "e20a6efa277d1061c8046edcbd6ed3561d569dc1"
     },
-    "pincer-met.csv": {
-      "id": "pincer/met/082b9d43",
-      "url": "https://codelists.opensafely.org/codelist/pincer/met/082b9d43/",
-      "downloaded_at": "2023-02-03 14:42:31.402816Z",
-      "sha": "bc74bcbec94c1c5c642461c66e9f1f51710fa484"
+    "opensafely-icd-10-chapter-viii.csv": {
+      "id": "opensafely/icd-10-chapter-viii/61783ae4",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-viii/61783ae4/",
+      "downloaded_at": "2023-03-02 11:22:00.127052Z",
+      "sha": "5af9f334cf936eeb2afb3b20c3a12d10b2a82ae2"
     },
-    "pincer-acei.csv": {
-      "id": "pincer/acei/3a4a83ad",
-      "url": "https://codelists.opensafely.org/codelist/pincer/acei/3a4a83ad/",
-      "downloaded_at": "2023-02-03 14:42:32.065268Z",
-      "sha": "40b85664718dbf3b624bdfa63a05c0a5ac707707"
+    "opensafely-icd-10-chapter-ix.csv": {
+      "id": "opensafely/icd-10-chapter-ix/4868c7af",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-ix/4868c7af/",
+      "downloaded_at": "2023-03-02 11:22:00.346206Z",
+      "sha": "1975a5ba3c65a414f79407b61567846241b79634"
     },
-    "pincer-tft.csv": {
-      "id": "pincer/tft/v1.8",
-      "url": "https://codelists.opensafely.org/codelist/pincer/tft/v1.8/",
-      "downloaded_at": "2023-02-03 14:42:32.282290Z",
-      "sha": "4371d672116678912bb875eafc0f008f341be82f"
+    "opensafely-icd-10-chapter-x.csv": {
+      "id": "opensafely/icd-10-chapter-x/2f59547a",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-x/2f59547a/",
+      "downloaded_at": "2023-03-02 11:22:00.564929Z",
+      "sha": "1b5266514d3b707dc073fbac53ba09e7e92fcfb3"
     },
-    "pincer-renal.csv": {
-      "id": "pincer/renal/v1.8",
-      "url": "https://codelists.opensafely.org/codelist/pincer/renal/v1.8/",
-      "downloaded_at": "2023-02-03 14:42:31.822329Z",
-      "sha": "67ad647922c9cd203e8c86efbbf31b32d35be2c4"
+    "opensafely-icd-10-chapter-xi.csv": {
+      "id": "opensafely/icd-10-chapter-xi/1649e145",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xi/1649e145/",
+      "downloaded_at": "2023-03-02 11:22:00.840155Z",
+      "sha": "817d1180a6b0775dd28d54fccc4ec12033f3f1dd"
+    },
+    "opensafely-icd-10-chapter-xii.csv": {
+      "id": "opensafely/icd-10-chapter-xii/7d3a6e0f",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xii/7d3a6e0f/",
+      "downloaded_at": "2023-03-02 11:22:01.102681Z",
+      "sha": "e48b274ce5dc145aa465eaec5c663516b36b7206"
+    },
+    "opensafely-icd-10-chapter-xiii.csv": {
+      "id": "opensafely/icd-10-chapter-xiii/642afada",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xiii/642afada/",
+      "downloaded_at": "2023-03-02 11:22:01.358732Z",
+      "sha": "de6f962d79eceb8e0abe3701213666805b754af9"
+    },
+    "opensafely-icd-10-chapter-xiv.csv": {
+      "id": "opensafely/icd-10-chapter-xiv/4b1b87a5",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xiv/4b1b87a5/",
+      "downloaded_at": "2023-03-02 11:22:01.636962Z",
+      "sha": "2b9c0e3210f8ad7ec875db570fc418148da95ab9"
+    },
+    "opensafely-icd-10-chapter-xv.csv": {
+      "id": "opensafely/icd-10-chapter-xv/320c1470",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xv/320c1470/",
+      "downloaded_at": "2023-03-02 11:22:01.868109Z",
+      "sha": "2892b89265fb73524fabc98ea2bbcc26000049cf"
+    },
+    "opensafely-icd-10-chapter-xvi.csv": {
+      "id": "opensafely/icd-10-chapter-xvi/18fca13b",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xvi/18fca13b/",
+      "downloaded_at": "2023-03-02 11:22:02.084113Z",
+      "sha": "1286b0f1d93b64a0a30eb3c3fd2a22763af1c160"
+    },
+    "opensafely-icd-10-chapter-xvii.csv": {
+      "id": "opensafely/icd-10-chapter-xvii/7fed2e05",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xvii/7fed2e05/",
+      "downloaded_at": "2023-03-02 11:22:02.298270Z",
+      "sha": "5a4fac105a1f90000bec13128d4eed44234cf4f1"
+    },
+    "opensafely-icd-10-chapter-xviii.csv": {
+      "id": "opensafely/icd-10-chapter-xviii/66ddbad0",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xviii/66ddbad0/",
+      "downloaded_at": "2023-03-02 11:22:02.516353Z",
+      "sha": "cb044e6f06c1ae3e5ff8ad86fa20e285cd5f58a4"
+    },
+    "opensafely-icd-10-chapter-xix.csv": {
+      "id": "opensafely/icd-10-chapter-xix/4dce479b",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xix/4dce479b/",
+      "downloaded_at": "2023-03-02 11:22:02.757697Z",
+      "sha": "f45dba97c41e65728ce370ac5f0f9b5c9908c146"
+    },
+    "opensafely-icd-10-chapter-xx.csv": {
+      "id": "opensafely/icd-10-chapter-xx/34bed466",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xx/34bed466/",
+      "downloaded_at": "2023-03-02 11:22:02.986814Z",
+      "sha": "b390462be984e6f71d3e5b4f4952f2ee81111677"
+    },
+    "opensafely-icd-10-chapter-xxi.csv": {
+      "id": "opensafely/icd-10-chapter-xxi/1baf6131",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xxi/1baf6131/",
+      "downloaded_at": "2023-03-02 11:22:03.204862Z",
+      "sha": "cb91b25ef95c0941cb2c08ba1518478a1f164896"
+    },
+    "opensafely-icd-10-chapter-xxii.csv": {
+      "id": "opensafely/icd-10-chapter-xxii/029fedfc",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/icd-10-chapter-xxii/029fedfc/",
+      "downloaded_at": "2023-03-02 11:22:03.394891Z",
+      "sha": "e1ca44c6e4763495978aaccf1a2d64f44e6effa0"
     }
   }
 }
