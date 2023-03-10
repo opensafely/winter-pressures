@@ -197,11 +197,13 @@ generate_wide_season_data <- function(season_data,
   practices_before_removal <- unique(season_data$practice)
   
   # remove necessary practices from season data
+    ### if running locally skip the filtering by practice size / change
+  if (!(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations"))) {
   season_data <- remove_practices_from_season_data(
     season_data = season_data,
     practices_to_remove = practices_to_remove
   )
-  
+  }
   practices_after_removal <- unique(season_data$practice)
   
   print(paste0("Number of practices before removal: ",
