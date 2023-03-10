@@ -60,80 +60,88 @@ medication_review_codelist = combine_codelists(
     medication_review_2
 )
 
+icd1 = codelist_from_csv("codelists/opensafely-icd-10-chapter-i.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in AC
-acei_codelist = codelist_from_csv(
-    "codelists/pincer-acei.csv",
-    system="snomed",
-    column="id",
-)
+icd2 = codelist_from_csv("codelists/opensafely-icd-10-chapter-ii.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in AC
-loop_diuretics_codelist = codelist_from_csv(
-    "codelists/pincer-diur.csv",
-    system="snomed",
-    column="id",
-)
+icd3 = codelist_from_csv("codelists/opensafely-icd-10-chapter-iii.csv",
+                         system="icd10",
+                         column="code",)
+icd4 = codelist_from_csv("codelists/opensafely-icd-10-chapter-iv.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in AC
-renal_function_codelist = codelist_from_csv(
-    "codelists/pincer-renal.csv",
-    system="snomed",
-    column="code",
-)
+icd5 = codelist_from_csv("codelists/opensafely-icd-10-chapter-v.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in AC
-electrolytes_test_codelist = codelist_from_csv(
-    "codelists/pincer-electro.csv",
-    system="snomed",
-    column="code",
-)
+icd6 = codelist_from_csv("codelists/opensafely-icd-10-chapter-vi.csv",
+                         system="icd10",
+                         column="code",)
+icd7 = codelist_from_csv("codelists/opensafely-icd-10-chapter-vii.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in ME
-methotrexate_codelist = codelist_from_csv(
-    "codelists/pincer-met.csv",
-    system="snomed",
-    column="id",
-)
+icd8 = codelist_from_csv("codelists/opensafely-icd-10-chapter-viii.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in ME
-full_blood_count_codelist = codelist_from_csv(
-    "codelists/pincer-fbc.csv",
-    system="snomed",
-    column="code",
-)
+icd9 = codelist_from_csv("codelists/opensafely-icd-10-chapter-ix.csv",
+                         system="icd10",
+                         column="code",)
+icd10 = codelist_from_csv("codelists/opensafely-icd-10-chapter-x.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in ME
-liver_function_test_codelist = codelist_from_csv(
-    "codelists/pincer-lft.csv",
-    system="snomed",
-    column="code",
-)
+icd11 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xi.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in LI
-lithium_codelist = codelist_from_csv(
-    "codelists/pincer-lith.csv",
-    system="snomed",
-    column="id",
-)
+icd12 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xii.csv",
+                         system="icd10",
+                         column="code",)
+icd13 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xiii.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in LI
-lithium_level_codelist = codelist_from_csv(
-    "codelists/pincer-lith_lev.csv",
-    system="snomed",
-    column="code",
-)
+icd14 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xiv.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in AM
-amiodarone_codelist = codelist_from_csv(
-    "codelists/pincer-amio.csv",
-    system="snomed",
-    column="id",
-)
+icd15 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xv.csv",
+                         system="icd10",
+                         column="code",)
 
-# Used in AM
-thyroid_function_test_codelist = codelist_from_csv(
-    "codelists/pincer-tft.csv",
-    system="snomed",
-    column="code",
-)
+icd16 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xvi.csv",
+                         system="icd10",
+                         column="code",)
+
+icd17 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xvii.csv",
+                         system="icd10",
+                         column="code",)
+
+icd18 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xviii.csv",
+                         system="icd10",
+                         column="code",)
+
+icd19 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xix.csv",
+                         system="icd10",
+                         column="code",)
+
+icd20 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xx.csv",
+                         system="icd10",
+                         column="code",)
+
+icd21 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xxi.csv",
+                         system="icd10",
+                         column="code",)
+
+icd22 = codelist_from_csv("codelists/opensafely-icd-10-chapter-xxii.csv",
+                         system="icd10",
+                         column="code",)
+###
+
