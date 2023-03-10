@@ -270,7 +270,8 @@ generate_plots_and_data <- function(practice_measure_data){
   # find number of rows to chop of top and bottom
   number_to_remove <- ceiling(0.5 * percentage_to_remove * nrow(difference_data))
   
-  
+  if(number_to_remove >= 1){
+    
   #find the row index for rows to remove from top and bottom
   rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
                             seq(nrow(difference_data) - number_to_remove + 1, nrow(difference_data), by = 1)
@@ -279,6 +280,12 @@ generate_plots_and_data <- function(practice_measure_data){
   rows_to_keep_index <- which(!(1:nrow(difference_data) %in% rows_to_remove_index))
   # subset the data to only the rows to keep
   difference_data <- difference_data[rows_to_keep_index, ]
+  
+  } else {
+    
+    difference_data <- difference_data
+    
+  }
   
   # create the seasonal difference histogram plot
   difference_plot <- ggplot(difference_data) + 
@@ -315,6 +322,8 @@ generate_plots_and_data <- function(practice_measure_data){
   # find number of rows to chop of top and bottom
   number_to_remove <- ceiling(0.5 * percentage_to_remove * nrow(ratio_data))
   
+  if(number_to_remove >= 1){
+    
   #find the row index for rows to remove from top and bottom
   rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
                             seq(nrow(ratio_data) - number_to_remove + 1, nrow(ratio_data), by = 1)
@@ -323,6 +332,12 @@ generate_plots_and_data <- function(practice_measure_data){
   rows_to_keep_index <- which(!(1:nrow(ratio_data) %in% rows_to_remove_index))
   # subset the data to only the rows to keep
   ratio_data <- ratio_data[rows_to_keep_index, ]
+  
+  } else {
+    
+    ratio_data <- ratio_data
+    
+  }
   
   
   
