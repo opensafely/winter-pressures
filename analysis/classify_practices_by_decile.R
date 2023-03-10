@@ -13,10 +13,8 @@ output_file = "combined_seasonal_data.csv"
 
 combined_data = paste(
     output_directory, output_file,
-    sep = "/"
-) %>%
-    read_csv() %>%
-    select( -X1 )
+    sep = "/" ) %>%
+    read_csv() 
 
 combined_data_with_deciles = calculate_seasonal_deciles_across_years_and_variables(combined_data)
 
