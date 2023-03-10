@@ -92,10 +92,11 @@ seasonal_comparison_histograms <- list.files(
 for (f in seasonal_comparison_histograms ) {
     f_dir = dirname(f)
     f_file = basename(f)
+    measure_string = basename(f_dir)
 
     fs::file_copy(
         f,
-        fs::path(seasonal_comparison_output_dir, f_file),
+        fs::path(seasonal_comparison_output_dir, glue("{measure_string}_{f_file}")),
         overwrite = TRUE
     )
 }
