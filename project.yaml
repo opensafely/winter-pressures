@@ -371,6 +371,7 @@ actions:
     run: r:latest -e 'rmarkdown::render("reports/preliminary_report.rmd", output_dir = "/workspace/output/docs", knit_root_dir = "/workspace",)'
     needs: 
       - metrics_create_seasonal_measures
+      - metrics_generate_deciles_charts
       - appointments_generate_deciles_charts
       - appointments_generate_seasonal_summaries_by_booked_month
       - appointments_generate_seasonal_summaries_by_start_month
