@@ -66,4 +66,4 @@ irr <- patient_outcomes %>%
   )
 
 
-  write_csv(irr,here(outdir,"irr_values.csv"))
+  write_csv(irr,here(outdir,"irr_data.csv"))
