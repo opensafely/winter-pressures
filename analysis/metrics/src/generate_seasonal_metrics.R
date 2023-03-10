@@ -257,6 +257,8 @@ calculate_season_ratio <- function(wide_season_data){
 
 generate_plots_and_data <- function(practice_measure_data){
   
+  percentage_to_remove = 0.05
+
   ########################################
   # difference plot
   ########################################
@@ -266,7 +268,7 @@ generate_plots_and_data <- function(practice_measure_data){
   # order rows by difference column
   difference_data <- arrange(difference_data, seasonal_difference) 
   # find number of rows to chop of top and bottom
-  number_to_remove <- ceiling(0.025*nrow(difference_data))
+  number_to_remove <- ceiling(0.5 * percentage_to_remove * nrow(difference_data))
   
   
   #find the row index for rows to remove from top and bottom
@@ -311,7 +313,7 @@ generate_plots_and_data <- function(practice_measure_data){
   # order rows by difference column
   ratio_data <- arrange(ratio_data, seasonal_log2_ratio) 
   # find number of rows to chop of top and bottom
-  number_to_remove <- ceiling(0.025*nrow(ratio_data))
+  number_to_remove <- ceiling(0.5 * percentage_to_remove * nrow(ratio_data))
   
   #find the row index for rows to remove from top and bottom
   rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
