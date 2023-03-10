@@ -8,15 +8,17 @@ icd_chapters = [
     f"icd{n[0]}"
     for n in product( list(range(1,23)))
 ]
-    
-icd_deaths = {
-        f"{chapter}_death_date": patients.with_these_codes_on_death_certificate(
-        codelist=globals()[chapter],
-        returning="date_of_death",
-        date_format="YYYY-MM-DD",
-        )
-        for chapter in icd_chapters
-    }
+
+def icd_deaths_between(start_date, end_date):
+  return{   
+            f"{chapter}_death_date": patients.with_these_codes_on_death_certificate(
+            between=[start_date,end_date],
+            codelist=globals()[chapter],
+            returning="date_of_death",
+            date_format="YYYY-MM-DD",
+            )
+            for chapter in icd_chapters
+        }
 
 def generate_outcome_variables(start_date, end_date):
   outcome_variables = dict(
@@ -33,7 +35,7 @@ def generate_outcome_variables(start_date, end_date):
       date_format="YYYY-MM-DD",
     ),
     
-    **icd_deaths,
+    **icd_deaths_between(start_date, end_date),
 
     emergency_date=patients.attended_emergency_care(
       returning="date_arrived",
