@@ -257,8 +257,29 @@ calculate_season_ratio <- function(wide_season_data){
 
 generate_plots_and_data <- function(practice_measure_data){
   
+  ########################################
+  # difference plot
+  ########################################
+  
+  #remove non-finite values: Inf, NAN, NA
+  difference_data <- practice_measure_data[which(is.finite(practice_measure_data$seasonal_difference)== TRUE),]
+  # order rows by difference column
+  difference_data <- arrange(difference_data, seasonal_difference) 
+  # find number of rows to chop of top and bottom
+  number_to_remove <- ceiling(0.025*nrow(difference_data))
+  
+  
+  #find the row index for rows to remove from top and bottom
+  rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
+                            seq(nrow(difference_data) - number_to_remove + 1, nrow(difference_data), by = 1)
+  )
+  # find the rows to keep by index
+  rows_to_keep_index <- which(!(1:nrow(difference_data) %in% rows_to_remove_index))
+  # subset the data to only the rows to keep
+  difference_data <- difference_data[rows_to_keep_index, ]
+  
   # create the seasonal difference histogram plot
-  difference_plot <- ggplot(practice_measure_data) + 
+  difference_plot <- ggplot(difference_data) + 
     geom_histogram(aes(x=seasonal_difference), 
                    bins = 50) +
     theme_bw()
@@ -281,8 +302,30 @@ generate_plots_and_data <- function(practice_measure_data){
     )
   }
   
+  ########################################
+  # ratio plot
+  ########################################
+  
+  #remove non-finite values: Inf, NAN, NA
+  ratio_data <- practice_measure_data[which(is.finite(practice_measure_data$seasonal_log2_ratio)== TRUE),]
+  # order rows by difference column
+  ratio_data <- arrange(ratio_data, seasonal_log2_ratio) 
+  # find number of rows to chop of top and bottom
+  number_to_remove <- ceiling(0.025*nrow(ratio_data))
+  
+  #find the row index for rows to remove from top and bottom
+  rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
+                            seq(nrow(ratio_data) - number_to_remove + 1, nrow(ratio_data), by = 1)
+  )
+  # find the rows to keep by index
+  rows_to_keep_index <- which(!(1:nrow(ratio_data) %in% rows_to_remove_index))
+  # subset the data to only the rows to keep
+  ratio_data <- ratio_data[rows_to_keep_index, ]
+  
+  
+  
   # create the seasonal ratio histogram plot
-  ratio_plot <- ggplot(practice_measure_data) + 
+  ratio_plot <- ggplot(ratio_data) + 
     geom_histogram(aes(x=seasonal_log2_ratio), 
                    bins = 50) +
     theme_bw()
