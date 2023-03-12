@@ -346,6 +346,26 @@ actions:
         deciles_charts: output/appointments/deciles_chart_*.png
         deciles_tables: output/appointments/deciles_table_*.csv
 
+
+  appointments_generate_deciles_charts_alternative:
+    run: >
+      python:latest
+        python
+        -m analysis.deciles_alternative
+        --input-files output/appointments/measure_monthly_*.csv
+        --output-dir output/appointments/shaded
+    config:
+      show_outer_percentiles: true
+    needs: 
+      - appointments_generate_monthly_measures_by_booked_month
+      - appointments_generate_monthly_measures_by_start_month
+      - appointments_generate_normalised_counts
+    outputs:
+      moderately_sensitive:
+        deciles_charts: output/appointments/shaded/deciles_chart*.png
+        deciles_tables: output/appointments/shaded/deciles_table*.csv
+
+
   # Combining data
   # -----------------
   combine_seasonal_data:
