@@ -125,8 +125,7 @@ def deciles_chart(
 
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=90)
     # plt.setp(ax.yaxis.get_majorticklabels(), rotation=90)
-    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%B %Y"))
-    
+    ax.xaxis.set_major_formatter(matplotlib.dates.ConciseDateFormatter(ax.xaxis.get_major_locator()))
 
     if show_legend:#
         # Shrink current axis's height by 10% on the bottom
