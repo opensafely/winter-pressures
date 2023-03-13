@@ -258,6 +258,7 @@ calculate_season_ratio <- function(wide_season_data){
 generate_plots_and_data <- function(practice_measure_data){
   
   percentage_to_remove = 0.05
+  nbins = 50
 
   ########################################
   # difference plot
@@ -290,7 +291,7 @@ generate_plots_and_data <- function(practice_measure_data){
   # create the seasonal difference histogram plot
   difference_plot <- ggplot(difference_data) + 
     geom_histogram(aes(x=seasonal_difference), 
-                   bins = 50) +
+                   bins = nbins) +
     theme_bw()
   
   # get the data used to create the histogram and select columns of interest
@@ -344,7 +345,7 @@ generate_plots_and_data <- function(practice_measure_data){
   # create the seasonal ratio histogram plot
   ratio_plot <- ggplot(ratio_data) + 
     geom_histogram(aes(x=seasonal_log2_ratio), 
-                   bins = 50) +
+                   bins = nbins) +
     theme_bw()
   
   # get the data used to create the histogram and select columns of interest
