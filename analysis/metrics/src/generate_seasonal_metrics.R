@@ -315,7 +315,7 @@ generate_plots_and_data <- function(practice_measure_data){
 
     if (nrow(difference_plot_data_redacted %>% filter(count != rs)) > 0) {
       difference_plot_redacted = difference_plot_data_redacted %>%
-        filter(count != "[REDACTED]") %>%
+        filter(count != rs) %>%
         ggplot(aes(x = x, y = y)) +
         geom_bar(stat = "identity") +
         theme_bw()
@@ -398,7 +398,7 @@ generate_plots_and_data <- function(practice_measure_data){
 
     if (nrow(ratio_plot_data_redacted %>% filter(count != rs)) > 0) {
       ratio_plot_redacted = ratio_plot_data_redacted %>%
-        filter(count != "[REDACTED]") %>%
+        filter(count != rs) %>%
         ggplot(aes(x = x, y = y)) +
         geom_bar(stat = "identity") +
         theme_bw()
