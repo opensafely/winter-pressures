@@ -27,7 +27,7 @@ create_seasonal_sro_plots <- function(sro_measure_name){
                 sro_measure_name),
     recurse = TRUE
   )
-  
+
   seasonal_measure_outputs(
     output_directory = output_directory,
     season_data = season_data)
@@ -59,7 +59,7 @@ create_seasonal_kids_plots <- function(kids_appt_measure_name){
                 kids_appt_measure_name),
     recurse = TRUE
   )
-  
+
   seasonal_measure_outputs(
     output_directory = output_directory,
     season_data = season_data)
@@ -87,9 +87,11 @@ create_seasonal_appointment_plots <- function(appointment_measure_name){
   
   # set output directory
   output_directory <- fs::dir_create(
-    path = here("output", 
-                "appointments", 
-                appointment_measure_name),
+    path = here(
+      "output",
+      "appointments",
+      appointment_measure_name
+    ),
     recurse = TRUE
   )
   
@@ -272,16 +274,16 @@ generate_plots_and_data <- function(practice_measure_data){
   number_to_remove <- ceiling(0.5 * percentage_to_remove * nrow(difference_data))
   
   if(number_to_remove >= 1){
+      
+    #find the row index for rows to remove from top and bottom
+    rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
+                              seq(nrow(difference_data) - number_to_remove + 1, nrow(difference_data), by = 1)
+    )
+    # find the rows to keep by index
+    rows_to_keep_index <- which(!(1:nrow(difference_data) %in% rows_to_remove_index))
+    # subset the data to only the rows to keep
+    difference_data <- difference_data[rows_to_keep_index, ]
     
-  #find the row index for rows to remove from top and bottom
-  rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
-                            seq(nrow(difference_data) - number_to_remove + 1, nrow(difference_data), by = 1)
-  )
-  # find the rows to keep by index
-  rows_to_keep_index <- which(!(1:nrow(difference_data) %in% rows_to_remove_index))
-  # subset the data to only the rows to keep
-  difference_data <- difference_data[rows_to_keep_index, ]
-  
   } else {
     
     difference_data <- difference_data
@@ -293,14 +295,42 @@ generate_plots_and_data <- function(practice_measure_data){
     geom_histogram(aes(x=seasonal_difference), 
                    bins = nbins) +
     theme_bw()
-  
+
   # get the data used to create the histogram and select columns of interest
   difference_plot_data <- ggplot_build(difference_plot)$data[[1]]
-  
+
+  difference_plot_data_redacted = data.frame()
+  difference_plot_redacted = NA
+
   # Sometimes dummy data results in an empty dataframe -
   # this check for this so that the action will run locally
   # (and in GitHub actions)
   if (nrow(difference_plot_data) > 0) {
+
+    ### REDACT/ROUND HISTOGRAM DATA
+    difference_plot_data_redacted <- difference_plot_data %>%
+      mutate(count = redact_and_round(count))
+    
+    rs = formals(redact_and_round)$redaction_string
+
+    if (nrow(difference_plot_data_redacted %>% filter(count != rs)) > 0) {
+      difference_plot_redacted = difference_plot_data_redacted %>%
+        filter(count != "[REDACTED]") %>%
+        ggplot(aes(x = x, y = y)) +
+        geom_bar(stat = "identity") +
+        theme_bw()
+
+      difference_plot_data_redacted <- select(
+        difference_plot_data_redacted,
+        y,
+        count,
+        x,
+        xmin,
+        xmax,
+        density
+      )
+    }
+    
     difference_plot_data <- select(
       difference_plot_data,
       y,
@@ -310,8 +340,9 @@ generate_plots_and_data <- function(practice_measure_data){
       xmax,
       density
     )
+
   }
-  
+
   ########################################
   # ratio plot
   ########################################
@@ -324,15 +355,15 @@ generate_plots_and_data <- function(practice_measure_data){
   number_to_remove <- ceiling(0.5 * percentage_to_remove * nrow(ratio_data))
   
   if(number_to_remove >= 1){
-    
-  #find the row index for rows to remove from top and bottom
-  rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
-                            seq(nrow(ratio_data) - number_to_remove + 1, nrow(ratio_data), by = 1)
-  )
-  # find the rows to keep by index
-  rows_to_keep_index <- which(!(1:nrow(ratio_data) %in% rows_to_remove_index))
-  # subset the data to only the rows to keep
-  ratio_data <- ratio_data[rows_to_keep_index, ]
+      
+    #find the row index for rows to remove from top and bottom
+    rows_to_remove_index <- c(seq(1, number_to_remove, by = 1), 
+                              seq(nrow(ratio_data) - number_to_remove + 1, nrow(ratio_data), by = 1)
+    )
+    # find the rows to keep by index
+    rows_to_keep_index <- which(!(1:nrow(ratio_data) %in% rows_to_remove_index))
+    # subset the data to only the rows to keep
+    ratio_data <- ratio_data[rows_to_keep_index, ]
   
   } else {
     
@@ -351,12 +382,40 @@ generate_plots_and_data <- function(practice_measure_data){
   # get the data used to create the histogram and select columns of interest
   ratio_plot_data <- ggplot_build(ratio_plot)$data[[1]]
 
+  ratio_plot_data_redacted <- data.frame()
+  ratio_plot_redacted <- NA
+
   # Sometimes dummy data results in an empty dataframe -
   # this check for this so that the action will run locally
   # (and in GitHub actions)
   if (nrow(ratio_plot_data) > 0) {
-    ratio_plot_data <- select(
-      ratio_plot_data,
+
+    ### REDACT/ROUND HISTOGRAM DATA
+    ratio_plot_data_redacted <- ratio_plot_data %>%
+      mutate(count = redact_and_round(count))
+    
+    rs = formals(redact_and_round)$redaction_string
+
+    if (nrow(ratio_plot_data_redacted %>% filter(count != rs)) > 0) {
+      ratio_plot_redacted = ratio_plot_data_redacted %>%
+        filter(count != "[REDACTED]") %>%
+        ggplot(aes(x = x, y = y)) +
+        geom_bar(stat = "identity") +
+        theme_bw()
+
+      ratio_plot_data <- select(
+        ratio_plot_data,
+        y,
+        count,
+        x,
+        xmin,
+        xmax,
+        density
+      )
+    }
+
+    ratio_plot_data_redacted <- select(
+      ratio_plot_data_redacted,
       y,
       count,
       x,
@@ -365,11 +424,20 @@ generate_plots_and_data <- function(practice_measure_data){
       density
     )
   }
+
   
-  list(difference_plot = difference_plot,
-       ratio_plot = ratio_plot,
-       difference_plot_data = difference_plot_data,
-       ratio_plot_data = ratio_plot_data)
+  list(
+    # raw
+    difference_plot = difference_plot,
+    ratio_plot = ratio_plot,
+    difference_plot_data = difference_plot_data,
+    ratio_plot_data = ratio_plot_data,
+    # redacted
+    difference_plot_redacted = difference_plot_redacted,
+    ratio_plot_redacted = ratio_plot_redacted,
+    difference_plot_data_redacted = difference_plot_data_redacted,
+    ratio_plot_data_redacted = ratio_plot_data_redacted
+    )
   
 }
 
@@ -380,6 +448,9 @@ generate_plots_and_data <- function(practice_measure_data){
 save_plots_and_data <- function(output_directory,
                                 plot_list){
   
+  cat(glue("Plots and data to save to {output_directory}"))
+  cat(glue(" - {plot_list}"))
+
   ggsave(plot_list$difference_plot,
          filename = "summer_winter_difference_histogram.png",
          device = "png",
@@ -399,4 +470,42 @@ save_plots_and_data <- function(output_directory,
             file = paste(output_directory,
                          "summer_winter_ratio_histogram_data.csv",
                          sep = "/"))
+
+  ### REDACTED DATA
+
+  redacted_directory <- fs::dir_create(
+    path = paste(output_directory, "redacted", sep = "/"),
+    recurse = TRUE
+  )
+  cat( glue("writing to redacted directory: {redacted_directory}") )
+
+  write.csv(plot_list$difference_plot_data_redacted,
+    file = paste(redacted_directory,
+      "summer_winter_difference_histogram_data_redacted.csv",
+      sep = "/"
+    )
+  )
+
+  if ( !is.na(plot_list$difference_plot_redacted) ) {
+    ggsave(plot_list$difference_plot_redacted,
+      filename = "summer_winter_difference_histogram_redacted.png",
+      device = "png",
+      path = redacted_directory
+    )
+  }
+
+  write.csv(plot_list$ratio_plot_data_redacted,
+    file = paste(redacted_directory,
+      "summer_winter_ratio_histogram_data_redacted.csv",
+      sep = "/"
+    )
+  )
+
+  if ( !is.na(plot_list$ratio_plot_redacted) ) {
+    ggsave(plot_list$ratio_plot_redacted,
+      filename = "summer_winter_ratio_histogram_redacted.png",
+      device = "png",
+      path = redacted_directory
+    )
+  }
 }

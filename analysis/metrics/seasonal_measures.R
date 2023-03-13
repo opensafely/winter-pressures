@@ -13,6 +13,7 @@ library(glue)
 # source files
 #######################################################################
 
+source(here("analysis","utils.R"))
 source(here("analysis", "metrics","src", "generate_seasonal_metrics.R"))
 
 print_title = function(m) {
