@@ -45,19 +45,19 @@ kids_deciles_format = "deciles_chart_.*12_appt.*\\.png"
 appt_deciles_format = "deciles_chart_.*\\.png"
 
 sro_decile_plots = list.files(
-    path=metrics_directory,
+    path=metrics_directory_shaded,
     pattern=sro_deciles_format,
     full.names = TRUE
 )
 
 kids_decile_plots = list.files(
-    path=metrics_directory,
+    path=metrics_directory_shaded,
     pattern=kids_deciles_format,
     full.names = TRUE
 )
 
 appt_decile_plots = list.files(
-    path=appt_directory,
+    path=appt_directory_shaded,
     pattern=appt_deciles_format,
     full.names = TRUE
 )

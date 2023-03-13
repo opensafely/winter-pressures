@@ -435,8 +435,10 @@ actions:
     run: r:latest -e 'rmarkdown::render("reports/preliminary_report.rmd", output_dir = "/workspace/output/docs", knit_root_dir = "/workspace",)'
     needs: 
       - metrics_create_seasonal_measures
-      - metrics_generate_deciles_charts
-      - appointments_generate_deciles_charts
+      # - metrics_generate_deciles_charts
+      - metrics_generate_deciles_charts_alternative
+      # - appointments_generate_deciles_charts
+      - appointments_generate_deciles_charts_alternative
       - appointments_generate_seasonal_summaries_by_booked_month
       - appointments_generate_seasonal_summaries_by_start_month
       - summarise_seasonal_comparisons
@@ -449,8 +451,10 @@ actions:
     run: r:latest analysis/create_release.R
     needs:
       - generate_preliminary_report
-      - appointments_generate_deciles_charts
-      - metrics_generate_deciles_charts
+      # - appointments_generate_deciles_charts
+      - appointments_generate_deciles_charts_alternative
+      # - metrics_generate_deciles_charts
+      - metrics_generate_deciles_charts_alternative
       - metrics_create_seasonal_measures
       - summarise_seasonal_comparisons
     outputs:

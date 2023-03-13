@@ -2,6 +2,9 @@
 metrics_directory <- here("output", "metrics")
 appt_directory <- here("output", "appointments")
 
+metrics_directory_shaded <- here("output", "metrics","shaded")
+appt_directory_shaded <- here("output", "appointments","shaded")
+
 measure_descriptions = tribble(
     ~long_name, ~description,
     "alt_practice_only_rate", "SRO Liver Function Testing - Alanine Transferaminase (ALT)",
