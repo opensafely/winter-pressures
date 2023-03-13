@@ -80,7 +80,7 @@ seasonal_comparison_output_dir <- ghere(
 
 fs::dir_create(seasonal_comparison_output_dir)
 
-target_file = "summer_winter_.*_histogram.*\\..*"
+target_file = "summer_winter_.*_histogram.*redacted\\..*"
 
 seasonal_comparison_histograms <- list.files(
     path = ghere("output"),
@@ -92,7 +92,7 @@ seasonal_comparison_histograms <- list.files(
 for (f in seasonal_comparison_histograms ) {
     f_dir = dirname(f)
     f_file = basename(f)
-    measure_string = basename(f_dir)
+    measure_string = f_dir %>% str_remove("/redacted") %>% basename()
 
     fs::file_copy(
         f,

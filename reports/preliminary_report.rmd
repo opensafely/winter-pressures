@@ -144,10 +144,10 @@ for ( this_method in method_list ) {
 
 ```{r}
 
-target_ratio_file = "summer_winter_ratio_histogram.png"
+target_ratio_file = "summer_winter_ratio_histogram_redacted.png"
 all_seasonal_ratio_histogram_filenames = list.files( path=here(), pattern=target_ratio_file, full.names=TRUE, recursive=TRUE )
 
-target_difference_file = "summer_winter_difference_histogram.png"
+target_difference_file = "summer_winter_difference_histogram_redacted.png"
 all_seasonal_difference_histogram_filenames = list.files( path=here(), pattern=target_difference_file, full.names=TRUE, recursive=TRUE )
 
 ```
