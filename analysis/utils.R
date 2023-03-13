@@ -33,7 +33,7 @@ mround <- function(x,base){
 	base*round(x/base)
 }
 
-redact_and_round <- function(d, redact_below = 5, round_to = 5, redaction_string="[REDACTED]") {
+redact_and_round <- function(d, redact_below = 8, round_to = 5, redaction_string="[REDACTED]") {
     d_nondisclosive = d
     d_nondisclosive[d_nondisclosive < redact_below] <- NA
     d_nondisclosive <- mround(d_nondisclosive, round_to)
