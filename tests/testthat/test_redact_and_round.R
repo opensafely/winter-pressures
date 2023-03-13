@@ -16,7 +16,7 @@ test_that( desc = "Testing redaction and rounding functions", {
     redacted_string = formals(redact_and_round)$redaction_string
 
     d_out <- input_d %>%
-        mutate(across(starts_with("num"), redact_and_round ))
+        mutate(across(starts_with("num"), redact_and_round, redact_below=5 ))
 
     ### This will be redacted and rounded
     expected_num_practices = c(redacted_string, redacted_string, redacted_string, redacted_string, 5, 5, 5, 10, 10, 10)

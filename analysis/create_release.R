@@ -42,13 +42,13 @@ fs::dir_create(deciles_output_dir)
 
 ### --- for appointments --------------------------------------------
 appointment_decile_files = list.files(
-    ghere("output", "appointments"),
+    ghere("output", "appointments", "shaded"),
     pattern = "deciles_(table|chart)_.*\\..*"
 )
 
 for ( f in appointment_decile_files ) {
     fs::file_copy(
-        ghere("output", "appointments", f),
+        ghere("output", "appointments", "shaded", f),
         fs::path(deciles_output_dir, f),
         overwrite = TRUE
     )
@@ -56,13 +56,13 @@ for ( f in appointment_decile_files ) {
 
 ### --- for other metrics -------------------------------------------
 metrics_decile_files = list.files(
-    ghere("output", "metrics"),
+    ghere("output", "metrics", "shaded"),
     pattern = "deciles_(table|chart)_.*\\..*"
 )
 
 for (f in metrics_decile_files) {
     fs::file_copy(
-        ghere("output", "metrics", f),
+        ghere("output", "metrics", "shaded", f),
         fs::path(deciles_output_dir, f),
         overwrite = TRUE
     )
@@ -80,7 +80,7 @@ seasonal_comparison_output_dir <- ghere(
 
 fs::dir_create(seasonal_comparison_output_dir)
 
-target_file = "summer_winter_.*_histogram.*\\..*"
+target_file = "summer_winter_.*_histogram.*redacted\\..*"
 
 seasonal_comparison_histograms <- list.files(
     path = ghere("output"),
@@ -92,7 +92,7 @@ seasonal_comparison_histograms <- list.files(
 for (f in seasonal_comparison_histograms ) {
     f_dir = dirname(f)
     f_file = basename(f)
-    measure_string = basename(f_dir)
+    measure_string = f_dir %>% str_remove("/redacted") %>% basename()
 
     fs::file_copy(
         f,
