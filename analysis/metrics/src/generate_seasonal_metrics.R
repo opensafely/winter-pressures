@@ -259,6 +259,8 @@ calculate_season_ratio <- function(wide_season_data){
 
 generate_plots_and_data <- function(practice_measure_data){
   
+  running_remotely = !(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations"))
+
   percentage_to_remove = 0.05
   nbins = 50
 
@@ -305,7 +307,7 @@ generate_plots_and_data <- function(practice_measure_data){
   # Sometimes dummy data results in an empty dataframe -
   # this check for this so that the action will run locally
   # (and in GitHub actions)
-  if (nrow(difference_plot_data) > 0) {
+  if ( nrow(difference_plot_data) > 0) {
 
     ### REDACT/ROUND HISTOGRAM DATA
     difference_plot_data_redacted <- difference_plot_data %>%
@@ -313,26 +315,28 @@ generate_plots_and_data <- function(practice_measure_data){
     
     rs = formals(redact_and_round)$redaction_string
 
-    if (nrow(difference_plot_data_redacted %>% filter(count != rs)) > 0) {
+    if ( running_remotely ) {
       difference_plot_redacted = difference_plot_data_redacted %>%
         filter(count != rs) %>%
         ggplot(aes(x = x, y = y)) +
         geom_bar(stat = "identity") +
         theme_bw()
-
-      difference_plot_data_redacted <- select(
-        difference_plot_data_redacted,
-        y,
-        count,
-        x,
-        xmin,
-        xmax,
-        density
-      )
+    } else {
+      difference_plot_redacted = difference_plot
     }
     
     difference_plot_data <- select(
       difference_plot_data,
+      y,
+      count,
+      x,
+      xmin,
+      xmax,
+      density
+    )
+
+    difference_plot_data_redacted <- select(
+      difference_plot_data_redacted,
       y,
       count,
       x,
@@ -396,23 +400,25 @@ generate_plots_and_data <- function(practice_measure_data){
     
     rs = formals(redact_and_round)$redaction_string
 
-    if (nrow(ratio_plot_data_redacted %>% filter(count != rs)) > 0) {
+    if ( running_remotely ) {
       ratio_plot_redacted = ratio_plot_data_redacted %>%
         filter(count != rs) %>%
         ggplot(aes(x = x, y = y)) +
         geom_bar(stat = "identity") +
         theme_bw()
-
-      ratio_plot_data <- select(
-        ratio_plot_data,
-        y,
-        count,
-        x,
-        xmin,
-        xmax,
-        density
-      )
+    } else {
+      ratio_plot_redacted <- ratio_plot
     }
+
+    ratio_plot_data <- select(
+      ratio_plot_data,
+      y,
+      count,
+      x,
+      xmin,
+      xmax,
+      density
+    )
 
     ratio_plot_data_redacted <- select(
       ratio_plot_data_redacted,
