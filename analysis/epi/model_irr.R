@@ -126,11 +126,13 @@ irr_func <- function(measure,outcome){
             .groups = "keep") %>%
    ungroup() %>%
    group_by(start_date) %>%
-   mutate(irr= log(inc_rate /inc_rate[decile==5]),
+   mutate(irr= inc_rate /inc_rate[decile==5],
          # TODO fix limits calculations
          irr.ln.se = sqrt((1 / sum_events) + (1 / sum_events[decile==5])),
-         irr.ll = irr + qnorm(0.025) * irr.ln.se,
-         irr.ul = irr + qnorm(0.975) * irr.ln.se
+         irr.ll = case_when(decile==5~irr,
+         TRUE ~ exp(log(irr) + qnorm(0.025) * irr.ln.se)),
+         irr.ul = case_when(decile==5~irr,
+         TRUE ~ exp(log(irr) + qnorm(0.975) * irr.ln.se))
   ) %>%
     ungroup() 
 }

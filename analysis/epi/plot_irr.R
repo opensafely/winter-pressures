@@ -35,7 +35,8 @@ for (i in 1:nrow(irr_plots)){
    ggplot() +
     geom_pointrange( mapping=aes(x=decile, y=irr, ymin=irr.ll, ymax=irr.ul), size=1, color="darkslateblue", fill="white") +
     scale_x_continuous(breaks=seq(1:10)) +
-    ylab("Log Incidence Rate Ratio") +
+    # scale_y_log10() + 
+    ylab("Incidence Rate Ratio") +
     ggtitle(glue("{irr_plots$data_plot[[i]]$outcome[1]} IRR for {irr_plots$data_plot[[i]]$metric[1]} decile")) +
     theme_bw() +
     coord_flip() 
