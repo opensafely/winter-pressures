@@ -48,7 +48,7 @@ appointment_decile_files = list.files(
 
 for ( f in appointment_decile_files ) {
     fs::file_copy(
-        ghere("output", "appointments", f),
+        ghere("output", "appointments", "shaded", f),
         fs::path(deciles_output_dir, f),
         overwrite = TRUE
     )
@@ -56,7 +56,7 @@ for ( f in appointment_decile_files ) {
 
 ### --- for other metrics -------------------------------------------
 metrics_decile_files = list.files(
-    ghere("output", "metrics","shaded"),
+    ghere("output", "metrics", "shaded"),
     pattern = "deciles_(table|chart)_.*\\..*"
 )
 
