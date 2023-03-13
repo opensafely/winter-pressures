@@ -145,10 +145,15 @@ for ( this_method in method_list ) {
 ```{r}
 
 target_ratio_file = "summer_winter_ratio_histogram_redacted.png"
-all_seasonal_ratio_histogram_filenames = list.files( path=here(), pattern=target_ratio_file, full.names=TRUE, recursive=TRUE )
+target_ratio_metrics = list.files( path=here("output","metrics"), pattern=target_ratio_file, full.names=TRUE, recursive=TRUE )
+target_ratio_appts = list.files( path=here("output","appointments"), pattern=target_ratio_file, full.names=TRUE, recursive=TRUE )
+
+all_seasonal_ratio_histogram_filenames = c( target_ratio_metrics, target_ratio_appts )
 
 target_difference_file = "summer_winter_difference_histogram_redacted.png"
-all_seasonal_difference_histogram_filenames = list.files( path=here(), pattern=target_difference_file, full.names=TRUE, recursive=TRUE )
+target_difference_metrics = list.files( path=here("output","metrics"), pattern=target_difference_file, full.names=TRUE, recursive=TRUE )
+target_difference_appts = list.files( path=here("output","appointments"), pattern=target_difference_file, full.names=TRUE, recursive=TRUE )
+all_seasonal_difference_histogram_filenames = c( target_difference_metrics, target_difference_appts )
 
 ```
 
@@ -158,6 +163,7 @@ all_seasonal_ratios = tibble(
     filename = c( all_seasonal_ratio_histogram_filenames )
 ) %>% mutate( name = filename %>%
     dirname %>%
+    str_remove("/redacted") %>%
     basename
 ) %>% 
 rename( ratio_filename = filename )
@@ -166,6 +172,7 @@ all_seasonal_differences = tibble(
     filename = c( all_seasonal_difference_histogram_filenames )
 ) %>% mutate( name = filename %>%
     dirname %>%
+    str_remove("/redacted") %>%
     basename
 ) %>% 
 rename( difference_filename = filename )
@@ -189,6 +196,8 @@ for ( i in 1:nrow(all_seasonal_comparisons) ) {
 }
 
 ```
+
+
 # Patient services in outlier practices
 
 
