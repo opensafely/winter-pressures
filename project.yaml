@@ -106,7 +106,22 @@ actions:
         deciles_charts: output/metrics/deciles_chart_*.png
         deciles_tables: output/metrics/deciles_table_*.csv
 
-
+  metrics_generate_deciles_charts_alternative:
+    run: >
+      python:latest
+        python
+        -m analysis.deciles_alternative
+        --input-files output/metrics/monthly/measure_*.csv
+        --output-dir output/metrics/shaded
+    config:
+      show_outer_percentiles: true
+    needs: 
+      - metrics_monthly_sro_data_measures
+      - metrics_monthly_kids_data_measures
+    outputs:
+      moderately_sensitive:
+        deciles_charts: output/metrics/shaded/deciles_chart*.png
+        deciles_tables: output/metrics/shaded/deciles_table*.csv
 
   # Metrics data extraction
   # ------------
