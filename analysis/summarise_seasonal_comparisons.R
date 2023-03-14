@@ -25,8 +25,8 @@ summary_statistics = combined_data %>%
             num_missing = sum(is.na(value)),
             num_infinite = sum(is.na(value)),
             median = median(value, na.rm = TRUE) %>% round(digits = 1),
-            p05 = quantile(value, probs = seq(0, 1, 0.05), na.rm = TRUE)["95%"] %>% round(digits = 1),
-            p95 = quantile(value, probs = seq(0, 1, 0.05), na.rm = TRUE)[ "5%"] %>% round(digits = 1),
+            p05 = quantile(value, probs = seq(0, 1, 0.05), na.rm = TRUE)["5%"] %>% round(digits = 1),
+            p95 = quantile(value, probs = seq(0, 1, 0.05), na.rm = TRUE)[ "95%"] %>% round(digits = 1),
             IQR = IQR(value, na.rm = TRUE) %>% round(digits = 1),
             Q1 = quantile(value, na.rm = TRUE)["25%"] %>% round(digits = 1),
             Q3 = quantile(value, na.rm = TRUE)["75%"] %>% round(digits = 1)
