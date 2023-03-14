@@ -296,7 +296,9 @@ generate_plots_and_data <- function(practice_measure_data){
   difference_plot <- ggplot(difference_data) + 
     geom_histogram(aes(x=seasonal_difference), 
                    bins = nbins) +
-    theme_bw()
+    theme_bw() +
+    xlab("Seasonal difference") +
+    ylab("count")
 
   # get the data used to create the histogram and select columns of interest
   difference_plot_data <- ggplot_build(difference_plot)$data[[1]]
@@ -381,7 +383,9 @@ generate_plots_and_data <- function(practice_measure_data){
   ratio_plot <- ggplot(ratio_data) + 
     geom_histogram(aes(x=seasonal_log2_ratio), 
                    bins = nbins) +
-    theme_bw()
+    theme_bw() +
+    # xlab(expression(Seasonal~log[2]~(frac(winter,summer)))
+      ylab(expression(log[2]~(Seasonal~ratio)))
   
   # get the data used to create the histogram and select columns of interest
   ratio_plot_data <- ggplot_build(ratio_plot)$data[[1]]
