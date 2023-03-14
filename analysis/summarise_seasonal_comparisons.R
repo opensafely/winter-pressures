@@ -23,7 +23,7 @@ summary_statistics = combined_data %>%
         summarise(
             num = n(),
             num_missing = sum(is.na(value)),
-            num_infinite = sum(is.na(value)),
+            num_infinite = sum(is.infinite(value)),
             median = median(value, na.rm = TRUE) %>% round(digits = 1),
             p05 = quantile(value, probs = seq(0, 1, 0.05), na.rm = TRUE)["5%"] %>% round(digits = 1),
             p95 = quantile(value, probs = seq(0, 1, 0.05), na.rm = TRUE)[ "95%"] %>% round(digits = 1),
