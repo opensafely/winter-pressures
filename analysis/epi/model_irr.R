@@ -118,7 +118,6 @@ irr_func <- function(measure,outcome){
          events = ifelse(!!as.name(outcome)==censor_date,1,0),
          tte= censor_date- start_date
   )  %>%
-  # TODO move selection of decile variable to this point
   group_by(decile, start_date) %>%
   summarise(sum_tte = as.numeric(sum(tte)),
             sum_events = sum(events,na.rm = T),
@@ -127,7 +126,6 @@ irr_func <- function(measure,outcome){
    ungroup() %>%
    group_by(start_date) %>%
    mutate(irr= inc_rate /inc_rate[decile==5],
-         # TODO fix limits calculations
          irr.ln.se = sqrt((1 / sum_events) + (1 / sum_events[decile==5])),
          irr.ll = case_when(decile==5~irr,
          TRUE ~ exp(log(irr) + qnorm(0.025) * irr.ln.se)),
