@@ -17,13 +17,22 @@ fs::dir_create(here("lib", "design"))
 study_dates <- lst(
     winter_dates = lst(
         start_date = "2021-12-01",
-        end_date = "2022-03-30",
+        end_date = "2022-03-31",
         ),
     summer_dates = lst(
         start_date = "2021-06-01",
         end_date = "2021-09-30",
         )
 )
+
+# add study dates in format for python
+study_dates_python <-list(winter_dates=list( 
+wintermonths<-format(seq(as.Date(study_dates$winter_dates$start_date),as.Date(study_dates$winter_dates$end_date),by="month"), "%Y-%m")
+),summer_dates=list(
+summermonths<-format(seq(as.Date(study_dates$summer_dates$start_date),as.Date(study_dates$summer_dates$end_date),by="month"), "%Y-%m")
+))
+# write to json so that python scripts can easily pick up
+jsonlite::write_json(study_dates_python, path = here("lib", "design", "study_dates.json"), auto_unbox = TRUE, pretty = TRUE)
 
 sro_metrics <- list(c("alt","asthma","cholesterol","copd","hba1c","medication_review","qrisk2","rbc","sodium",
                     "systolic_bp","tsh"))[[1]]      

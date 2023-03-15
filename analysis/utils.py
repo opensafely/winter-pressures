@@ -20,6 +20,10 @@ BASE_DIR = pathlib.Path(__file__).parents[1]
 OUTPUT_DIR = BASE_DIR / "output"
 APPOINTMENTS_OUTPUT_DIR = OUTPUT_DIR / "appointments"
 
+# import json study_dates (from design.R)
+with open("./lib/design/study_dates.json") as f:
+  study_dates = json.load(f)
+
 # A mapping from season (string) to a list of months (as integer);
 month_to_season_map = {"winter": [1, 2, 3, 12], "summer": [6, 7, 8, 9]}
 
@@ -48,10 +52,13 @@ def summarise_to_seasons(
     # Extract the month and year and represent as integers
     df["month_n"] = df[date_col].dt.month.astype(np.int32)
     df["year"] = df[date_col].dt.year.astype(np.int32)
+    df["year_month"] = str(df["year"]) + "-" + str(df["month_n"].zfill(2))
 
     # Use the mapping provided to map from the month to the season
     df.loc[df["month_n"].isin(mapping["winter"]), "season"] = 1
     df.loc[df["month_n"].isin(mapping["summer"]), "season"] = 0
+    df.loc[df["year_month"].isin(study_dates["winter_dates"][0]), "season"] = 1
+    df.loc[df["year_month"].isin(study_dates["summer_dates"][0]), "season"] = 0
 
     # Remove columns that are no longer necessary and remove
     # any rows that contain NA values (these will be rows for months
