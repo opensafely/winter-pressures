@@ -69,6 +69,10 @@ def summarise_to_seasons(
     return df
 
 def add_year_label(d,date_col):
+    ### The function to_period('Q-MAR') gives the fiscal year (ending March)
+    ### so the date 1st August 2021 would be assigned the year 2022. Because
+    ### we want to refer to the period with regards to a year that STARTS in
+    ### June, we minus 1 from the fiscl year.
     d["year"] = d[date_col].dt.to_period('Q-MAR').dt.qyear-1
     return( d )
 
