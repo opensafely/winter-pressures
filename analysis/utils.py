@@ -47,7 +47,7 @@ def summarise_to_seasons(
 
     # Extract the month and year and represent as integers
     df["month_n"] = df[date_col].dt.month.astype(np.int32)
-    df["year"] = df[date_col].dt.year.astype(np.int32)
+    df["year"] = df[date_col].dt.to_period('Q-MAR').dt.qyear-1
 
     # Use the mapping provided to map from the month to the season
     df.loc[df["month_n"].isin(mapping["winter"]), "season"] = 1
