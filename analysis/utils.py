@@ -52,11 +52,11 @@ def summarise_to_seasons(
     # Extract the month and year and represent as integers
     df["month_n"] = df[date_col].dt.month.astype(np.int32)
     df["year"] = df[date_col].dt.year.astype(np.int32)
-    df["year_month"] = str(df["year"]) + "-" + str(df["month_n"].zfill(2))
+    str(df["year"]) + "-" + str(df["month_n"].astype(str).str.zfill(2))
 
     # Use the mapping provided to map from the month to the season
-    df.loc[df["month_n"].isin(mapping["winter"]), "season"] = 1
-    df.loc[df["month_n"].isin(mapping["summer"]), "season"] = 0
+    # df.loc[df["month_n"].isin(mapping["winter"]), "season"] = 1
+    # df.loc[df["month_n"].isin(mapping["summer"]), "season"] = 0
     df.loc[df["year_month"].isin(study_dates["winter_dates"][0]), "season"] = 1
     df.loc[df["year_month"].isin(study_dates["summer_dates"][0]), "season"] = 0
 
