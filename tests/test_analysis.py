@@ -13,7 +13,7 @@ import numpy as np
 
 from pandas import testing
 from analysis.appointments import reshape_dataset
-from analysis.utils import summarise_to_seasons, filter_by_date, read
+from analysis.utils import summarise_to_seasons, filter_by_date, read, add_year_label
 
 test_month_start = pd.to_datetime("2021-01-01")
 plus_month = 8
@@ -258,6 +258,49 @@ def test_read_and_summarise_count(
     ).reset_index(drop=True)
 
     testing.assert_frame_equal(measure_season_tocheck, expected_output)
+
+
+@pytest.mark.parametrize(
+    "file, date_col, test_start_date, test_end_date, expected_labels",
+    [
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2020-01-01",
+            "2020-12-31",
+            [2019, 2019, 2019, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020],
+        ),
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2020-04-01",
+            "2021-03-31",
+            [2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020],
+        ),
+    ],
+)
+
+def test_year_labels(
+    file,
+    date_col,
+    test_start_date,
+    test_end_date,
+    expected_labels,
+    ):
+
+    index_cols = [date_col, "practice"]
+
+    dataset_in = read(
+        f_in=file,
+        index_cols=index_cols,
+        date_col=date_col,
+        start_date=test_start_date,
+        end_date=test_end_date,
+    )
+
+    dataset_labelled = add_year_label( dataset_in.reset_index(), date_col ) 
+
+    assert list(dataset_labelled['year']) == expected_labels
 
 
 def test_split_suffix():
