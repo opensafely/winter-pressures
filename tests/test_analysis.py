@@ -13,7 +13,7 @@ import numpy as np
 
 from pandas import testing
 from analysis.appointments import reshape_dataset
-from analysis.utils import summarise_to_seasons, filter_by_date
+from analysis.utils import summarise_to_seasons, filter_by_date, read, add_year_label
 
 test_month_start = pd.to_datetime("2021-01-01")
 plus_month = 8
@@ -120,14 +120,16 @@ def test_summarise_to_seasons_by_sum(monthly_table):
         date_col="date",
         value_col="value",
         summary_method=np.sum,
-    )
+    ).sort_values(
+        by=["year", "season"]
+    ).reset_index(drop=True)
 
     exp_sum = pd.DataFrame(
         {
-            "practice": pd.Series([1, 1, 2, 2]),
-            "year": pd.Series([2021, 2021, 2021, 2021]),
-            "season": pd.Series([0, 1, 0, 1]),
-            "value": pd.Series([12, 3, 30, 21]),
+            "practice": pd.Series([1, 2, 1, 2]),
+            "year": pd.Series([2020, 2020, 2021, 2021]),
+            "season": pd.Series([1, 1, 0, 0]),
+            "value": pd.Series([3, 21, 12, 30]),
         }
     )
 
@@ -142,18 +144,163 @@ def test_summarise_to_seasons_by_median(monthly_table):
         date_col="date",
         value_col="value",
         summary_method=np.median,
-    )
+    ).sort_values(
+        by=["year", "season"]
+    ).reset_index(drop=True)
 
     exp_sum = pd.DataFrame(
         {
-            "practice": pd.Series([1, 1, 2, 2]),
-            "year": pd.Series([2021, 2021, 2021, 2021]),
-            "season": pd.Series([0, 1, 0, 1]),
-            "value": pd.Series([4, 1, 10, 7]),
+            "practice": pd.Series([1, 2, 1, 2]),
+            "year": pd.Series([2020, 2020, 2021, 2021]),
+            "season": pd.Series([1, 1, 0, 0]),
+            "value": pd.Series([1, 7, 4, 10]),
         }
     )
 
     testing.assert_frame_equal(obs_sum, exp_sum)
+
+
+
+@pytest.mark.parametrize(
+    "file, date_col, test_start_date, test_end_date, expected_entries, expected_output",
+    [
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2020-01-01",
+            "2023-12-31",
+            36,
+            pd.DataFrame(
+                data={
+                    "practice": [1, 1, 1, 1, 1, 1, 1],
+                    "year": [2019, 2020, 2020, 2021, 2021, 2022, 2022],
+                    "season": [1, 0, 1, 0, 1, 0, 1],
+                    "value": [3, 4, 4, 4, 4, 4, 1],
+                }
+            ),
+        ),
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2020-08-01",
+            "2022-08-31",
+            25,
+            pd.DataFrame(
+                data={
+                    "practice": [1, 1, 1, 1, 1],
+                    "year": [2020, 2020, 2021, 2021, 2022],
+                    "season": [0, 1, 0, 1, 0],
+                    "value": [2, 4, 4, 4, 3],
+                }
+            ),
+        ),
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2020-08-01",
+            "2022-08-01",
+            25,
+            pd.DataFrame(
+                data={
+                    "practice": [1, 1, 1, 1, 1],
+                    "year": [2020, 2020, 2021, 2021, 2022],
+                    "season": [0, 1, 0, 1, 0],
+                    "value": [2, 4, 4, 4, 3],
+                }
+            ),
+        ),
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2021-06-01",
+            "2021-10-01",
+            5,
+            pd.DataFrame(
+                data={"practice": [1], "year": [2021], "season": [0], "value": [4]}
+            ),
+        ),
+    ],
+)
+
+def test_read_and_summarise_count(
+    file,
+    date_col,
+    test_start_date,
+    test_end_date,
+    expected_entries,
+    expected_output,
+):
+
+    index_cols = [date_col, "practice"]
+    index_cols_nodate = ["practice"]
+
+    dataset_in = read(
+        f_in=file,
+        index_cols=index_cols,
+        date_col=date_col,
+        start_date=test_start_date,
+        end_date=test_end_date,
+    )
+
+    assert len(dataset_in) == expected_entries
+    assert all(dataset_in.reset_index()[date_col] >= test_start_date)
+    assert all(dataset_in.reset_index()[date_col] <= test_end_date)
+
+    counts = dataset_in.groupby(index_cols).size()
+    measure = counts.reset_index()
+    measure.columns = ["date", "practice", "value"]
+
+    ### Now that we have monthly data, we can calculate seasonal summaries
+
+    measure_season = summarise_to_seasons(measure, index_cols_nodate, date_col="date")
+    measure_season_tocheck = measure_season.sort_values(
+        by=["year", "season"]
+    ).reset_index(drop=True)
+
+    testing.assert_frame_equal(measure_season_tocheck, expected_output)
+
+
+@pytest.mark.parametrize(
+    "file, date_col, test_start_date, test_end_date, expected_labels",
+    [
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2020-01-01",
+            "2020-12-31",
+            [2019, 2019, 2019, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020],
+        ),
+        (
+            "tests/testdata/dummy_dataset_test.csv",
+            "booked_month",
+            "2020-04-01",
+            "2021-03-31",
+            [2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020],
+        ),
+    ],
+)
+
+def test_year_labels(
+    file,
+    date_col,
+    test_start_date,
+    test_end_date,
+    expected_labels,
+    ):
+
+    index_cols = [date_col, "practice"]
+
+    dataset_in = read(
+        f_in=file,
+        index_cols=index_cols,
+        date_col=date_col,
+        start_date=test_start_date,
+        end_date=test_end_date,
+    )
+
+    dataset_labelled = add_year_label( dataset_in.reset_index(), date_col ) 
+
+    assert list(dataset_labelled['year']) == expected_labels
 
 
 def test_split_suffix():
