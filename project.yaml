@@ -304,6 +304,14 @@ actions:
       highly_sensitive:
         monthly_measure: output/appointments/measure_monthly_*_by_start_month.csv
 
+  calculate_total_num_appointments_monthly:
+    run: r:latest analysis/calculate_monthly_counts.R
+    needs:
+      - appointments_generate_monthly_measures_by_booked_month
+      - appointments_generate_monthly_measures_by_start_month
+    outputs:
+      moderately_sensitive:
+        overall_csvs: output/appointments/measure_monthly_overall_*.csv
   
   appointments_generate_seasonal_summaries_by_start_month:
     run: >
