@@ -255,7 +255,7 @@ actions:
       - classify_practices_by_decile
     outputs:
       moderately_sensitive:
-        log: output/epi/irr_data.csv
+        data: output/epi/irr_data.csv
   
   epi_plot_irr:
     run: r:latest analysis/epi/plot_irr.R
@@ -263,7 +263,8 @@ actions:
       - epi_model_irr
     outputs:
       moderately_sensitive:
-        log: output/epi/plots/*.png
+        single_plots: output/epi/plots/*.png
+        combined_plots: output/epi/plots/combined/*.png
 
 
   # Appointments data
