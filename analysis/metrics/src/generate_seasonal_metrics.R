@@ -322,7 +322,9 @@ generate_plots_and_data <- function(practice_measure_data){
         filter(count != rs) %>%
         ggplot(aes(x = x, y = y)) +
         geom_bar(stat = "identity") +
-        theme_bw()
+        theme_bw()  +
+        xlab("Seasonal difference") +
+        ylab("Count")
     } else {
       difference_plot_redacted = difference_plot
     }
@@ -410,7 +412,9 @@ generate_plots_and_data <- function(practice_measure_data){
         filter(count != rs) %>%
         ggplot(aes(x = x, y = y)) +
         geom_bar(stat = "identity") +
-        theme_bw()
+        theme_bw() +
+        xlab(expression(log[2]~(Seasonal~ratio))) +
+        ylab("Count")
     } else {
       ratio_plot_redacted <- ratio_plot
     }
