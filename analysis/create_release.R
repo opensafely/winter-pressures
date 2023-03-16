@@ -121,7 +121,36 @@ fs::file_copy(
     overwrite = TRUE
 )
 
+#####################################################################
+### Epi IRR plots 
+#####################################################################
 
+epi_output_dir <- ghere(
+    "output",
+    "release",
+    "epi"
+)
+
+fs::dir_create(epi_output_dir)
+
+target_file = ".*_combined.png"
+
+epi_plots <- list.files(
+    path = ghere("output","epi","plots","combined"),
+    pattern = target_file,
+    full.names = TRUE
+)
+
+for (f in epi_plots ) {
+    f_dir = dirname(f)
+    f_file = basename(f)
+
+    fs::file_copy(
+        f,
+        fs::path(epi_output_dir, glue("{f_file}")),
+        overwrite = TRUE
+    )
+}
 
 #####################################################################
 ### Create some meta release files

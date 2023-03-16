@@ -200,5 +200,37 @@ for ( i in 1:nrow(all_seasonal_comparisons) ) {
 
 # Patient services in outlier practices
 
+```{r}
+
+target_epi_file = ".*_combined.png"
+epi_plot_list = list.files( path=here("output","epi","plots","combined"), pattern=target_epi_file, full.names=TRUE )
+
+
+all_epi_plots = tibble(
+    filename = c( epi_plot_list )
+    ) %>% mutate ( name = filename %>%
+        basename %>%
+        str_remove("_combined.png" )
+    ) %>% 
+    rename( epi_filename = filename ) %>%
+    left_join( measure_descriptions, by=c("name"="short_name")) %>%
+    arrange( description )
+
+```
+
+
+```{r, results="asis"}
+
+for ( i in 1:nrow(all_epi_plots) ) {
+    this_epi_file = all_epi_plots$epi_filename[i]
+    this_title = all_epi_plots$description[i]
+    print( glue( "### {this_title}\n\n") )
+
+    print( glue( "![{this_title}: IRR patient outcomes]({this_epi_file})\n\n" ) )
+}
+
+```
+
+
 
 # Early warning systems
