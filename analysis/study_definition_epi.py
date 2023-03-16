@@ -36,8 +36,7 @@ study = StudyDefinition(
     population=patients.satisfying(
         """
         registered AND
-        (NOT died) AND
-        (age >=18 AND age <=120) 
+        (NOT died)
         """,
     ),
     start_date = patients.fixed_value(start_date),
