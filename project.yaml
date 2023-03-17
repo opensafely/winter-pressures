@@ -413,6 +413,14 @@ actions:
         moderately_sensitive:
           csv: output/combined/combined_seasonal_data_with_deciles.csv
 
+  count_practices_by_decile:
+      run: r:latest analysis/count_practices_by_decile.R
+      needs:
+      - classify_practices_by_decile
+      outputs:
+        moderately_sensitive:
+          csv: output/combined/practice_counts_per_decile.csv
+
   summarise_seasonal_comparisons:
       run: r:latest analysis/summarise_seasonal_comparisons.R
       needs:
