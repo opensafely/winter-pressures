@@ -476,6 +476,7 @@ actions:
       - metrics_create_seasonal_measures
       - summarise_seasonal_comparisons
       - epi_plot_irr
+      - epi_model_irr
     outputs:
       moderately_sensitive:
         html: output/release/*.html

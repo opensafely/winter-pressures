@@ -152,6 +152,15 @@ for (f in epi_plots ) {
     )
 }
 
+epi_data = ghere("output", "epi", "irr_data.csv")
+
+fs::file_copy(
+    epi_data,
+    fs::path(epi_output_dir, basename(epi_data) ),
+    overwrite = TRUE
+)
+
+
 #####################################################################
 ### Create some meta release files
 #####################################################################
