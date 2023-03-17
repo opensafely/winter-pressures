@@ -257,6 +257,15 @@ actions:
       moderately_sensitive:
         data: output/epi/irr_data.csv
   
+  epi_irr_data_add_practice_count:
+    run: r:latest analysis/epi/practice_count.R
+    needs: 
+      - epi_model_irr
+      - count_practices_by_decile
+    outputs:
+      moderately_sensitive:
+        data: output/epi/*_data.csv
+  
   epi_plot_irr:
     run: r:latest analysis/epi/plot_irr.R
     needs: 
