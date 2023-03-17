@@ -37,7 +37,6 @@ for (i in 1:nrow(irr_plots)){
     scale_x_continuous(breaks=seq(1:10)) +
     # scale_y_log10() + 
     ylab("Incidence Rate Ratio") +
-    ggtitle(glue("{irr_plots$data_plot[[i]]$outcome[1]} IRR for {irr_plots$data_plot[[i]]$metric[1]} decile")) +
     theme_bw() +
     coord_flip() 
   
@@ -68,7 +67,6 @@ for (i in 1:length(metrics)){
     # scale_y_log10() + 
     xlab(glue("Decile ({str_replace_all(metrics[i],'_', ' ') })")) +
     ylab("Incidence Rate Ratio") +
-    ggtitle(glue("Incidence rate ratio (decile vs 5th decile) for {str_replace_all(metrics[i],'_', ' ')}")) +
     theme_bw() +
     coord_flip() + 
     theme(legend.position="bottom",legend.title=element_blank())
