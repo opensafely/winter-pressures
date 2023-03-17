@@ -80,7 +80,7 @@ seasonal_comparison_output_dir <- ghere(
 
 fs::dir_create(seasonal_comparison_output_dir)
 
-target_file = "summer_winter_.*_histogram.*redacted\\..*"
+target_file = "summer_winter_ratio_histogram.*redacted\\..*"
 
 seasonal_comparison_histograms <- list.files(
     path = ghere("output"),
