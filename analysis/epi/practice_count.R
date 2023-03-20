@@ -24,3 +24,11 @@ irr_data <- irr_data %>%
 print("number of rows dropped")
 print(irr_data_rows - nrow(irr_data))
 
+### Write data file file
+write.csv(irr_data,
+    file = paste(here("output", "epi"),
+        "irr_data.csv",
+        sep = "/"
+    ),
+    row.names=FALSE
+)
