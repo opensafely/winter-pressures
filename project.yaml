@@ -484,8 +484,8 @@ actions:
       - metrics_generate_deciles_charts_alternative
       - metrics_create_seasonal_measures
       - summarise_seasonal_comparisons
+      - epi_irr_data_add_practice_count
       - epi_plot_irr
-      - epi_model_irr
     outputs:
       moderately_sensitive:
         html: output/release/*.html
