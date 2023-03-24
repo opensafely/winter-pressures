@@ -14,7 +14,7 @@ measure_descriptions = tribble(
     "hba1c_practice_only_rate", "SRO Glycated Haemoglobin A1c Level (HbA1c)",
     "medication_review_practice_only_rate", "SRO Medication Reviews",
     "qrisk2_practice_only_rate", "SRO Cardiovascular Disease 10 year Risk Assessment (QRISK)",
-    "rbc_practice_only_rate", "SRP Full Blood Count - Red Blood Cell (RBC) Testing",
+    "rbc_practice_only_rate", "SRO Full Blood Count - Red Blood Cell (RBC) Testing",
     "sodium_practice_only_rate", "SRO Renal Function Assessment - Sodium Testing",
     "systolic_bp_practice_only_rate", "SRO Blood Pressure Monitoring",
     "tsh_practice_only_rate", "SRO Thyroid Testing",
