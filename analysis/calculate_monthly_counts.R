@@ -35,7 +35,12 @@ for (f in target_files) {
     cat(glue("[{f_count}] Reading in '{basename(f)}'\n\n"))
 
     ### == Recording the overall counts ==========================
-    d_month_totals = d %>% group_by( date ) %>% summarise( total = sum(raw_count))
+    d_month_totals = d %>%
+        group_by(date) %>%
+        summarise(
+            total = sum(raw_count),
+            num_practices = length(unique(practice))
+        )
     
     output_file = paste(output_dir,
         basename(f) %>% str_replace("num", "overall_num"),
