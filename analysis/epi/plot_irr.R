@@ -9,11 +9,17 @@ source(here("analysis", "design.R"))
 
 ### Create a directory for output plots
 fs::dir_create(
-  path = here("output", "epi","plots","combined")
+  path = here("output", "epi","plots","combined","inc_rate")
 )
 
 
 irr_data <- read_csv(here("output", "epi", "irr_data.csv"))
+
+### add incidence rate confidence limits
+irr_data <- irr_data %>%
+  mutate(inc_rate_se = sqrt((inc_rate*(1-inc_rate))/sum_tte),
+         inc_rate_ll = inc_rate + qnorm(0.025)*inc_rate_se,
+         inc_rate_ul = inc_rate + qnorm(0.975)*inc_rate_se)
 
 irr_plot_data_func<- function(met,outc){
   irr_data %>%
@@ -48,7 +54,7 @@ for (i in 1:nrow(irr_plots)){
     )
 }
 
-
+### incidence rate ratios
 # Combined outcomes plots
 irr_overlay<-irr_data %>% 
   filter( outcome== "death_date" | outcome == "emergency_date" | outcome == "admitted_unplanned_date") %>%
@@ -79,3 +85,29 @@ for (i in 1:length(metrics)){
     )
 }
 
+
+### incidence rates
+
+
+for (i in 1:length(metrics)){
+  plot_overlay <- irr_overlay %>% 
+    filter(metric==metrics[i]) %>%
+    ggplot() +
+    geom_pointrange( mapping=aes(x=decile, y=inc_rate, ymin=inc_rate_ll, ymax=inc_rate_ul,group = outcome_lab,colour = outcome_lab,  ),size=0.1) +
+    facet_grid(. ~ outcome_lab, scales = "free_x") +
+    scale_x_continuous(breaks=seq(1:10)) +
+    # scale_y_log10() + 
+    xlab(glue("Decile (Change in {str_replace_all(metrics[i],'_', ' ') } \n recording rate from Summer to Winter)")) +
+    ylab("Incidence Rate") +
+    theme_bw() +
+    coord_flip() + 
+    theme(legend.position="bottom",legend.title=element_blank()) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  plot_overlay %>%
+    ggsave(
+      filename = here(
+        "output", "epi","plots","combined","inc_rate",glue("{metrics[i]}_combined.png")),
+      width = 15, height = 20, units = "cm"
+    )
+}
