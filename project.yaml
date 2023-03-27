@@ -334,7 +334,7 @@ actions:
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_start_month.csv
 
 
@@ -349,7 +349,7 @@ actions:
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql]
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_booked_month.csv
 
   ### Some of the measures need to be normalised by list size, specifically
@@ -439,6 +439,14 @@ actions:
           csv: output/combined/seasonal_summaries.csv
           redacted_csv: output/combined/seasonal_summaries_nondisclosive.csv
 
+  metrics_check_practice_counts:
+      run: r:latest analysis/check_practice_counts_for_metrics.R
+      needs:
+      - metrics_monthly_sro_data_measures
+      - metrics_monthly_kids_data_measures
+      outputs:
+        moderately_sensitive:
+          csv: output/practice-counts-check/*.csv
 
 
   # Tests
