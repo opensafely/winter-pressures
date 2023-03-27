@@ -274,6 +274,7 @@ actions:
       moderately_sensitive:
         single_plots: output/epi/plots/*.png
         combined_plots: output/epi/plots/combined/*.png
+        combined_plots_inc_rate: output/epi/plots/combined/inc_rate/*.png
 
 
   # Appointments data
