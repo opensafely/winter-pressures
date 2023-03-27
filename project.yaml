@@ -439,6 +439,14 @@ actions:
           csv: output/combined/seasonal_summaries.csv
           redacted_csv: output/combined/seasonal_summaries_nondisclosive.csv
 
+  metrics_check_practice_counts:
+      run: r:latest analysis/check_practice_counts_for_metrics.R
+      needs:
+      - metrics_monthly_sro_data_measures
+      - metrics_monthly_kids_data_measures
+      outputs:
+        moderately_sensitive:
+          csv: output/practice-counts-check/*.csv
 
 
   # Tests
