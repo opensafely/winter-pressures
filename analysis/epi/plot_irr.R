@@ -93,12 +93,12 @@ for (i in 1:length(metrics)){
   plot_overlay <- irr_overlay %>% 
     filter(metric==metrics[i]) %>%
     ggplot() +
-    geom_pointrange( mapping=aes(x=decile, y=inc_rate, ymin=inc_rate_ll, ymax=inc_rate_ul,group = outcome_lab,colour = outcome_lab,  ),size=0.1) +
+    geom_pointrange( mapping=aes(x=decile, y=inc_rate *10000, ymin=inc_rate_ll *10000, ymax=inc_rate_ul*10000,group = outcome_lab,colour = outcome_lab,  ),size=0.1) +
     facet_grid(. ~ outcome_lab, scales = "free_x") +
     scale_x_continuous(breaks=seq(1:10)) +
     # scale_y_log10() + 
-    xlab(glue("Decile (Change in {str_replace_all(metrics[i],'_', ' ') } \n recording rate from Summer to Winter)")) +
-    ylab("Incidence Rate") +
+    xlab(glue("Decile\n(Change in {str_replace_all(metrics[i],'_', ' ') }\n rate from Summer to Winter)")) +
+    ylab("Winter Incidence Rate per 10,000 person days") +
     theme_bw() +
     coord_flip() + 
     theme(legend.position="bottom",legend.title=element_blank()) +
@@ -108,6 +108,6 @@ for (i in 1:length(metrics)){
     ggsave(
       filename = here(
         "output", "epi","plots","combined","inc_rate",glue("{metrics[i]}_combined.png")),
-      width = 15, height = 20, units = "cm"
+      width = 30, height = 20, units = "cm"
     )
 }
