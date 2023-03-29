@@ -5,6 +5,12 @@ expectations:
 
 actions:
 
+  update_time_definitions:
+    run: r:latest analysis/update_time_definitions.R
+    outputs:
+      moderately_sensitive:
+        overall_csvs: lib/design/study_dates.json
+
   monthly_practice_listsize_2018:
     run: cohortextractor:latest generate_cohort --study-definition study_definition_listsize_monthly
         --index-date-range '2018-06-01 to 2019-05-31 by month' --output-dir=output/listsize
