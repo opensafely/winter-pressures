@@ -4,6 +4,7 @@ library('lubridate')
 library('arrow')
 library('here')
 library('glue')
+library('cowplot')
 
 source(here("analysis", "design.R"))
 
@@ -102,7 +103,11 @@ for (i in 1:length(metrics)){
     theme_bw() +
     coord_flip() + 
     theme(legend.position="bottom",legend.title=element_blank()) +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+  
+  plot_overlay <- 
+  ggdraw(plot_overlay) + draw_label("Recording\nrate\nhigher\nin\nWinter\nthan\nSummer", x = 0.03, y = 0.87,size = 8,alpha = 0.8) +
+     draw_label("Recording\nrate\nhigher\nin\nSummer\nthan\nwinter", x = 0.03, y = 0.2,size = 8,alpha = 0.8)
   
   plot_overlay %>%
     ggsave(
