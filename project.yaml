@@ -261,7 +261,16 @@ actions:
       - classify_practices_by_decile
     outputs:
       moderately_sensitive:
-        log: output/epi/irr_data.csv
+        data: output/epi/irr_data.csv
+  
+  epi_irr_data_add_practice_count:
+    run: r:latest analysis/epi/practice_count.R
+    needs: 
+      - epi_model_irr
+      - count_practices_by_decile
+    outputs:
+      moderately_sensitive:
+        data: output/epi/*_data.csv
   
   epi_plot_irr:
     run: r:latest analysis/epi/plot_irr.R
@@ -269,7 +278,9 @@ actions:
       - epi_model_irr
     outputs:
       moderately_sensitive:
-        log: output/epi/plots/*.png
+        single_plots: output/epi/plots/*.png
+        combined_plots: output/epi/plots/combined/*.png
+        combined_plots_inc_rate: output/epi/plots/combined/inc_rate/*.png
 
 
   # Appointments data
@@ -329,7 +340,7 @@ actions:
         --index-cols start_month practice
     needs: [appointments_generate_dataset_sql, update_time_definitions]
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_start_month.csv
 
 
@@ -343,7 +354,7 @@ actions:
         --index-cols booked_month practice
     needs: [appointments_generate_dataset_sql, update_time_definitions]
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_booked_month.csv
 
   ### Some of the measures need to be normalised by list size, specifically
@@ -416,6 +427,14 @@ actions:
         moderately_sensitive:
           csv: output/combined/combined_seasonal_data_with_deciles.csv
 
+  count_practices_by_decile:
+      run: r:latest analysis/count_practices_by_decile.R
+      needs:
+      - classify_practices_by_decile
+      outputs:
+        moderately_sensitive:
+          csv: output/combined/practice_counts_per_decile.csv
+
   summarise_seasonal_comparisons:
       run: r:latest analysis/summarise_seasonal_comparisons.R
       needs:
@@ -425,6 +444,14 @@ actions:
           csv: output/combined/seasonal_summaries.csv
           redacted_csv: output/combined/seasonal_summaries_nondisclosive.csv
 
+  metrics_check_practice_counts:
+      run: r:latest analysis/check_practice_counts_for_metrics.R
+      needs:
+      - metrics_monthly_sro_data_measures
+      - metrics_monthly_kids_data_measures
+      outputs:
+        moderately_sensitive:
+          csv: output/practice-counts-check/*.csv
 
 
   # Tests
@@ -456,6 +483,7 @@ actions:
       - appointments_generate_seasonal_summaries_by_start_month
       - summarise_seasonal_comparisons
       - identify_practices_to_remove
+      - epi_plot_irr
     outputs:
       moderately_sensitive:
         report: output/docs/preliminary_report.html
@@ -470,6 +498,8 @@ actions:
       - metrics_generate_deciles_charts_alternative
       - metrics_create_seasonal_measures
       - summarise_seasonal_comparisons
+      - epi_irr_data_add_practice_count
+      - epi_plot_irr
     outputs:
       moderately_sensitive:
         html: output/release/*.html

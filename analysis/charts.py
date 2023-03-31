@@ -108,25 +108,27 @@ def deciles_chart(
         [df[period_column].min(), df[period_column].max()]
     )  # set x axis range as full date range
     ## add winter highlights
-    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2018', '04/01/2019']), color='cadetblue', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2019', '04/01/2020']), color='cadetblue', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2020', '04/01/2021']), color='cadetblue', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2021', '04/01/2022']), color='cadetblue', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2022', '04/01/2023']), color='cadetblue', alpha=0.5)
+    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2018', '04/01/2019']), color='cadetblue', alpha=0.25)
+    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2019', '04/01/2020']), color='cadetblue', alpha=0.25)
+    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2020', '04/01/2021']), color='cadetblue', alpha=0.25)
+    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2021', '04/01/2022']), color='cadetblue', alpha=0.25)
+    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2022', '04/01/2023']), color='cadetblue', alpha=0.25)
+    ax.axvspan(*matplotlib.dates.datestr2num(['12/01/2023', '04/01/2024']), color='cadetblue', alpha=0.25)
+
 
     ## add summer highlights
-    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2018', '10/01/2018']), color='orangered', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2019', '10/01/2019']), color='orangered', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2020', '10/01/2020']), color='orangered', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2021', '10/01/2021']), color='orangered', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2022', '10/01/2022']), color='orangered', alpha=0.5)
-    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2023', '10/01/2023']), color='orangered', alpha=0.5)
+    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2018', '10/01/2018']), color='orangered', alpha=0.1)
+    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2019', '10/01/2019']), color='orangered', alpha=0.1)
+    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2020', '10/01/2020']), color='orangered', alpha=0.1)
+    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2021', '10/01/2021']), color='orangered', alpha=0.1)
+    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2022', '10/01/2022']), color='orangered', alpha=0.1)
+    ax.axvspan(*matplotlib.dates.datestr2num(['06/01/2023', '10/01/2023']), color='orangered', alpha=0.1)
 
 
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=90)
     # plt.setp(ax.yaxis.get_majorticklabels(), rotation=90)
-    ax.xaxis.set_major_formatter(matplotlib.dates.ConciseDateFormatter(ax.xaxis.get_major_locator()))
-
+    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%m %Y'))
+    ax.xaxis.set_major_locator(matplotlib.dates.MonthLocator(interval=6))
     if show_legend:#
         # Shrink current axis's height by 10% on the bottom
         box = ax.get_position()

@@ -80,7 +80,7 @@ seasonal_comparison_output_dir <- ghere(
 
 fs::dir_create(seasonal_comparison_output_dir)
 
-target_file = "summer_winter_.*_histogram.*redacted\\..*"
+target_file = "summer_winter_ratio_histogram.*redacted\\..*"
 
 seasonal_comparison_histograms <- list.files(
     path = ghere("output"),
@@ -121,6 +121,44 @@ fs::file_copy(
     overwrite = TRUE
 )
 
+#####################################################################
+### Epi IRR plots 
+#####################################################################
+
+epi_output_dir <- ghere(
+    "output",
+    "release",
+    "epi"
+)
+
+fs::dir_create(epi_output_dir)
+
+target_file = ".*_combined.png"
+
+epi_plots <- list.files(
+    path = ghere("output","epi","plots","combined"),
+    pattern = target_file,
+    full.names = TRUE
+)
+
+for (f in epi_plots ) {
+    f_dir = dirname(f)
+    f_file = basename(f)
+
+    fs::file_copy(
+        f,
+        fs::path(epi_output_dir, glue("{f_file}")),
+        overwrite = TRUE
+    )
+}
+
+epi_data = ghere("output", "epi", "irr_data.csv")
+
+fs::file_copy(
+    epi_data,
+    fs::path(epi_output_dir, basename(epi_data) ),
+    overwrite = TRUE
+)
 
 
 #####################################################################

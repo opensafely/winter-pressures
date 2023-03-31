@@ -4,16 +4,23 @@ library('lubridate')
 library('arrow')
 library('here')
 library('glue')
+library('cowplot')
 
 source(here("analysis", "design.R"))
 
 ### Create a directory for output plots
 fs::dir_create(
-  path = here("output", "epi","plots")
+  path = here("output", "epi","plots","combined","inc_rate")
 )
 
 
 irr_data <- read_csv(here("output", "epi", "irr_data.csv"))
+
+### add incidence rate confidence limits
+irr_data <- irr_data %>%
+  mutate(inc_rate_se = sqrt((inc_rate*(1-inc_rate))/sum_tte),
+         inc_rate_ll = inc_rate + qnorm(0.025)*inc_rate_se,
+         inc_rate_ul = inc_rate + qnorm(0.975)*inc_rate_se)
 
 irr_plot_data_func<- function(met,outc){
   irr_data %>%
@@ -31,17 +38,16 @@ irr_plots<- irr_args %>%
       )
     
 for (i in 1:nrow(irr_plots)){
-  bag <- irr_plots$data_plot[[i]] %>%
+  plots <- irr_plots$data_plot[[i]] %>%
    ggplot() +
     geom_pointrange( mapping=aes(x=decile, y=irr, ymin=irr.ll, ymax=irr.ul), size=1, color="darkslateblue", fill="white") +
     scale_x_continuous(breaks=seq(1:10)) +
     # scale_y_log10() + 
     ylab("Incidence Rate Ratio") +
-    ggtitle(glue("{irr_plots$data_plot[[i]]$outcome[1]} IRR for {irr_plots$data_plot[[i]]$metric[1]} decile")) +
     theme_bw() +
     coord_flip() 
   
-  bag %>%
+  plots %>%
     ggsave(
           filename = here(
             "output", "epi","plots",glue("{irr_plots$data_plot[[i]]$outcome[1]}_{irr_plots$data_plot[[i]]$metric[1]}.png")),
@@ -49,3 +55,64 @@ for (i in 1:nrow(irr_plots)){
     )
 }
 
+### incidence rate ratios
+# Combined outcomes plots
+irr_overlay<-irr_data %>% 
+  filter( outcome== "death_date" | outcome == "emergency_date" | outcome == "admitted_unplanned_date") %>%
+  mutate(outcome_lab = case_when(outcome=="death_date"~"All cause mortality",
+                                 outcome=="emergency_date"~"A&E attendance",
+                                 outcome=="admitted_unplanned_date"~"Unplanned hospital admission"))
+
+
+for (i in 1:length(metrics)){
+  plot_overlay <- irr_overlay %>% 
+    filter(metric==metrics[i]) %>%
+    ggplot() +
+    geom_hline(yintercept=1,alpha =0.3) +
+    geom_pointrange( mapping=aes(x=decile, y=irr, ymin=irr.ll, ymax=irr.ul,group = outcome_lab,colour = outcome_lab,  ),position =  position_dodge2(width = 0.55),size=0.5) +
+    scale_x_continuous(breaks=seq(1:10)) +
+    # scale_y_log10() + 
+    xlab(glue("Decile ({str_replace_all(metrics[i],'_', ' ') })")) +
+    ylab("Incidence Rate Ratio") +
+    theme_bw() +
+    coord_flip() + 
+    theme(legend.position="bottom",legend.title=element_blank())
+  
+  plot_overlay %>%
+    ggsave(
+      filename = here(
+        "output", "epi","plots","combined",glue("{metrics[i]}_combined.png")),
+      width = 15, height = 20, units = "cm"
+    )
+}
+
+
+### incidence rates
+
+
+for (i in 1:length(metrics)){
+  plot_overlay <- irr_overlay %>% 
+    filter(metric==metrics[i]) %>%
+    ggplot() +
+    geom_pointrange( mapping=aes(x=decile, y=inc_rate *10000, ymin=inc_rate_ll *10000, ymax=inc_rate_ul*10000,group = outcome_lab,colour = outcome_lab,  ),size=0.1) +
+    facet_grid(. ~ outcome_lab, scales = "free_x") +
+    scale_x_continuous(breaks=seq(1:10)) +
+    # scale_y_log10() + 
+    xlab(glue("Decile\n(Change in {str_replace_all(metrics[i],'_', ' ') }\n rate from Summer to Winter)")) +
+    ylab("Winter Incidence Rate per 10,000 person days") +
+    theme_bw() +
+    coord_flip() + 
+    theme(legend.position="bottom",legend.title=element_blank()) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+  
+  plot_overlay <- 
+  ggdraw(plot_overlay) + draw_label("Recording\nrate\nhigher\nin\nWinter\nthan\nSummer", x = 0.03, y = 0.87,size = 8,alpha = 0.8) +
+     draw_label("Recording\nrate\nhigher\nin\nSummer\nthan\nwinter", x = 0.03, y = 0.2,size = 8,alpha = 0.8)
+  
+  plot_overlay %>%
+    ggsave(
+      filename = here(
+        "output", "epi","plots","combined","inc_rate",glue("{metrics[i]}_combined.png")),
+      width = 30, height = 20, units = "cm"
+    )
+}

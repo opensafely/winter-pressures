@@ -87,7 +87,7 @@ def summarise_to_seasons(
 
     # Extract the month and year and represent as integers
     df["month_n"] = df[date_col].dt.month.astype(np.int32)
-    df["year"] = df[date_col].dt.year.astype(np.int32)
+    df = add_year_label(df,date_col)
     df["year_month"] = df["year"].astype(str) + "-" + df["month_n"].astype(str).str.zfill(2)
     # Use the mapping provided to map from the month to the season
     # df.loc[df["month_n"].isin(mapping["winter"]), "season"] = 1
@@ -109,6 +109,14 @@ def summarise_to_seasons(
     df = df.reset_index().loc[:, ["practice", "year", "season", value_col]]
 
     return df
+
+def add_year_label(d,date_col):
+    ### The function to_period('Q-MAR') gives the fiscal year (ending March)
+    ### so the date 1st August 2021 would be assigned the year 2022. Because
+    ### we want to refer to the period with regards to a year that STARTS in
+    ### June, we minus 1 from the fiscl year.
+    d["year"] = d[date_col].dt.to_period('Q-MAR').dt.qyear-1
+    return( d )
 
 def filter_by_date(d, date_col, start_date, end_date):
     return d.reset_index().set_index(date_col).loc[start_date:end_date]
