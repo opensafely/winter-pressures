@@ -362,10 +362,19 @@ actions:
       - appointments_generate_monthly_measures_by_start_month
       - monthly_practice_listsize_measures
     outputs:
-      highly_sensitive:
-        normalised_csvs: output/appointments/measure_monthly_normalised_*.csv
       moderately_sensitive:
+        normalised_csvs: output/appointments/measure_monthly_normalised_*.csv
         check_csvs: output/check/*CHECK.csv
+
+  appointments_practice_checks:
+    run: r:latest analysis/appointments/appt_check.R
+    needs:
+      - appointments_generate_monthly_measures_by_booked_month
+      - appointments_generate_monthly_measures_by_start_month
+      - monthly_practice_listsize_measures
+    outputs:
+      moderately_sensitive:
+        check_practice_csvs: output/check/*dropped_*.csv
 
   appointments_generate_deciles_charts:
     run: >

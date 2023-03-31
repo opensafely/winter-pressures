@@ -41,7 +41,7 @@ def main():
 
         measure = total_counts.reset_index().rename(columns={date_col: "date"})
         del total_counts
-        measure_monthly = measure.loc[:, ["value", "date"]]  # reorder columns
+        measure_monthly = measure.loc[:, ["value", "date", "practice"]]  # reorder columns
 
         f_out = (
             OUTPUT_DIR
@@ -68,7 +68,7 @@ def main():
     measure = medians.reset_index()
     del medians
     measure.columns = ["date", "practice", "value"]  # rename columns
-    measure_monthly = measure.loc[:, ["value", "date"]]  # reorder columns
+    measure_monthly = measure.loc[:, ["value", "date", "practice"]]  # reorder columns
 
     f_out = OUTPUT_DIR / f"measure_monthly_median_{value_col}_by_{date_col}.csv"
     measure_monthly.to_csv(f_out, index=False)
