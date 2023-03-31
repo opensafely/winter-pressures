@@ -128,11 +128,13 @@ def test_summarise_to_seasons_by_sum(monthly_table):
     exp_sum = pd.DataFrame(
         {
             "practice": pd.Series([1, 1, 2, 2]),
-            "year": pd.Series([2021, 2022, 2021, 2022]),
+            "year": pd.Series([2021, 2021, 2021, 2021]),
             "season": pd.Series([0, 1, 0, 1]),
             "value": pd.Series([12, 3, 30, 21]),
         }
-    )
+    ).sort_values(
+        by=["year", "season"]
+    ).reset_index(drop=True)
 
     testing.assert_frame_equal(obs_sum, exp_sum)
 
@@ -152,11 +154,13 @@ def test_summarise_to_seasons_by_median(monthly_table):
     exp_sum = pd.DataFrame(
         {
             "practice": pd.Series([1, 1, 2, 2]),
-            "year": pd.Series([2021, 2022, 2021, 2022]),
+            "year": pd.Series([2021, 2021, 2021, 2021]),
             "season": pd.Series([0, 1, 0, 1]),
             "value": pd.Series([4, 1, 10, 7]),
         }
-    )
+    ).sort_values(
+        by=["year", "season"]
+    ).reset_index(drop=True)
 
     testing.assert_frame_equal(obs_sum, exp_sum)
 
@@ -173,10 +177,10 @@ def test_summarise_to_seasons_by_median(monthly_table):
             36,
             pd.DataFrame(
                 data={
-                    "practice": [1, 1, 1, 1, 1, 1, 1],
-                    "year": [2019, 2020, 2020, 2021, 2021, 2022, 2022],
-                    "season": [1, 0, 1, 0, 1, 0, 1],
-                    "value": [3, 4, 4, 4, 4, 4, 1],
+                    "practice": [1, 1],
+                    "year": [2021, 2021],
+                    "season": [0, 1],
+                    "value": [4, 4],
                 }
             ),
         ),
@@ -188,10 +192,10 @@ def test_summarise_to_seasons_by_median(monthly_table):
             25,
             pd.DataFrame(
                 data={
-                    "practice": [1, 1, 1, 1, 1],
-                    "year": [2020, 2020, 2021, 2021, 2022],
-                    "season": [0, 1, 0, 1, 0],
-                    "value": [2, 4, 4, 4, 3],
+                    "practice": [1, 1],
+                    "year": [2021, 2021],
+                    "season": [0, 1],
+                    "value": [4, 4],
                 }
             ),
         ),
@@ -203,10 +207,10 @@ def test_summarise_to_seasons_by_median(monthly_table):
             25,
             pd.DataFrame(
                 data={
-                    "practice": [1, 1, 1, 1, 1],
-                    "year": [2020, 2020, 2021, 2021, 2022],
-                    "season": [0, 1, 0, 1, 0],
-                    "value": [2, 4, 4, 4, 3],
+                    "practice": [1, 1],
+                    "year": [2021, 2021],
+                    "season": [0, 1],
+                    "value": [4, 4],
                 }
             ),
         ),
@@ -217,7 +221,8 @@ def test_summarise_to_seasons_by_median(monthly_table):
             "2021-10-01",
             5,
             pd.DataFrame(
-                data={"practice": [1], "year": [2021], "season": [0], "value": [4]}
+                ### The index=[0] is added to ensure this is not interpreted as a tuple
+                data={"practice": [1], "year": [2021], "season": [0], "value": [4]}, index=[0]
             ),
         ),
     ],
