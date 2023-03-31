@@ -10,10 +10,11 @@ import pyarrow
 import pytest
 import pandas as pd
 import numpy as np
+import json
 
 from pandas import testing
 from analysis.appointments import reshape_dataset
-from analysis.utils import summarise_to_seasons, filter_by_date
+from analysis.utils import summarise_to_seasons, filter_by_date, flatten
 
 test_month_start = pd.to_datetime("2021-01-01")
 plus_month = 8
@@ -83,18 +84,18 @@ def monthly_table():
             "date": pd.Series(
                 [
                     ### Practice 1
-                    "2021-01-01",  # some winter dates
-                    "2021-02-01",  # ...
-                    "2021-03-01",  # ...
+                    "2022-01-01",  # some winter dates
+                    "2022-02-01",  # ...
+                    "2022-03-01",  # ...
                     "2021-06-01",  # some summer dates
                     "2021-07-01",  # ...
                     "2021-08-01",  # ...
                     "2021-04-01",  # some neither dates
                     "2021-05-01",  # ...
                     ### Practice 2
-                    "2021-01-01",  # some winter dates
-                    "2021-02-01",  # ...
-                    "2021-03-01",  # ...
+                    "2022-01-01",  # some winter dates
+                    "2022-02-01",  # ...
+                    "2022-03-01",  # ...
                     "2021-06-01",  # some summer dates
                     "2021-07-01",  # ...
                     "2021-08-01",  # ...
@@ -125,7 +126,7 @@ def test_summarise_to_seasons_by_sum(monthly_table):
     exp_sum = pd.DataFrame(
         {
             "practice": pd.Series([1, 1, 2, 2]),
-            "year": pd.Series([2021, 2021, 2021, 2021]),
+            "year": pd.Series([2021, 2022, 2021, 2022]),
             "season": pd.Series([0, 1, 0, 1]),
             "value": pd.Series([12, 3, 30, 21]),
         }
@@ -147,7 +148,7 @@ def test_summarise_to_seasons_by_median(monthly_table):
     exp_sum = pd.DataFrame(
         {
             "practice": pd.Series([1, 1, 2, 2]),
-            "year": pd.Series([2021, 2021, 2021, 2021]),
+            "year": pd.Series([2021, 2022, 2021, 2022]),
             "season": pd.Series([0, 1, 0, 1]),
             "value": pd.Series([4, 1, 10, 7]),
         }

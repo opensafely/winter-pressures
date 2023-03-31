@@ -15,17 +15,40 @@ import json
 import glob
 import jsonschema
 import analysis.charts as charts
+import pandas as pd
+from datetime import datetime
 
 BASE_DIR = pathlib.Path(__file__).parents[1]
 OUTPUT_DIR = BASE_DIR / "output"
 APPOINTMENTS_OUTPUT_DIR = OUTPUT_DIR / "appointments"
 
+
+### Read in the json file and identify the study period
+
+# function to flatten list of dates from json file
+def flatten(list_of_lists):
+    if len(list_of_lists) == 0:
+        return list_of_lists
+    if isinstance(list_of_lists[0], list):
+        return flatten(list_of_lists[0]) + flatten(list_of_lists[1:])
+    return list_of_lists[:1] + flatten(list_of_lists[1:])
+
 # import json study_dates (from design.R)
 with open("./lib/design/study_dates.json") as f:
-  study_dates = json.load(f)
+    study_dates = json.load(f)
+
+all_study_dates = flatten( list( study_dates.values() ) )
+
+# calculate the study dates
+study_start_date = f"{min( all_study_dates )}-01"
+study_end_month_start = datetime.strptime(f"{max( all_study_dates )}-01", "%Y-%M-%d")
+study_end_date = ( study_end_month_start + pd.offsets.MonthEnd(1)).strftime('%Y-%m-%d')
+
+default_start_date = '1900-01-01'
+default_end_date = str(date.today())
 
 # A mapping from season (string) to a list of months (as integer);
-month_to_season_map = {"winter": [1, 2, 3, 12], "summer": [6, 7, 8, 9]}
+# month_to_season_map = {"winter": [1, 2, 3, 12], "summer": [6, 7, 8, 9]}
 
 
 def summarise_to_seasons(
@@ -34,7 +57,7 @@ def summarise_to_seasons(
     date_col,
     value_col="value",
     summary_method=np.sum,
-    mapping=month_to_season_map,
+    # mapping=month_to_season_map,
 ):
     """
     Summarises data in a dataframe to seasons.

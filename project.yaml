@@ -292,7 +292,7 @@ actions:
         -m analysis.appointments.generate_appointment_monthly_measures
         --value-thresholds 0 2
         --index-cols booked_month practice
-    needs: [appointments_generate_dataset_sql]
+    needs: [appointments_generate_dataset_sql, update_time_definitions ]
     outputs:
       highly_sensitive:
         monthly_measure: output/appointments/measure_monthly_*_by_booked_month.csv
@@ -305,7 +305,7 @@ actions:
         -m analysis.appointments.generate_appointment_monthly_measures
         --value-thresholds 0 2
         --index-cols start_month practice
-    needs: [appointments_generate_dataset_sql]
+    needs: [appointments_generate_dataset_sql, update_time_definitions ]
     outputs:
       highly_sensitive:
         monthly_measure: output/appointments/measure_monthly_*_by_start_month.csv
@@ -325,10 +325,9 @@ actions:
         python
         -m analysis.appointments.generate_appointment_seasonal_summaries
         --value-thresholds 0 2
-        --start-date 2021-06-01
-        --end-date 2022-03-31
+        --study-period
         --index-cols start_month practice
-    needs: [appointments_generate_dataset_sql]
+    needs: [appointments_generate_dataset_sql, appointments_generate_monthly_measures_by_start_month]
     outputs:
       highly_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_start_month.csv
@@ -340,10 +339,9 @@ actions:
         python
         -m analysis.appointments.generate_appointment_seasonal_summaries
         --value-thresholds 0 2
-        --start-date 2021-06-01
-        --end-date 2022-03-31
+        --study-period
         --index-cols booked_month practice
-    needs: [appointments_generate_dataset_sql]
+    needs: [appointments_generate_dataset_sql, update_time_definitions]
     outputs:
       highly_sensitive:
         monthly_measure: output/appointments/measure_seasonal_*_by_booked_month.csv
@@ -433,6 +431,7 @@ actions:
   # -----------------
   run_python_tests:
       run: python:latest python -m pytest --junit-xml=output/pytest.xml --verbose
+      needs: update_time_definitions
       outputs:
         moderately_sensitive:
           log: output/pytest.xml

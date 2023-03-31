@@ -5,6 +5,7 @@ import datetime
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
 from analysis.utils import summarise_to_seasons
+from analysis.utils import study_start_date, study_end_date, default_start_date, default_end_date
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -12,8 +13,7 @@ def parse_args():
         "--value-thresholds", action="extend", nargs="+", required=True, type=int
     )
     parser.add_argument("--index-cols", action="extend", nargs="+", required=True)
-    parser.add_argument("--start-date", type=datetime.date.fromisoformat)
-    parser.add_argument("--end-date"  , type=datetime.date.fromisoformat)
+    parser.add_argument("--study-period", action="store_true" )
     return parser.parse_args()
 
 
@@ -22,8 +22,13 @@ def main():
     # We assume the first column in the list of columns is a date column.
     date_col = args.index_cols[0]
     index_cols_nodate = args.index_cols[1:]
-    start_date = str(args.start_date)
-    end_date = str(args.end_date)
+
+    start_date = default_start_date
+    end_date = default_end_date
+    
+    if ( args.study_period ):
+        start_date = study_start_date
+        end_date = study_end_date
 
     f_in = OUTPUT_DIR / "dataset_long.csv.gz"
 
