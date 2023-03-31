@@ -33,19 +33,30 @@ def flatten(list_of_lists):
         return flatten(list_of_lists[0]) + flatten(list_of_lists[1:])
     return list_of_lists[:1] + flatten(list_of_lists[1:])
 
-# import json study_dates (from design.R)
-with open("./lib/design/study_dates.json") as f:
-    study_dates = json.load(f)
+def read_in_study_dates():
+    # import json study_dates (from design.R)
+    with open("./lib/design/study_dates.json") as f:
+        study_dates = json.load(f)
 
-all_study_dates = flatten( list( study_dates.values() ) )
+    return study_dates 
 
-# calculate the study dates
-study_start_date = f"{min( all_study_dates )}-01"
-study_end_month_start = datetime.strptime(f"{max( all_study_dates )}-01", "%Y-%M-%d")
-study_end_date = ( study_end_month_start + pd.offsets.MonthEnd(1)).strftime('%Y-%m-%d')
+def calculate_study_date_limits():
+    study_dates = read_in_study_dates()
+    all_study_dates = flatten( list( study_dates.values() ) )
 
-default_start_date = '1900-01-01'
-default_end_date = str(date.today())
+    # calculate the study dates
+    study_start_date = f"{min( all_study_dates )}-01"
+    study_end_month_start = datetime.strptime(f"{max( all_study_dates )}-01", "%Y-%M-%d")
+    study_end_date = ( study_end_month_start + pd.offsets.MonthEnd(1)).strftime('%Y-%m-%d')
+
+    default_start_date = '1900-01-01'
+    default_end_date = str(date.today())
+
+    return { "study_start_date": study_start_date,
+        "study_end_date": study_end_date,
+        "default_start_date": default_start_date,
+        "default_end_date": default_end_date,
+    } 
 
 # A mapping from season (string) to a list of months (as integer);
 # month_to_season_map = {"winter": [1, 2, 3, 12], "summer": [6, 7, 8, 9]}
@@ -68,6 +79,8 @@ def summarise_to_seasons(
     summary_method: the function to use when summarising the data [default=np.sum]
     mapping: a dictionary mapping the season to a list of months
     """
+    
+    study_dates = read_in_study_dates()
 
     #  Remove any unecessary data before we do any calculations
     df = df.loc[:, index_cols + [date_col, value_col]]

@@ -5,7 +5,7 @@ import datetime
 from analysis.utils import APPOINTMENTS_OUTPUT_DIR as OUTPUT_DIR
 from analysis.utils import read
 from analysis.utils import summarise_to_seasons
-from analysis.utils import study_start_date, study_end_date, default_start_date, default_end_date
+from analysis.utils import calculate_study_date_limits
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -23,12 +23,13 @@ def main():
     date_col = args.index_cols[0]
     index_cols_nodate = args.index_cols[1:]
 
-    start_date = default_start_date
-    end_date = default_end_date
+    study_date_list = calculate_study_date_limits()
+    start_date = study_date_list['default_start_date']
+    end_date = study_date_list['default_end_date']
     
     if ( args.study_period ):
-        start_date = study_start_date
-        end_date = study_end_date
+        start_date = study_date_list['study_start_date']
+        end_date = study_date_list['study_end_date']
 
     f_in = OUTPUT_DIR / "dataset_long.csv.gz"
 
