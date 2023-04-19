@@ -69,7 +69,7 @@ for (f in target_files) {
 
     ### == Recording practices with raw counts missing ==============
 
-    d_raw_counts_missing = out$raw_counts_missing %>% select(-practice)
+    d_raw_counts_missing = out$raw_counts_missing 
 
     raw_counts_check_file = paste(check_directory,
         basename(f) %>%
@@ -85,7 +85,7 @@ for (f in target_files) {
 
     ### == Recording practices with population missing ==============
 
-    d_population_missing <- out$population_missing %>% select( -practice )
+    d_population_missing <- out$population_missing 
 
     population_check_file <- paste(check_directory,
         basename(f) %>%

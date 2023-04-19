@@ -49,10 +49,20 @@ normalise_raw_counts = function(raw_counts, practice_populations) {
         select(value, date, practice)
 
     population_missing <- raw_counts %>%
-        anti_join(practice_populations, by = c("date", "practice"))
+        anti_join(practice_populations, by = c("date", "practice")) %>%
+        group_by(date) %>%
+        summarise(
+                date = date,
+                raw_count_dropped = sum(raw_count),
+                num_practices = n())
 
     raw_counts_missing <- practice_populations %>%
-        anti_join(raw_counts, by = c("date", "practice"))
+        anti_join(raw_counts, by = c("date", "practice")) %>%
+        group_by(date) %>%
+        summarise(
+                 date = date,
+                 population_dropped = sum(population),
+                 num_practices = n())
     
 
     return(list(
