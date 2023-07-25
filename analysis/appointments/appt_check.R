@@ -47,6 +47,9 @@ df <- listsizes %>%
   select(date,practice) %>%
   mutate(listsize = 1)
 
+df_any <- tibble(practice=NULL)
+df_all <- tibble(practice=NULL)
+
 ## for each monthly measure full join to df and add a coulumn with 1 if a practice exists on a date
 ## and NA if it doesn't exist
 for (f in target_files) {
@@ -65,8 +68,20 @@ for (f in target_files) {
     select(date,practice) %>%
     mutate(!!as.name(f_name) :=1)
   
+  df_id <- df %>%
+    select(practice) %>%
+    unique()
+  
   df <- df %>%
     full_join(d, by = c("date", "practice"))
+  
+  ifelse(f_count == 1,df_all<-df_id, df_all <- df_id %>%
+           inner_join(df_all, by = c("practice")))
+  
+  ifelse(f_count == 1,df_any<-df_id, df_any <- df_id %>%
+           full_join(df_any, by = c("practice"))) 
+print(f_count)
+  
 }
 
 ## create a dataset of practices that exist for list size and all monthly measures
@@ -103,3 +118,8 @@ df_summary <- df_non_missing_summary %>%
 write.csv(df_summary, file = here("output", "check","dropped_practice_summary.csv"), row.names = FALSE, quote = FALSE)
 
 
+total_practices <- df %>% summarise(Unique_Elements = n_distinct(practice))
+
+not_in_sql <- df %>% filter(is.na(listsize))  %>% summarise(Unique_Elements = n_distinct(practice))
+
+appt_practices <-  df %>% filter(!is.na(listsize))  %>% summarise(Unique_Elements = n_distinct(practice))
