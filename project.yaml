@@ -211,7 +211,7 @@ actions:
     - metrics_generate_kids_measures
     - metrics_generate_endpopulation_measures
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         csv: output/metrics/practices_to_remove.csv
 
   metrics_create_seasonal_data:
@@ -491,6 +491,18 @@ actions:
     outputs:
       moderately_sensitive:
         report: output/docs/preliminary_report.html
+
+  generate_flowchart: 
+    run: r:latest analysis/flowchart.R
+    needs: 
+      - metrics_monthly_sro_data_measures
+      - metrics_monthly_kids_data_measures
+      - appointments_generate_monthly_measures_by_booked_month
+      - monthly_practice_listsize_measures
+    outputs:
+      moderately_sensitive:
+        csv: output/check/practice_counts.csv
+        png: output/check/*.png
 
   create_release:
     run: r:latest analysis/create_release.R
