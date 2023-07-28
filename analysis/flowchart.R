@@ -8,13 +8,13 @@ library(here)
 
 source(here("analysis", "utils.R"))
 
-round_redact<-function(input){
-  output<<-tibble(input) %>% mutate(output=case_when(
-    input==0 ~ as.integer(0),
-    input>7  ~ as.integer(round(input/5,0)*5),
+round_redact<-function(N){
+  output<-tibble(N) %>% mutate(N=case_when(
+    N==0 ~ as.integer(0),
+    N>7  ~ as.integer(round(N/5,0)*5),
     T~-1L
 ))
-  output
+  return(output)
 }
 
 fs::dir_create(
@@ -145,33 +145,46 @@ excluded_b
 
 dev.off()
 
-#### redacted
+#### create csv of redacted flowchart data
+redacted <- round_redact(n_all) %>% mutate(practice= "Total Practices") %>%
+          bind_rows(round_redact(n_appointment_all)
+                    %>% mutate(practice= "Appointment measures practices")) %>%
+  bind_rows(round_redact(n_normalised_appointments_all)
+            %>% mutate(practice= "Normalised Appointment measures practices")) %>%
+  bind_rows(round_redact(n_not_in_sql)
+            %>% mutate(practice= "Practices not in SQL Runner")) %>%
+  bind_rows(round_redact(n_not_in_listsize)
+            %>% mutate(practice= "Practices not in cohort extractor"))
 
-org_cohort <- boxGrob(glue("Total Practices",
+write_csv(redacted,here("output/check/redacted_flowchart_data.csv"))
+
+
+
+org_cohort <- boxGrob(glue("{redacted$practice[1]}",
                            "n = {pop}",
-                           pop = txtInt(round_redact(n_all)$output),
+                           pop = txtInt(redacted$N[1]),
                            .sep = "\n"))
 
-eligible <- boxGrob(glue("Appointment measures practices",
+eligible <- boxGrob(glue("{redacted$practice[2]}",
                          "n = {pop}",
-                         pop = txtInt(round_redact(n_appointment_all)$output),
+                         pop = txtInt(redacted$N[2]),
                          .sep = "\n"))
 
-included <- boxGrob(glue("Normalised Appointment measures practices",
+included <- boxGrob(glue("{redacted$practice[3]}",
                          "n = {incl}",
-                         incl = txtInt(round_redact(n_normalised_appointments_all)$output),
+                         incl = txtInt(redacted$N[3]),
                          .sep = "\n"))
 
 excluded_a <- boxGrob(glue("Excluded:", 
-                           "Practices not in SQL Runner",                        
+                           "{redacted$practice[4]}",                        
                            "n = {incl}",
-                           incl = txtInt(round_redact(n_not_in_sql)$output),
+                           incl = txtInt(redacted$N[4]),
                            .sep = "\n"))
 
 excluded_b <- boxGrob(glue("Excluded:",
-                           "Practices not in cohort extractor",
+                           "{redacted$practice[5]}",
                            "n = {incl}",
-                           incl = txtInt(round_redact(n_not_in_listsize)$output),
+                           incl = txtInt(redacted$N[5]),
                            .sep = "\n"))
 
 grid.newpage()
