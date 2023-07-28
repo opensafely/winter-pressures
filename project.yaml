@@ -501,7 +501,8 @@ actions:
       - monthly_practice_listsize_measures
     outputs:
       moderately_sensitive:
-        csv: output/check/practice_counts.csv
+        csv1: output/check/practice_counts.csv
+        csv2: output/check/redacted_flowchart_data.csv
         png: output/check/*.png
 
   create_release:
