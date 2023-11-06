@@ -15,7 +15,7 @@ data_filepath <- c(
   "output/deciles_table_monthly_proportion_lead_time_in_days_within_2days_by_booked_month.csv",
   "output/deciles_table_over12_appt_rate.csv",
   "output/deciles_table_under12_appt_rate.csv"
-  )
+)
 
 label <- c("Median lead time (days)",
            "Average number of appointments per patient",
@@ -23,10 +23,10 @@ label <- c("Median lead time (days)",
            "Proportion of appointments within 2 days",
            "Appointment rate (12-15 year olds)",
            "Appointment rate (5-12 year olds)"
-           )
+)
 
 make_plots <- function(filepath,
-         y_axis_label){
+                       y_axis_label){
   
   dat <- read_csv(filepath) %>%
     tibble() %>%
@@ -54,8 +54,10 @@ make_plots <- function(filepath,
               colour = "#0000FF",
               linetype = "dashed") +
     theme_bw() +
-    scale_x_date(breaks="4 months") +
-    #scale_y_continuous(breaks = seq(0, ceiling(max(dat$value)), by = 1)) +
+    scale_x_date(breaks = seq(as.Date(min(dat$date)),
+                              as.Date(max(dat$date)),
+                              by = "4 months")
+    ) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
           axis.title.x =element_blank(),
     ) +
@@ -70,7 +72,8 @@ make_plots(filepath = data_filepath[1],
            y_axis_label = label[1]) + 
   scale_y_continuous(breaks = seq(0, 
                                   12, 
-                                  by = 1)
+                                  by = 1),
+                     limits = c(0, 9)
   )
 
 # Average number of appointments per patient
@@ -79,7 +82,8 @@ make_plots(filepath = data_filepath[2],
            y_axis_label = label[2]) + 
   scale_y_continuous(breaks = seq(0, 
                                   1, 
-                                  by = 0.1)
+                                  by = 0.1),
+                     limits = c(0, 1)
   )
 
 # Proportion of same day appointments
@@ -88,7 +92,8 @@ make_plots(filepath = data_filepath[3],
            y_axis_label = label[3]) + 
   scale_y_continuous(breaks = seq(0, 
                                   1, 
-                                  by = 0.1)
+                                  by = 0.1),
+                     limits = c(0, 1)
   )
 
 # Proportion of appointments within 2 days
@@ -97,7 +102,8 @@ make_plots(filepath = data_filepath[4],
            y_axis_label = label[4]) + 
   scale_y_continuous(breaks = seq(0, 
                                   1, 
-                                  by = 0.1)
+                                  by = 0.1),
+                     limits = c(0, 1)
   )
 
 # Appointment rate (12-15 year olds)
@@ -106,7 +112,8 @@ make_plots(filepath = data_filepath[5],
            y_axis_label = label[5]) + 
   scale_y_continuous(breaks = seq(0, 
                                   0.3, 
-                                  by = 0.05)
+                                  by = 0.05),
+                     limits = c(0, 0.2)
   )
 
 # Appointment rate (5-12 year olds)
@@ -114,6 +121,7 @@ make_plots(filepath = data_filepath[5],
 make_plots(filepath = data_filepath[6],
            y_axis_label = label[6]) + 
   scale_y_continuous(breaks = seq(0, 
-                                  0.3, 
-                                  by = 0.05)
-  )
+                                  1, 
+                                  by = 0.05),
+                     limits = c(0, 0.2)
+  ) 
