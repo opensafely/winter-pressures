@@ -25,14 +25,49 @@ label <- c("Median lead time (days)",
            "Appointment rate (5-12 year olds)"
 )
 
-####################################################################
-# read in data
-####################################################################
 
 ####################################################################
 # Median lead time
 ####################################################################
 
+dat <- read_csv(data_filepath[1]) %>%
+  tibble() %>%
+  mutate(percentile = as.integer(percentile)) %>%
+  filter( percentile %in% seq(10, 90, by = 10)) %>%
+  filter(date <= as.Date("2022-05-01")) 
+
+# median
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(max(value))  
 
 ####################################################################
 # Average number of appointments per patient
@@ -221,6 +256,12 @@ dat <- read_csv(data_filepath[5]) %>%
   filter( percentile %in% seq(10, 90, by = 10)) %>%
   filter(date <= as.Date("2022-05-01")) 
 
+idr_dat <- dat %>%
+  filter( percentile %in% c(10, 90)) %>%
+  pivot_wider(names_from = "percentile",
+              values_from = "value") %>%
+  mutate(idr = `90`-`10`)
+
 # median
 dat %>%
   filter(percentile == 50) %>%
@@ -254,10 +295,37 @@ dat %>%
   filter(date >= as.Date("2020-08-01")) %>%
   summarise(max(value))  
 
+
+# IDR
+dat_idr %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(min(idr))
+
+dat_idr %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(max(idr))
+
+dat_idr %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(idr))
+
+dat_idr %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(max(idr))
+
+dat_idr %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(min(idr))
+
+dat_idr %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(max(idr))
+
 ####################################################################
 # Appointment rate (5-12 year olds)
 ####################################################################
-
 
 dat <- read_csv(data_filepath[6]) %>%
   tibble() %>%
@@ -265,6 +333,12 @@ dat <- read_csv(data_filepath[6]) %>%
   filter( percentile %in% seq(10, 90, by = 10)) %>%
   filter(date <= as.Date("2022-05-01")) 
 
+dat_idr <- dat %>%
+  filter( percentile %in% c(10, 90)) %>%
+  pivot_wider(names_from = "percentile",
+              values_from = "value") %>%
+  mutate(idr = `90`-`10`)
+
 # median
 dat %>%
   filter(percentile == 50) %>%
@@ -297,3 +371,32 @@ dat %>%
   filter(percentile == 50) %>%
   filter(date >= as.Date("2020-08-01")) %>%
   summarise(max(value))  
+
+
+# IDR
+dat_idr %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(min(idr))
+
+dat_idr %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(max(idr))
+
+dat_idr %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(idr))
+
+dat_idr %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(max(idr))
+
+dat_idr %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(min(idr))
+
+dat_idr %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(max(idr))
+
