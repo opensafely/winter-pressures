@@ -58,6 +58,18 @@ dat %>%
 
 dat %>%
   filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
   filter(date >= as.Date("2020-08-01")) %>%
   summarise(min(value))
 
@@ -71,6 +83,45 @@ dat %>%
 ####################################################################
 # Proportion of same day appointments
 ####################################################################
+
+dat <- read_csv(data_filepath[3]) %>%
+  tibble() %>%
+  mutate(percentile = as.integer(percentile)) %>%
+  filter( percentile %in% seq(10, 90, by = 10)) %>%
+  filter(date <= as.Date("2022-05-01")) 
+
+# median
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date <= as.Date("2020-02-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date >= as.Date("2020-08-01")) %>%
+  summarise(max(value))  
 
 
 
@@ -93,6 +144,18 @@ dat %>%
 dat %>%
   filter(percentile == 50) %>%
   filter(date <= as.Date("2020-02-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
   summarise(max(value))
 
 dat %>%
@@ -171,6 +234,18 @@ dat %>%
 
 dat %>%
   filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
   filter(date >= as.Date("2020-08-01")) %>%
   summarise(min(value))
 
@@ -199,6 +274,18 @@ dat %>%
 dat %>%
   filter(percentile == 50) %>%
   filter(date <= as.Date("2020-02-01")) %>%
+  summarise(max(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
+  summarise(min(value))
+
+dat %>%
+  filter(percentile == 50) %>%
+  filter(date > as.Date("2020-02-01")) %>%
+  filter(date < as.Date("2020-08-01")) %>%
   summarise(max(value))
 
 dat %>%
